@@ -1,0 +1,12 @@
+/* Block editor: the same reading styles as the site (theme.json sets colours and fonts). */
+.editor-styles-wrapper { background: #07111c; color: #e6edf5; }
+.editor-styles-wrapper p, .editor-styles-wrapper li { color: #c3d0dd; }
+.editor-styles-wrapper strong { color: #e6edf5; }
+.editor-styles-wrapper li::marker { color: #ff8a57; }
+.editor-styles-wrapper code { color: #6ea0ff; }
+.editor-styles-wrapper .wp-block-quote { padding: 1rem 1.2rem; background: #0e1d2e; border-radius: 0 8px 8px 0; }
+.editor-styles-wrapper .is-style-checklist { list-style: none; padding-left: 0; }
+.editor-styles-wrapper .is-style-checklist li { position: relative; padding-left: 2rem; }
+.editor-styles-wrapper .is-style-checklist li::before { content: ''; position: absolute; left: 0; top: 0.28em; width: 1.05rem; height: 1.05rem; border: 1.6px solid #19b38a; border-radius: 3px; }
+.editor-styles-wrapper .res-facts { list-style: none; padding-left: 0; border-top: 1px dashed #24405c; padding-top: 0.75rem; }
+.editor-styles-wrapper .res-for strong, .editor-styles-wrapper .res-facts strong { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #ff8a57; margin-right: 0.5rem; }

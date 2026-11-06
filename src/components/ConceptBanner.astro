@@ -1,0 +1,19 @@
+---
+// Shown at the top of every concept demo so nobody mistakes it for a real business.
+import { similarHref } from '../content/demos';
+interface Props { slug: string }
+const { slug } = Astro.props;
+---
+<aside class="concept-banner" aria-label="About this page">
+  <p><strong>Concept demonstration.</strong> A fictional business, designed and built by RandyBuilds.tech. No real customers, prices or reviews.</p>
+  <p class="concept-banner__links"><a class="concept-banner__cta" href={similarHref(slug)}>Discuss a similar project</a><a href={`/work/${slug}/`}>About this concept</a><a href="/work/">Back to RandyBuilds.tech</a></p>
+</aside>
+<style>
+  .concept-banner { position: relative; z-index: 60; display: flex; flex-wrap: wrap; gap: 0.3rem 1.25rem; justify-content: center; align-items: center; padding: 0.55rem 1rem; background: #0f2438; color: #f3f6f8; font: 500 0.875rem/1.45 'Schibsted Grotesk', system-ui, sans-serif; text-align: center; }
+  .concept-banner p { margin: 0; }
+  .concept-banner__links { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.25rem 1rem; }
+  .concept-banner a { color: #f5c531; font-weight: 700; display: inline-block; padding-block: 0.15rem; }
+  .concept-banner a.concept-banner__cta { padding: 0.2rem 0.65rem; border-radius: 5px; background: #f5c531; color: #07111c; text-decoration: none; }
+  .concept-banner a.concept-banner__cta:hover { background: #ffd95c; }
+  .concept-banner a:focus-visible { outline: 3px solid #f5c531; outline-offset: 2px; }
+</style>

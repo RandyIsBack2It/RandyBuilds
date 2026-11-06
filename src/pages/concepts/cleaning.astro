@@ -1,0 +1,189 @@
+---
+import Concept from '../../layouts/Concept.astro';
+const packages = [
+  { name: 'Essential', price: '$120', unit: 'sample price, 2-bed home', items: ['Kitchen counters & surfaces', 'Bathrooms cleaned & sanitised', 'Floors vacuumed & mopped', 'Dusting reachable surfaces'] },
+  { name: 'Deep clean', price: '$240', unit: 'sample price, 2-bed home', featured: true, items: ['Everything in Essential', 'Baseboards, doors & switches', 'Inside microwave & oven front', 'Behind & under furniture'] },
+  { name: 'Move-out', price: '$320', unit: 'sample price, 2-bed home', items: ['Everything in Deep clean', 'Inside cabinets & drawers', 'Inside fridge & oven', 'Ready for inspection'] },
+];
+const rooms = {
+  Kitchen: ['Counters, backsplash & sink', 'Outside of appliances', 'Stovetop degreased', 'Floors vacuumed & mopped'],
+  Bathrooms: ['Toilet, tub & shower', 'Mirrors & fixtures polished', 'Sink & counters', 'Floors washed'],
+  'Living areas': ['Dusting & surfaces', 'Cushions straightened', 'Vacuum rugs & floors', 'Glass tables & doors'],
+  Bedrooms: ['Dusting & nightstands', 'Beds made (linens on request)', 'Mirrors', 'Floors vacuumed'],
+};
+---
+<Concept title="Brightside Home Cleaning" description="Concept website for a fictional home cleaning service, designed and built by RandyBuilds.tech." slug="cleaning">
+  <div class="bs">
+    <header class="bs-top"><div class="bs-wrap bs-top__in">
+      <a class="bs-logo" href="#bs-main"><span aria-hidden="true">✦</span>brightside</a>
+      <a class="bs-btn" href="#book">Book a clean</a>
+    </div></header>
+
+    <section class="bs-hero" id="bs-main">
+      <div class="bs-wrap bs-hero__grid">
+        <div>
+          <p class="bs-pill">Home cleaning, done properly</p>
+          <h1>Come home to <span>calm.</span></h1>
+          <p class="bs-lede">Friendly, thorough home cleaning with clear packages, so you know exactly what you’re getting before we arrive.</p>
+          <div class="bs-actions"><a class="bs-btn bs-btn--lg" href="#book">Request a booking</a><a class="bs-link" href="#packages">See packages</a></div>
+        </div>
+        <div class="bs-art" aria-hidden="true">
+          <div class="bs-blob"></div>
+          {[0, 1, 2, 3, 4].map((i) => <span class={`bs-spark bs-spark--${i}`}></span>)}
+          <svg viewBox="0 0 200 200"><path d="M60 150c0-40 20-70 60-80l10-30h20l-6 32c22 10 36 34 36 78z" fill="#fff" stroke="#12302e" stroke-width="4" stroke-linejoin="round"/><rect x="56" y="150" width="120" height="22" rx="8" fill="#1f8a83"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="bs-section" id="packages" aria-labelledby="bs-pk">
+      <div class="bs-wrap">
+        <h2 id="bs-pk">Simple packages</h2>
+        <p class="bs-sub">Sample prices for this concept. Real quotes depend on the size of your home.</p>
+        <ul class="bs-packages" role="list" tabindex="0" aria-label="Packages">
+          {packages.map((p) => (
+            <li class:list={['bs-pack', { 'bs-pack--featured': p.featured }]}>
+              {p.featured && <p class="bs-tag">Most popular</p>}
+              <h3>{p.name}</h3>
+              <p class="bs-price">{p.price}<small>{p.unit}</small></p>
+              <ul>{p.items.map((i) => <li>{i}</li>)}</ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="bs-section bs-section--soft" aria-labelledby="bs-rooms">
+      <div class="bs-wrap">
+        <h2 id="bs-rooms">What we clean, room by room</h2>
+        <div class="bs-rooms">
+          {Object.entries(rooms).map(([room, items]) => (
+            <div class="bs-room"><h3>{room}</h3><ul>{items.map((i) => <li>{i}</li>)}</ul></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="bs-section" id="book" aria-labelledby="bs-book">
+      <div class="bs-wrap bs-book">
+        <h2 id="bs-book">Request a booking</h2>
+        <form class="bs-form" data-demo data-steps>
+          <ol class="bs-progress" aria-hidden="true" hidden><li>Home</li><li>Package</li><li>Timing</li></ol>
+          <fieldset class="bs-step"><legend>1. Your home</legend>
+            <label>Bedrooms<select name="beds"><option>1</option><option selected>2</option><option>3</option><option>4+</option></select></label>
+            <label>Bathrooms<select name="baths"><option>1</option><option>2</option><option>3+</option></select></label>
+            <label>Town<input name="town" autocomplete="address-level2" /></label>
+          </fieldset>
+          <fieldset class="bs-step"><legend>2. Package &amp; extras</legend>
+            {packages.map((p, i) => <label class="bs-radio"><input type="radio" name="package" value={p.name} checked={i === 1} />{p.name}</label>)}
+            {['Inside fridge', 'Inside oven', 'Interior windows', 'Laundry'].map((a) => <label class="bs-radio"><input type="checkbox" name="extras" value={a} />{a}</label>)}
+          </fieldset>
+          <fieldset class="bs-step"><legend>3. Timing &amp; contact</legend>
+            <label>Preferred day<select name="day"><option>Weekday</option><option>Saturday</option><option>Flexible</option></select></label>
+            <label>Name<input name="name" autocomplete="name" required /></label>
+            <label>Email or phone<input name="contact" required /></label>
+          </fieldset>
+          <div class="bs-nav" hidden><button type="button" class="bs-link" data-prev>Back</button><button type="button" class="bs-btn" data-next>Next</button></div>
+          <p class="demo-note">Demo form: nothing is sent.</p>
+          <button class="bs-btn bs-btn--lg bs-submit" type="submit">Send request</button>
+          <p class="bs-result" data-demo-result tabindex="-1" role="status"></p>
+        </form>
+      </div>
+    </section>
+    <footer class="bs-foot"><div class="bs-wrap">Brightside Home Cleaning is a fictional business · Concept site by RandyBuilds.tech</div></footer>
+  </div>
+</Concept>
+<script>
+  import { startDemoForms } from '../../scripts/demo-forms';
+  startDemoForms();
+  // Multi-step booking: without JS all three steps are shown together.
+  const form = document.querySelector<HTMLFormElement>('form[data-steps]');
+  if (form) {
+    const steps = Array.from(form.querySelectorAll<HTMLFieldSetElement>('.bs-step'));
+    const nav = form.querySelector<HTMLElement>('.bs-nav')!;
+    const progress = form.querySelector<HTMLElement>('.bs-progress')!;
+    const submit = form.querySelector<HTMLElement>('.bs-submit')!;
+    const prev = form.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = form.querySelector<HTMLButtonElement>('[data-next]')!;
+    let at = 0;
+    const show = (focus = false) => {
+      steps.forEach((s, i) => { s.hidden = i !== at; });
+      Array.from(progress.children).forEach((li, i) => li.toggleAttribute('data-on', i <= at));
+      prev.hidden = at === 0;
+      next.hidden = at === steps.length - 1;
+      submit.hidden = at !== steps.length - 1;
+      if (focus) steps[at].querySelector<HTMLElement>('select, input')?.focus();
+    };
+    nav.hidden = false; progress.hidden = false;
+    prev.addEventListener('click', () => { at = Math.max(0, at - 1); show(true); });
+    next.addEventListener('click', () => { at = Math.min(steps.length - 1, at + 1); show(true); });
+    show();
+  }
+</script>
+<style>
+  /* Sparkle positions (classes, not inline styles, for the strict CSP). */
+  .bs-spark--0 { left: 18%; top: 22%; width: 34px; height: 34px; --i: 0; }
+  .bs-spark--1 { left: 70%; top: 14%; width: 22px; height: 22px; --i: 1; }
+  .bs-spark--2 { left: 80%; top: 62%; width: 28px; height: 28px; --i: 2; }
+  .bs-spark--3 { left: 28%; top: 74%; width: 18px; height: 18px; --i: 3; }
+  .bs-spark--4 { left: 52%; top: 40%; width: 46px; height: 46px; --i: 4; }
+  .bs { --bg: #f7fbfa; --aqua: #e6f4f2; --deep: #12302e; --teal: #17726c; --sun: #ffd36e; background: var(--bg); color: var(--deep); }
+  .bs-wrap { max-width: 1140px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 3rem); }
+  .bs h1, .bs h2, .bs h3 { font-family: var(--sans); letter-spacing: -0.03em; margin: 0; font-weight: 800; }
+  .bs-top__in { display: flex; justify-content: space-between; align-items: center; min-height: 72px; }
+  .bs-logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.04em; text-decoration: none; color: var(--deep); display: inline-flex; gap: .4rem; align-items: center; }
+  .bs-logo span { color: var(--teal); }
+  .bs-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 1.3rem; border-radius: 16px; background: var(--teal); color: #fff; font: inherit; font-weight: 700; text-decoration: none; border: 0; cursor: pointer; transition: transform .25s, background .25s; }
+  .bs-btn:hover { transform: translateY(-2px); background: #115b56; }
+  .bs-btn--lg { min-height: 54px; padding: 0 1.7rem; }
+  .bs-link { background: none; border: 0; font: inherit; font-weight: 700; color: var(--teal); text-decoration: underline; text-underline-offset: .2em; cursor: pointer; min-height: 44px; }
+  .bs-hero { padding: clamp(2.5rem, 7vw, 5rem) 0; }
+  .bs-hero__grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: center; }
+  .bs-pill { display: inline-block; padding: .35rem .9rem; border-radius: 999px; background: var(--aqua); font-weight: 700; font-size: .85rem; }
+  .bs h1 { font-size: clamp(2.8rem, 7.5vw, 5.8rem); line-height: .95; margin: 1rem 0; }
+  .bs h1 span { color: var(--teal); }
+  .bs-lede { font-size: 1.2rem; color: #2d4a48; max-width: 31rem; }
+  .bs-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 1.8rem; }
+  .bs-art { position: relative; aspect-ratio: 1; }
+  .bs-blob { position: absolute; inset: 6%; border-radius: 46% 54% 42% 58% / 52% 44% 56% 48%; background: linear-gradient(135deg, var(--aqua), #c7ebe6); animation: bs-morph 12s ease-in-out infinite alternate; }
+  .bs-art svg { position: absolute; inset: 22%; }
+  .bs-spark { position: absolute; background: var(--sun); clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); animation: bs-twinkle 3.2s ease-in-out calc(var(--i) * .5s) infinite; }
+  @keyframes bs-morph { to { border-radius: 58% 42% 55% 45% / 45% 58% 42% 55%; } }
+  @keyframes bs-twinkle { 0%, 100% { transform: scale(.7) rotate(0); opacity: .6; } 50% { transform: scale(1.1) rotate(20deg); opacity: 1; } }
+  .bs-section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+  .bs-section h2 { font-size: clamp(2rem, 4.5vw, 3rem); }
+  .bs-sub { color: #3c5856; margin: .6rem 0 2rem; }
+  .bs-packages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; padding: 0; margin: 0; list-style: none; }
+  .bs-pack { position: relative; padding: 1.8rem; border-radius: 26px; background: #fff; border: 1.5px solid #d4ebe7; }
+  .bs-pack--featured { background: var(--deep); color: #fff; border-color: var(--deep); }
+  .bs-tag { position: absolute; top: -14px; left: 1.4rem; margin: 0; padding: .25rem .8rem; border-radius: 999px; background: var(--sun); color: var(--deep); font-weight: 800; font-size: .8rem; }
+  .bs-pack h3 { font-size: 1.4rem; }
+  .bs-price { font-size: 2.4rem; font-weight: 800; margin: .5rem 0 1rem; } .bs-price small { display: block; font-size: .8rem; font-weight: 600; opacity: .75; }
+  .bs-pack ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .55rem; }
+  .bs-pack li::before, .bs-room li::before { content: '✓'; margin-right: .5rem; color: var(--teal); font-weight: 800; }
+  .bs-pack--featured li::before { color: var(--sun); }
+  .bs-section--soft { background: var(--aqua); }
+  .bs-rooms { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 1rem; margin-top: 2rem; }
+  .bs-room { padding: 1.4rem; border-radius: 22px; background: #fff; }
+  .bs-room h3 { font-size: 1.2rem; margin-bottom: .8rem; } .bs-room ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .45rem; }
+  .bs-book { max-width: 720px; }
+  .bs-form { display: grid; gap: 1.2rem; margin-top: 1.6rem; padding: clamp(1.2rem, 4vw, 2.2rem); border-radius: 26px; background: #fff; border: 1.5px solid #d4ebe7; }
+  .bs-progress { display: flex; gap: .5rem; margin: 0; padding: 0; list-style: none; counter-reset: s; }
+  .bs-progress li { flex: 1; padding-top: .5rem; border-top: 4px solid #d4ebe7; font-weight: 700; font-size: .85rem; color: #4a605e; }
+  .bs-progress li[data-on] { border-color: var(--teal); color: var(--deep); }
+  .bs-step { border: 0; padding: 0; margin: 0; display: grid; gap: .8rem; }
+  .bs-step legend { font-weight: 800; font-size: 1.2rem; margin-bottom: .6rem; }
+  .bs-step label:not(.bs-radio) { display: grid; gap: .3rem; font-weight: 600; }
+  .bs-step input:not([type=radio]):not([type=checkbox]), .bs-step select { min-height: 48px; padding: .6rem .8rem; border-radius: 14px; border: 1.5px solid #bcdcd7; background: var(--bg); font: inherit; color: var(--deep); }
+  .bs-radio { display: flex; align-items: center; gap: .6rem; min-height: 46px; padding: 0 1rem; border-radius: 14px; border: 1.5px solid #bcdcd7; font-weight: 600; cursor: pointer; }
+  .bs-radio input { width: 18px; height: 18px; accent-color: var(--teal); }
+  .bs-nav { display: flex; justify-content: space-between; gap: 1rem; }
+  .bs-nav[hidden], .bs-progress[hidden] { display: none; }
+  .bs-result:not(:empty) { padding: .9rem 1rem; border-radius: 14px; background: var(--deep); color: #fff; }
+  .bs-foot { padding: 2.5rem 0; color: #3c5856; border-top: 1px solid #d4ebe7; }
+  @media (max-width: 860px) {
+    .bs-hero__grid { grid-template-columns: 1fr; } .bs-art { max-width: 320px; margin: 0 auto; }
+    .bs-packages { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 82%; overflow-x: auto; scroll-snap-type: x mandatory; padding: 1rem .2rem 1.2rem; }
+    .bs-pack { scroll-snap-align: start; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bs-blob, .bs-spark { animation: none; } }
+</style>

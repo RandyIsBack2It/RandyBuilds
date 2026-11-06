@@ -1,0 +1,95 @@
+---
+// Easter egg (Randy, 2026-10-25): where the footer prompt sends someone after
+// three wrong answers (scripts/admin-key.ts). Only a giant alien eye (only its pupil moves), the
+// words and a Back button beside the "Classified · eyes only" tab (Randy,
+// 2026-10-25: nothing else). Never a real government, agency, seal, official
+// or domain. Not linked, not in the sitemap, noindex.
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>// signal detected</title>
+    <meta name="description" content="An Easter egg on RandyBuilds.tech." />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#020604" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div class="fx" aria-hidden="true"></div>
+
+    <header class="bar">
+      <a class="back" href="/" data-back>&larr; Back</a>
+      <span class="tab">Classified · eyes only</span>
+    </header>
+
+    <main class="stage" id="main">
+      <svg class="eye" viewBox="0 0 200 120" aria-hidden="true" data-eye>
+        <defs>
+          <radialGradient id="iris" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#d8ffb0" />
+            <stop offset="0.45" stop-color="#5dff7a" />
+            <stop offset="1" stop-color="#0a5c2a" />
+          </radialGradient>
+          <clipPath id="lid"><path d="M8 60 Q100 -18 192 60 Q100 138 8 60 Z" /></clipPath>
+        </defs>
+        <path class="eye__shape" d="M8 60 Q100 -18 192 60 Q100 138 8 60 Z" />
+        <g clip-path="url(#lid)">
+          <circle cx="100" cy="60" r="34" fill="url(#iris)" />
+          <ellipse cx="100" cy="60" rx="6" ry="22" class="eye__slit" data-pupil />
+          <circle cx="112" cy="46" r="4" class="eye__glint" />
+          <rect class="eye__lid" x="0" y="0" width="200" height="120" />
+        </g>
+      </svg>
+      <h1 class="glitch" data-text="WE ARE WATCHING YOU.">WE ARE WATCHING YOU.</h1>
+    </main>
+
+    <script>
+      import { startWatching } from '../scripts/watching';
+      startWatching();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root { --bg: #020604; --g: #5dff7a; --g-dim: #2f9e4c; --g-faint: rgba(93, 255, 122, 0.14); --text: #c9f7d3; --red: #ff5a4f; --mono: ui-monospace, 'JetBrains Mono', Menlo, Consolas, monospace; }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body { margin: 0; display: flex; flex-direction: column; min-height: 100vh; background: radial-gradient(ellipse at 50% 35%, #0a2414 0%, var(--bg) 65%); color: var(--text); font: 400 1rem/1.5 var(--mono); overflow-x: hidden; }
+  a { color: var(--g); }
+  :focus-visible { outline: 2px solid var(--g); outline-offset: 4px; }
+
+  /* Scanlines, grain and a slow flicker over everything. */
+  .fx { position: fixed; inset: 0; pointer-events: none; z-index: 5;
+    background:
+      repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.28) 0 1px, transparent 1px 3px),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.09'/></svg>");
+    animation: flicker 6s infinite; }
+  @keyframes flicker { 0%, 100% { opacity: 1; } 47% { opacity: 1; } 48% { opacity: 0.6; } 49% { opacity: 1; } 82% { opacity: 0.85; } }
+
+  .bar { display: flex; align-items: center; gap: 1.25rem; padding: 0.9rem clamp(1rem, 3vw, 2rem); font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; }
+  .tab { color: var(--red); }
+  .back { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1rem; border: 1px solid var(--g-dim); color: var(--g); text-decoration: none; transition: background 160ms, color 160ms; }
+  .back:hover, .back:focus-visible { background: var(--g); color: var(--bg); }
+
+  .stage { flex: 1; display: grid; justify-items: center; align-content: center; gap: clamp(1rem, 4vh, 2.5rem); padding: 1rem 1rem 4rem; text-align: center; }
+  .eye { width: min(56rem, 92vw, calc((100vh - 15rem) * 1.6)); height: auto; filter: drop-shadow(0 0 32px rgba(93, 255, 122, 0.45)); }
+  .eye__shape { fill: #010302; stroke: var(--g); stroke-width: 1.5; }
+  .eye__slit { fill: #000; }
+  .eye__glint { fill: rgba(255, 255, 255, 0.75); }
+  .eye__lid { fill: #010302; transform: scaleY(0); transform-origin: 50% 0; transform-box: fill-box; animation: blink 7s infinite; }
+  @keyframes blink { 0%, 94%, 100% { transform: scaleY(0); } 96.5% { transform: scaleY(1); } }
+  [data-pupil] { transition: transform 120ms linear; }
+  .glitch { position: relative; margin: 0.5rem 0 0; font: 800 clamp(1.6rem, 0.8rem + 4.5vw, 4.5rem)/1.1 var(--mono); letter-spacing: 0.06em; color: var(--g); text-shadow: 0 0 18px rgba(93, 255, 122, 0.55); }
+  .glitch::before, .glitch::after { content: attr(data-text); position: absolute; inset: 0; overflow: hidden; }
+  .glitch::before { color: #4ff; transform: translate(-2px, 0); clip-path: inset(0 0 60% 0); animation: glitch-a 3.2s infinite steps(1); opacity: 0; }
+  .glitch::after { color: var(--red); transform: translate(2px, 0); clip-path: inset(55% 0 0 0); animation: glitch-b 2.7s infinite steps(1); opacity: 0; }
+  @keyframes glitch-a { 0%, 88%, 97%, 100% { opacity: 0; transform: translate(0); } 90% { opacity: 0.8; transform: translate(-4px, -1px); } 94% { opacity: 0.8; transform: translate(3px, 1px); } }
+  @keyframes glitch-b { 0%, 84%, 94%, 100% { opacity: 0; transform: translate(0); } 86% { opacity: 0.8; transform: translate(4px, 1px); } 91% { opacity: 0.8; transform: translate(-3px, 0); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fx, .eye__lid, .glitch::before, .glitch::after { animation: none; }
+    [data-pupil] { transition: none; }
+  }
+</style>

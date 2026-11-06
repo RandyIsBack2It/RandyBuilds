@@ -1,0 +1,163 @@
+---
+import Concept from '../../layouts/Concept.astro';
+const seasons = [
+  { id: 'spring', name: 'Spring', lead: 'Wake the yard up gently.', items: ['Spring clean-up and debris removal', 'Bed edging and fresh mulch', 'Lawn dethatching and overseeding', 'Pruning shrubs before new growth'] },
+  { id: 'summer', name: 'Summer', lead: 'Steady care through the growing season.', items: ['Weekly or bi-weekly mowing', 'Perennial bed maintenance', 'Stone paths, steps and patios', 'Garden installs and planting'] },
+  { id: 'fall', name: 'Fall', lead: 'Put the property to bed properly.', items: ['Leaf clean-up and removal', 'Final mow and aeration', 'Cutting back perennials', 'Winter protection for shrubs'] },
+  { id: 'winter', name: 'Winter', lead: 'Clear, safe and on time after every storm.', items: ['Driveway plowing', 'Walkway shoveling and steps', 'Sanding and ice treatment', 'Roof-edge snow pulls'] },
+];
+---
+<Concept title="Fern & Fieldstone" description="Concept website for a fictional landscaping and property care company, designed and built by RandyBuilds.tech." slug="landscaping">
+  <div class="ff">
+    <header class="ff-top"><div class="ff-wrap ff-top__in">
+      <a class="ff-logo" href="#ff-main"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 36C20 20 12 10 4 6c14 0 22 8 24 20M20 36c2-10 8-16 16-18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>Fern &amp; Fieldstone</a>
+      <nav class="ff-nav" aria-label="Concept site"><a href="#seasons">Services</a><a href="#work">Projects</a><a class="ff-btn" href="#quote">Get a quote</a></nav>
+    </div></header>
+
+    <section class="ff-hero" id="ff-main">
+      <div class="ff-wrap ff-hero__text">
+        <p class="ff-kicker">Property care for every season</p>
+        <h1>Grounds that feel <em>looked after.</em></h1>
+        <p class="ff-lede">Lawns, gardens, stonework and snow, handled by one careful crew from the first thaw to the last storm.</p>
+        <a class="ff-btn ff-btn--lg" href="#quote">Request a free quote</a>
+      </div>
+      <svg class="ff-land" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" role="img" aria-label="Illustrated landscape with hills, pines and a stone wall">
+        <path class="ff-l1" d="M0 260c160-70 330-90 520-40s380 40 680-60v260H0z" fill="#b9c6a5"/>
+        <path class="ff-l2" d="M0 300c220-40 420-30 620 10s380 20 580-30v140H0z" fill="#7e9566"/>
+        <g class="ff-l3" fill="#36502e">{[90, 150, 1020, 1090, 1150].map((x, i) => <path d={`M${x} ${300 - (i % 2) * 20}l26 -90 26 90z`} />)}</g>
+        <path class="ff-l4" d="M0 350c200-10 420 10 640 0s400-20 560 0v70H0z" fill="#4f6b3a"/>
+        <g fill="#9aa29a" stroke="#6d756d">{Array.from({ length: 14 }, (_, i) => <rect x={420 + i * 34} y={358 - (i % 2) * 6} width="32" height="18" rx="7" />)}</g>
+      </svg>
+    </section>
+
+    <section class="ff-section" id="seasons" aria-labelledby="ff-seasons">
+      <div class="ff-wrap">
+        <h2 id="ff-seasons">Services by season</h2>
+        <div class="ff-tabs" role="tablist" aria-label="Seasons" hidden>
+          {seasons.map((s, i) => <button role="tab" id={`tab-${s.id}`} aria-controls={`panel-${s.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{s.name}</button>)}
+        </div>
+        <div class="ff-panels">
+          {seasons.map((s) => (
+            <section class="ff-panel" id={`panel-${s.id}`} role="tabpanel" aria-labelledby={`tab-${s.id}`}>
+              <h3>{s.name}: {s.lead}</h3>
+              <ul>{s.items.map((it) => <li>{it}</li>)}</ul>
+            </section>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="ff-section ff-section--stone" id="work" aria-labelledby="ff-work">
+      <div class="ff-wrap">
+        <h2 id="ff-work">Project ideas</h2>
+        <p class="ff-sub">Illustrations for this concept; a real site would show the company’s own project photos.</p>
+        <ul class="ff-gallery" role="list">
+          <li><svg viewBox="0 0 300 200" aria-hidden="true"><rect width="300" height="200" fill="#cfd8bf"/><path d="M0 200C80 150 120 120 150 60s90-40 150-30v170z" fill="#7e9566"/>{[0,1,2,3,4,5].map((i) => <ellipse cx={60 + i * 38} cy={170 - i * 22} rx="20" ry="9" fill="#a7ada4" stroke="#6d756d"/>)}</svg><h3>Stone garden path</h3><p>Natural stone set into moss and thyme.</p></li>
+          <li><svg viewBox="0 0 300 200" aria-hidden="true"><rect width="300" height="200" fill="#e2e6d6"/>{Array.from({ length: 18 }, (_, i) => <circle cx={20 + (i % 9) * 33} cy={110 + Math.floor(i / 9) * 40} r={12 + (i % 3) * 4} fill={['#b46b8e', '#e2b04a', '#8a6fb3'][i % 3]} opacity=".85"/>)}<rect y="160" width="300" height="40" fill="#5c4632"/></svg><h3>Perennial border</h3><p>Layered colour from June to September.</p></li>
+          <li><svg viewBox="0 0 300 200" aria-hidden="true"><rect width="300" height="200" fill="#dfe7ee"/><path d="M0 140h300v60H0z" fill="#fff"/><path d="M40 140l40-60 40 60zM200 140l30-45 30 45z" fill="#36502e"/><path d="M0 150c90-12 200-12 300 0" stroke="#9fb3c4" stroke-width="3" fill="none"/></svg><h3>Winter-ready drive</h3><p>Clear edges, marked stakes and sanded steps.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ff-section" id="quote" aria-labelledby="ff-quote">
+      <div class="ff-wrap ff-two">
+        <div>
+          <h2 id="ff-quote">Request a quote</h2>
+          <p class="ff-sub">Tell us about the property and what you’d like help with. A real business would reply within a couple of days.</p>
+          <p class="ff-towns"><b>Service area:</b> homes and businesses within about 25 miles of the yard.</p>
+        </div>
+        <form class="ff-form" data-demo>
+          <label>Name<input name="name" autocomplete="name" required /></label>
+          <label>Email or phone<input name="contact" required /></label>
+          <label>Town<input name="town" autocomplete="address-level2" /></label>
+          <label>Property size<select name="size"><option>Under ¼ acre</option><option>¼ – 1 acre</option><option>Over 1 acre</option></select></label>
+          <fieldset><legend>I’m interested in</legend>
+            {['Lawn care', 'Gardens', 'Stonework', 'Clean-ups', 'Snow removal'].map((s) => <label class="ff-check"><input type="checkbox" name="services" value={s} />{s}</label>)}
+          </fieldset>
+          <p class="demo-note">Demo form: nothing is sent.</p>
+          <button class="ff-btn ff-btn--lg" type="submit">Send request</button>
+          <p class="ff-result" data-demo-result tabindex="-1" role="status"></p>
+        </form>
+      </div>
+    </section>
+    <footer class="ff-foot"><div class="ff-wrap">Fern &amp; Fieldstone is a fictional business · Concept site by RandyBuilds.tech</div></footer>
+  </div>
+</Concept>
+<script>
+  import { startDemoForms } from '../../scripts/demo-forms';
+  startDemoForms();
+  // Season tabs: without JS every season is shown in a list.
+  const list = document.querySelector<HTMLElement>('.ff-tabs');
+  if (list) {
+    list.hidden = false;
+    const tabs = Array.from(list.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const select = (tab: HTMLButtonElement, focus = false) => {
+      for (const t of tabs) {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')!)!.hidden = !on;
+      }
+      if (focus) tab.focus();
+    };
+    const month = new Date().getMonth();
+    const current = month < 2 || month === 11 ? 3 : month < 5 ? 0 : month < 8 ? 1 : 2;
+    select(tabs[current]);
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (d) { e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length], true); }
+      });
+    });
+  }
+</script>
+<style>
+  .ff { --bg: #eef0e6; --moss: #1f2a1d; --leaf: #4f6b3a; --bark: #6b4f36; --stone: #e1e3d8; background: var(--bg); color: var(--moss); }
+  .ff-wrap { max-width: 1160px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 3rem); }
+  .ff h1, .ff h2, .ff h3 { font-family: var(--serif); font-variation-settings: 'SOFT' 100, 'WONK' 0; letter-spacing: -0.02em; margin: 0; font-weight: 500; }
+  .ff-top__in { display: flex; justify-content: space-between; align-items: center; min-height: 72px; gap: 1rem; }
+  .ff-logo { display: inline-flex; align-items: center; gap: .55rem; font-family: var(--serif); font-size: 1.35rem; font-weight: 600; text-decoration: none; color: var(--moss); }
+  .ff-logo svg { width: 34px; color: var(--leaf); }
+  .ff-nav { display: flex; align-items: center; gap: 1.2rem; } .ff-nav a:not(.ff-btn) { font-weight: 600; text-decoration: none; }
+  .ff-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 1.1rem; border-radius: 999px; background: var(--leaf); color: #fff; font: inherit; font-weight: 700; text-decoration: none; border: 0; cursor: pointer; transition: background .3s; }
+  .ff-btn:hover { background: var(--moss); }
+  .ff-btn--lg { min-height: 52px; padding: 0 1.6rem; }
+  .ff-hero { position: relative; padding-top: clamp(3rem, 8vw, 6rem); overflow: hidden; }
+  .ff-hero__text { position: relative; z-index: 1; }
+  .ff-kicker { color: var(--bark); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: .8rem; }
+  .ff h1 { font-size: clamp(2.8rem, 7.5vw, 6rem); line-height: .98; max-width: 12ch; }
+  .ff h1 em { color: var(--leaf); font-style: italic; }
+  .ff-lede { font-size: 1.2rem; max-width: 32rem; margin: 1.4rem 0 2rem; color: #3b4a36; }
+  .ff-land { width: 100%; height: clamp(180px, 30vw, 380px); margin-top: -2rem; }
+  .ff-section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+  .ff-section h2 { font-size: clamp(2rem, 4.5vw, 3.2rem); margin-bottom: 1.4rem; }
+  .ff-section--stone { background: var(--stone); }
+  .ff-sub { color: #4a5944; max-width: 36rem; }
+  .ff-tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.6rem; }
+  .ff-tabs[hidden] { display: none; }
+  .ff-tabs button { min-height: 44px; padding: 0 1.2rem; border-radius: 999px; border: 1.5px solid var(--leaf); background: transparent; color: var(--moss); font: inherit; font-weight: 700; cursor: pointer; }
+  .ff-tabs button[aria-selected='true'] { background: var(--leaf); color: #fff; }
+  .ff-panels { display: grid; gap: 1.5rem; }
+  .ff-panel { padding: clamp(1.4rem, 4vw, 2.4rem); border-radius: 22px; background: #fff; box-shadow: 0 20px 50px -30px rgba(31,42,29,.4); }
+  .ff-panel h3 { font-size: clamp(1.4rem, 3vw, 2rem); margin-bottom: 1rem; }
+  .ff-panel ul { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: .7rem 1.5rem; }
+  .ff-panel li { padding-left: 1.6rem; position: relative; }
+  .ff-panel li::before { content: '❧'; position: absolute; left: 0; color: var(--leaf); }
+  .ff-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1.4rem; padding: 0; margin: 0; list-style: none; }
+  .ff-gallery li { background: #fff; border-radius: 18px; overflow: hidden; }
+  .ff-gallery svg { width: 100%; height: auto; }
+  .ff-gallery h3 { font-size: 1.3rem; margin: 1rem 1.2rem .3rem; } .ff-gallery p { margin: 0 1.2rem 1.2rem; color: #4a5944; }
+  .ff-two { display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem; }
+  .ff-towns { margin-top: 1.5rem; color: #4a5944; }
+  .ff-form { display: grid; gap: .9rem; padding: clamp(1.2rem, 4vw, 2rem); border-radius: 22px; background: #fff; }
+  .ff-form label { display: grid; gap: .3rem; font-weight: 600; }
+  .ff-form input:not([type=checkbox]), .ff-form select { min-height: 48px; padding: .6rem .8rem; border-radius: 12px; border: 1.5px solid #b7bfae; background: var(--bg); font: inherit; color: var(--moss); }
+  .ff-form fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+  .ff-form legend { font-weight: 600; margin-bottom: .5rem; }
+  .ff-check { display: inline-flex !important; grid-auto-flow: column; align-items: center; gap: .4rem !important; min-height: 44px; padding: 0 .9rem; border-radius: 999px; border: 1.5px solid #b7bfae; font-weight: 600; cursor: pointer; }
+  .ff-check input { width: 18px; height: 18px; accent-color: var(--leaf); }
+  .ff-result:not(:empty) { padding: .9rem 1rem; border-radius: 12px; background: var(--leaf); color: #fff; }
+  .ff-foot { padding: 2.5rem 0; color: #4a5944; border-top: 1px solid #cdd3c2; }
+  @media (max-width: 760px) { .ff-nav a:not(.ff-btn) { display: none; } .ff-two { grid-template-columns: 1fr; } }
+</style>

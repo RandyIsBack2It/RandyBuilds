@@ -1,0 +1,241 @@
+---
+import Concept from '../../layouts/Concept.astro';
+import '../../concepts/alder-pine/style.css';
+import { species, legs, edges, finishes, extras } from '../../concepts/alder-pine/data';
+const sign = (n: number) => (n === 0 ? 'Included' : `${n > 0 ? '+' : '−'}$${Math.abs(n).toLocaleString()}`);
+---
+<Concept title="Alder & Pine" description="Concept furniture store with a live 3D table configurator, room-fit planner and build-slot request, for a fictional New England workshop. Designed and built by RandyBuilds.tech." slug="alder-pine">
+  <div class="ap">
+    <header class="ap-top">
+      <div class="ap-wrap ap-top__in">
+        <a class="ap-logo" href="#configure"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3l7 10h-4l6 8h-5l5 7H7l5-7H7l6-8H9z" /></svg>Alder <i>&amp;</i> Pine</a>
+        <nav class="ap-nav" aria-label="Workshop"><a href="#configure">Configure</a><a href="#fit">Room fit</a><a href="#woods">Woods</a><a href="#process">How it’s made</a><a href="#ordering">Ordering</a><a href="#delivery">Delivery</a></nav>
+        <button class="ap-saved" type="button" data-open-saved aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" /></svg>Saved <span data-saved-n>0</span></button>
+      </div>
+    </header>
+
+    <section class="ap-config" id="configure" aria-labelledby="ap-h1">
+      <div class="ap-stage">
+        <div class="ap-stage__head">
+          <p class="ap-eyebrow">Made to order in Whitcomb, Maine</p>
+          <h1 id="ap-h1">The Everyday Table</h1>
+          <p class="ap-stage__spec" data-spec aria-live="polite"></p>
+          <p class="ap-fiction">A fictional workshop: a portfolio demo by RandyBuilds.tech. Whitcomb is a made-up town, and prices, lead times, delivery fees and policies are sample details.</p>
+        </div>
+        <div class="ap-canvas" data-canvas>
+          <svg viewBox="0 0 800 520" class="ap-svg" data-svg role="img" aria-label="3D preview of your table"></svg>
+          <p class="ap-drag" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h16M4 12l3-3M4 12l3 3M20 12l-3-3M20 12l-3 3" /></svg>Drag to turn</p>
+        </div>
+        <div class="ap-stage__tools">
+          <div class="ap-views" role="group" aria-label="View">
+            <button type="button" data-view="three" aria-pressed="true">Angle</button>
+            <button type="button" data-view="side" aria-pressed="false">Side</button>
+            <button type="button" data-view="end" aria-pressed="false">End</button>
+            <button type="button" data-view="top" aria-pressed="false">Above</button>
+          </div>
+          <label class="ap-toggle"><input type="checkbox" data-chairs checked /><span></span>Show chairs</label>
+          <button type="button" class="ap-rot" data-rotate aria-label="Turn left 45 degrees">↺</button>
+          <button type="button" class="ap-rot" data-rotate-r aria-label="Turn right 45 degrees">↻</button>
+        </div>
+      </div>
+
+      <form class="ap-panel" data-form>
+        <div class="ap-pricebar">
+          <div><p class="ap-price" data-price aria-live="polite">$0</p><p class="ap-sub" data-lead></p></div>
+          <p class="ap-sub ap-sub--r">Sample prices<br />50% deposit to start</p>
+        </div>
+
+        <div class="ap-tabbar" data-tabbar hidden>
+          <button type="button" class="ap-tabnav" data-tab-step="-1" aria-label="Previous option group">‹</button>
+          <div class="ap-tabs" role="tablist" aria-label="Table options" data-tabs>
+            <button type="button" role="tab" id="ap-tab-size" aria-controls="ap-step-size" data-tab="size"><span>01</span>Size</button>
+            <button type="button" role="tab" id="ap-tab-wood" aria-controls="ap-step-wood" data-tab="wood"><span>02</span>Wood</button>
+            <button type="button" role="tab" id="ap-tab-base" aria-controls="ap-step-base" data-tab="base"><span>03</span>Base</button>
+            <button type="button" role="tab" id="ap-tab-top" aria-controls="ap-step-top" data-tab="top"><span>04</span>Top</button>
+            <button type="button" role="tab" id="ap-tab-finish" aria-controls="ap-step-finish" data-tab="finish"><span>05</span>Finish</button>
+            <button type="button" role="tab" id="ap-tab-extras" aria-controls="ap-step-extras" data-tab="extras"><span>06</span>Extras</button>
+          </div>
+          <button type="button" class="ap-tabnav" data-tab-step="1" aria-label="Next option group">›</button>
+        </div>
+
+        <div class="ap-step" id="ap-step-size" data-step="size">
+        <fieldset class="ap-group">
+          <legend><span>01</span>Size</legend>
+          <label class="ap-range"><span>Length <output data-out="length">84″</output></span><input type="range" name="length" min="60" max="108" step="6" value="84" /></label>
+          <label class="ap-range"><span>Width <output data-out="width">40″</output></span><input type="range" name="width" min="34" max="46" step="2" value="40" /></label>
+          <p class="ap-seats" data-seats></p>
+        </fieldset>
+        </div>
+
+        <div class="ap-step" id="ap-step-wood" data-step="wood">
+        <fieldset class="ap-group">
+          <legend><span>02</span>Wood</legend>
+          <div class="ap-swatches">
+            {species.map((s, i) => (
+              <label class="ap-swatch" title={s.name}><input type="radio" name="species" value={s.id} checked={i === 0} /><span class={`ap-chip ap-chip--${s.id}`} aria-hidden="true"></span><b>{s.name}</b><small>{s.mult === 1 ? 'Base' : s.mult > 1 ? `+${Math.round((s.mult - 1) * 100)}%` : `−${Math.round((1 - s.mult) * 100)}%`}</small></label>
+            ))}
+          </div>
+          <p class="ap-note" data-species-note></p>
+        </fieldset>
+        </div>
+
+        <div class="ap-step" id="ap-step-base" data-step="base">
+        <fieldset class="ap-group">
+          <legend><span>03</span>Base</legend>
+          <div class="ap-cards">
+            {legs.map((l, i) => (
+              <label class="ap-card"><input type="radio" name="legs" value={l.id} checked={i === 0} />
+                <svg viewBox="0 0 60 40" aria-hidden="true" class={`ap-ico ap-ico--${l.id}`}>
+                  <rect x="4" y="6" width="52" height="5" rx="1" />
+                  {l.id === 'tapered' && <path d="M9 11l2 26M51 11l-2 26M9 11h42v4H9z" />}
+                  {l.id === 'trestle' && <path d="M14 11v24M46 11v24M8 36h12M40 36h12M14 24h32" />}
+                  {l.id === 'pedestal' && <path d="M27 11h6v22h-6zM20 36h20" />}
+                  {l.id === 'hairpin' && <path d="M10 11l3 26 3-26M44 11l3 26 3-26" />}
+                </svg>
+                <b>{l.name}</b><small>{sign(l.price)}</small></label>
+            ))}
+          </div>
+          <div class="ap-metal" data-metal hidden>
+            <span>Steel finish</span>
+            <label class="ap-pill"><input type="radio" name="metal" value="black" checked /><span>Matte black</span></label>
+            <label class="ap-pill"><input type="radio" name="metal" value="brass" /><span>Brass tone · +${extras.brass}</span></label>
+          </div>
+        </fieldset>
+        </div>
+
+        <div class="ap-step" id="ap-step-top" data-step="top">
+        <fieldset class="ap-group">
+          <legend><span>04</span>Top</legend>
+          <div class="ap-pills">
+            {edges.map((e, i) => <label class="ap-pill"><input type="radio" name="edge" value={e.id} checked={i === 0} /><span>{e.name}{e.price ? ` · +$${e.price}` : ''}</span></label>)}
+          </div>
+          <div class="ap-pills">
+            <label class="ap-pill"><input type="radio" name="thick" value="std" checked /><span>1¼″ top</span></label>
+            <label class="ap-pill"><input type="radio" name="thick" value="thick" /><span>1¾″ slab · +${extras.thick}</span></label>
+          </div>
+        </fieldset>
+        </div>
+
+        <div class="ap-step" id="ap-step-finish" data-step="finish">
+        <fieldset class="ap-group">
+          <legend><span>05</span>Finish</legend>
+          <div class="ap-finishes">
+            {finishes.map((f, i) => <label class="ap-finish"><input type="radio" name="finish" value={f.id} checked={i === 0} /><span class={`ap-fin ap-fin--${f.id}`} aria-hidden="true"></span><b>{f.name}</b><small>{f.price ? `+$${f.price}` : f.note}</small></label>)}
+          </div>
+        </fieldset>
+        </div>
+
+        <div class="ap-step" id="ap-step-extras" data-step="extras">
+        <fieldset class="ap-group">
+          <legend><span>06</span>Extras</legend>
+          <label class="ap-check"><input type="checkbox" name="leaf" /><span><b>Extension leaf</b><small>Adds 18″ and two seats · +${extras.leaf}</small></span></label>
+          <label class="ap-check"><input type="checkbox" name="bench" /><span><b>Matching bench</b><small>Replaces chairs along one side · +${extras.bench}</small></span></label>
+        </fieldset>
+        </div>
+
+        <button type="button" class="ap-nextstep" data-next hidden></button>
+
+        <details class="ap-breakdown"><summary>Price breakdown</summary><dl data-breakdown></dl></details>
+
+        <div class="ap-actions">
+          <button type="button" class="ap-btn ap-btn--ghost" data-save>Save design</button>
+          <button type="button" class="ap-btn ap-btn--ghost" data-share>Copy link</button>
+          <button type="button" class="ap-btn ap-btn--primary" data-reserve aria-haspopup="dialog">Request a build slot</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="ap-section ap-fit" id="fit" aria-labelledby="ap-fit-h">
+      <div class="ap-wrap ap-fit__grid">
+        <div>
+          <p class="ap-eyebrow">Room fit</p>
+          <h2 id="ap-fit-h">Will it fit your room?</h2>
+          <p class="ap-lede">Enter your room size. We check the space to walk around a seated table, using the same 36-inch rule our designers use.</p>
+          <div class="ap-fitform">
+            <label>Room length<span class="ap-unit"><input type="number" min="6" max="40" step="0.5" value="14" data-room="l" inputmode="decimal" /><i>ft</i></span></label>
+            <label>Room width<span class="ap-unit"><input type="number" min="6" max="40" step="0.5" value="12" data-room="w" inputmode="decimal" /><i>ft</i></span></label>
+          </div>
+          <div class="ap-verdict" data-verdict role="status"></div>
+        </div>
+        <figure class="ap-plan">
+          <svg viewBox="0 0 400 320" data-plan role="img" aria-label="Floor plan of the room with the table"></svg>
+          <figcaption><span><i class="ap-k ap-k--good"></i>36″+ comfortable</span><span><i class="ap-k ap-k--ok"></i>30–36″ snug</span><span><i class="ap-k ap-k--bad"></i>under 30″ tight</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="ap-section ap-woods" id="woods" aria-labelledby="ap-woods-h">
+      <div class="ap-wrap">
+        <p class="ap-eyebrow">The woods</p>
+        <h2 id="ap-woods-h">Five hardwoods, all from northern forests</h2>
+        <div class="ap-woodgrid">
+          {species.map((s) => (
+            <article class="ap-wood">
+              <div class={`ap-wood__swatch ap-chip--${s.id}`} aria-hidden="true"><svg viewBox="0 0 200 120" preserveAspectRatio="none">{Array.from({ length: 14 }, (_, i) => <path d={`M0 ${8 + i * 8} C 50 ${4 + i * 8 + (i % 3) * 3}, 120 ${12 + i * 8 - (i % 4) * 2}, 200 ${8 + i * 8}`} />)}</svg></div>
+              <h3>{s.name}</h3>
+              <p>{s.note}</p>
+              <div class="ap-meter"><span>Hardness</span><i><b class={`ap-hard ap-hard--${s.id}`}></b></i><small>{s.janka.toLocaleString()} lbf</small></div>
+              <button type="button" class="ap-link" data-pick-species={s.id}>Try {s.name.toLowerCase()}</button>
+            </article>
+          ))}
+        </div>
+        <p class="ap-fine">Hardness is the Janka rating: the force needed to press a steel ball halfway into the wood. Higher resists dents better.</p>
+      </div>
+    </section>
+
+    <section class="ap-section ap-process" id="process" aria-labelledby="ap-proc-h">
+      <div class="ap-wrap">
+        <p class="ap-eyebrow">How it’s made</p>
+        <h2 id="ap-proc-h">From rough board to your dining room</h2>
+        <ol class="ap-steps">
+          <li><b>Week 1</b><h3>Boards chosen</h3><p>We pick and photograph the boards for your top, and send you the photos before we cut.</p></li>
+          <li><b>Weeks 2–4</b><h3>Glued and flattened</h3><p>Boards are matched for grain, glued up and flattened to within a sixty-fourth of an inch.</p></li>
+          <li><b>Weeks 5–6</b><h3>Joinery and base</h3><p>Mortise-and-tenon joints, hand-fitted. Steel bases are made by a fabricator down the road.</p></li>
+          <li><b>Week 7+</b><h3>Finish and delivery</h3><p>Three coats, cured for a week, then delivered and set up in the room you choose.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="ap-section ap-ordering" id="ordering" aria-labelledby="ap-ord-h">
+      <div class="ap-wrap">
+        <p class="ap-eyebrow">Ordering</p>
+        <h2 id="ap-ord-h">Before you order a table</h2>
+        <p class="ap-lede">Sample terms for this fictional workshop, written the way a real one would set expectations.</p>
+        <dl class="ap-faq">
+          <div><dt>How do I order?</dt><dd>Send a build-slot request with your design. We confirm the measurements by email and invoice a 50% deposit. Your slot is held once it’s paid.</dd></div>
+          <div><dt>When is the rest due?</dt><dd>The balance is due before delivery. Delivery is quoted by ZIP code and added to the total.</dd></div>
+          <div><dt>Can I change the design?</dt><dd>Yes, until you approve the photos of your boards. After that, the wood is cut to your sizes.</dd></div>
+          <div><dt>Can I return it?</dt><dd>Tables are made to order, so they can’t be returned. If something is wrong with how it’s made, we repair or replace it.</dd></div>
+          <div><dt>Will the wood move?</dt><dd>Solid wood grows and shrinks a little with the seasons. The joinery allows for it. Small cracks in live edges are part of the wood.</dd></div>
+          <div><dt>How do I look after it?</dt><dd>Wipe spills soon and use mats under hot dishes. An oiled top can be refreshed at home; a matte clear top needs only a damp cloth.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="ap-section ap-delivery" id="delivery" aria-labelledby="ap-del-h">
+      <div class="ap-wrap ap-del__grid">
+        <div>
+          <p class="ap-eyebrow">Delivery</p>
+          <h2 id="ap-del-h">When will it arrive?</h2>
+          <p class="ap-lede">Enter a ZIP code to see the delivery service, a sample fee and an estimated window for the table you configured.</p>
+        </div>
+        <div class="ap-zip">
+          <label for="ap-zip">ZIP code</label>
+          <div><input id="ap-zip" inputmode="numeric" maxlength="5" placeholder="04101" autocomplete="postal-code" data-zip /><button type="button" class="ap-btn ap-btn--primary" data-zip-go>Check</button></div>
+          <div class="ap-zipout" data-zipout role="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ap-foot"><div class="ap-wrap">Alder &amp; Pine is a fictional workshop · Portfolio demo by RandyBuilds.tech · Sample prices, lead times, delivery fees and terms · Requests are never sent</div></footer>
+
+    <div class="ap-mobilebar" data-mobilebar><div><b data-mprice>$0</b><small data-mlead></small></div><button type="button" class="ap-btn ap-btn--primary" data-reserve aria-haspopup="dialog">Request</button></div>
+
+    <dialog class="ap-dlg" data-saved-dlg aria-labelledby="ap-saved-h"></dialog>
+    <dialog class="ap-dlg ap-dlg--wide" data-checkout-dlg aria-labelledby="ap-co-h"></dialog>
+  </div>
+</Concept>
+<script>
+  import { start } from '../../concepts/alder-pine/app';
+  start();
+</script>

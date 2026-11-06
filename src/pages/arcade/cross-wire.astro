@@ -1,0 +1,258 @@
+---
+// CROSS//WIRE — a retro crossword game on its own page shell (no site header).
+// The game code and styles load only here.
+import '../../styles/global.css';
+import '../../styles/cross-wire.css';
+import { site } from '../../site';
+import { versioned } from '../../lib/versioned';
+import font from '../../fonts/jetbrains-mono-latin-wght-normal.woff2?url';
+import { LIBRARY, SECTORS } from '../../arcade/cross-wire/puzzles';
+import { DAILY_ORDER } from '../../arcade/cross-wire/daily';
+
+const title = 'CROSS//WIRE';
+const description = 'Solve the clues. Restore the circuits. Crack the system. A retro crossword game with mini puzzles, a three-sector campaign and a Daily Circuit. Free, no sign-up.';
+const url = new URL('/arcade/cross-wire/', site.url).href;
+const og = new URL('/arcade/cross-wire/og.png', site.url).href;
+const total = LIBRARY.length + SECTORS.reduce((n, s) => n + s.puzzles.length, 0);
+const schema = {
+  '@context': 'https://schema.org', '@type': 'VideoGame', name: title, url, description,
+  genre: ['Puzzle', 'Crossword'], gamePlatform: 'Web browser', playMode: 'SinglePlayer',
+  applicationCategory: 'Game', operatingSystem: 'Any', image: og,
+  author: { '@type': 'Person', name: site.owner, url: site.url }, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+const keys = [
+  ['Type a letter', 'Fills the square and moves along the answer'], ['Click a square', 'Selects it; click again to switch Across / Down'],
+  ['Arrow keys', 'Move (or turn to that direction first)'], ['Space', 'Switch Across / Down'], ['Enter / Shift+Enter', 'Next / previous clue'], ['Backspace', 'Erase, then step back'], ['Delete', 'Erase without moving'], ['Escape', 'Back to the puzzle list'],
+];
+const kbd = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{`${title}: Retro Crossword Arcade | ${site.name}`}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#060b17" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="icon" href={versioned('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={versioned('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={versioned('/apple-touch-icon.png')} />
+    <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={`${title}: Retro Crossword Arcade`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="CROSS//WIRE: a glowing crossword grid wired into a circuit board" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body class="cw-page">
+    <a class="skip" href="#cw-game">Skip to the game</a>
+    <div class="cw" data-cw id="cw-game" data-view="home" role="region" aria-label="CROSS//WIRE game">
+      <div class="cw-bar">
+        <a class="cw-bar__home" href="/arcade/"><span aria-hidden="true">&lt;</span> Arcade</a>
+        <a class="cw-bar__title" href="#/" aria-label="CROSS//WIRE home">CROSS<span>//</span>WIRE</a>
+        <div class="cw-bar__ctl">
+          <button class="cw-chip" type="button" data-toggle="sound" aria-pressed="true">Sound <span data-state>on</span></button>
+          <button class="cw-chip" type="button" data-toggle="music" aria-pressed="false">Music <span data-state>off</span></button>
+          <button class="cw-chip" type="button" data-fullscreen aria-pressed="false" hidden>Full screen</button>
+        </div>
+      </div>
+
+      <!-- Home -->
+      <section class="cw-view cw-home" data-view-el="home" aria-labelledby="cw-h-home">
+        <div class="cw-home__head">
+          <p class="cw-boot" aria-hidden="true"><span>&gt; network status: <b class="cw-red">DEGRADED</b></span><span>&gt; operator detected. awaiting input_</span></p>
+          <h1 id="cw-h-home" class="cw-logo" tabindex="-1">CROSS<span>//</span>WIRE</h1>
+          <p class="cw-tagline">Solve the clues. Restore the circuits. Crack the system.</p>
+        </div>
+        <div class="cw-modes">
+          <a class="cw-mode cw-mode--daily" href="#/daily">
+            <span class="cw-mode__tag">Daily Circuit <b data-out="daily-num"></b></span>
+            <span class="cw-mode__name">Today’s puzzle</span>
+            <span class="cw-mode__meta" data-out="daily-meta">The same puzzle for everyone today</span>
+            <span class="cw-mode__go" data-out="daily-go">Play</span>
+          </a>
+          <a class="cw-mode cw-mode--minis" href="#/minis">
+            <span class="cw-mode__tag">Mini Crosswords</span>
+            <span class="cw-mode__name">Quick puzzles, no clock</span>
+            <span class="cw-mode__meta" data-out="minis-meta"></span>
+            <span class="cw-mode__go">Choose a puzzle</span>
+          </a>
+          <a class="cw-mode cw-mode--campaign" href="#/campaign">
+            <span class="cw-mode__tag">Circuit Campaign</span>
+            <span class="cw-mode__name">Three sectors to bring back online</span>
+            <span class="cw-mode__meta" data-out="campaign-meta"></span>
+            <span class="cw-mode__go">Open the network map</span>
+          </a>
+        </div>
+        <p class="cw-home__links"><a href="#/help">How to play</a><a href="#/settings">Records and settings</a></p>
+      </section>
+
+      <!-- Mini crosswords -->
+      <section class="cw-view" data-view-el="minis" aria-labelledby="cw-h-minis" hidden>
+        <div class="cw-viewhead"><a class="cw-back" href="#/">&lt; Menu</a><h2 id="cw-h-minis" tabindex="-1">Mini Crosswords</h2></div>
+        <p class="cw-note">No clock pressure. Progress saves as you go, so you can leave and come back.</p>
+        <ul class="cw-tiles" data-out="minis"></ul>
+      </section>
+
+      <!-- Campaign -->
+      <section class="cw-view" data-view-el="campaign" aria-labelledby="cw-h-campaign" hidden>
+        <div class="cw-viewhead"><a class="cw-back" href="#/">&lt; Menu</a><h2 id="cw-h-campaign" tabindex="-1">Circuit Campaign</h2></div>
+        <p class="cw-note">Each solved puzzle restores part of the network. Finish a sector to unlock the next.</p>
+        <div class="cw-map" data-out="campaign"></div>
+      </section>
+
+      <!-- Playing -->
+      <section class="cw-view cw-playview" data-view-el="play" aria-labelledby="cw-h-play" hidden>
+        <div class="cw-play">
+          <div class="cw-status">
+            <a class="cw-back" href="#/" data-out="back">&lt; Menu</a>
+            <h2 id="cw-h-play" class="cw-status__title" tabindex="-1" data-out="title"></h2>
+            <span class="cw-status__clock" data-out="clock" aria-label="Time"></span>
+            <span class="cw-power" aria-hidden="true"><span class="cw-power__bar"><span data-out="power-bar"></span></span><span data-out="power">0%</span></span>
+            <button class="cw-chip cw-snd" type="button" data-toggle="sound" aria-pressed="true" aria-label="Sound effects"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 8h3l4-3.5v11L6 12H3z" fill="currentColor"/><path class="cw-snd__on" d="M13 7.5a3.5 3.5 0 0 1 0 5M15 5.5a6.5 6.5 0 0 1 0 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path class="cw-snd__off" d="M13 8l4 4M17 8l-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-state hidden>on</span></button>
+            <button class="cw-chip cw-tpause" type="button" data-do="leave" aria-label="Back to the menu">II</button>
+          </div>
+          <div class="cw-boardbox" data-boardbox>
+            <div class="cw-board" data-board>
+              <svg class="cw-traces" data-traces aria-hidden="true"></svg>
+              <div class="cw-grid" data-grid tabindex="0" role="group" aria-roledescription="crossword grid" aria-describedby="cw-gridhelp"></div>
+            </div>
+          </div>
+          <p id="cw-gridhelp" class="visually-hidden">Type letters to fill the selected answer. Arrow keys move, Space switches between Across and Down, Enter goes to the next clue.</p>
+          <div class="cw-side">
+            <div class="cw-active">
+              <button class="cw-active__nav" type="button" data-do="prev" aria-label="Previous clue">&lt;</button>
+              <button class="cw-active__clue" type="button" data-do="dir" aria-label="Switch between Across and Down"><b data-out="active-num"></b> <span data-out="active-clue"></span></button>
+              <button class="cw-active__nav" type="button" data-do="next" aria-label="Next clue">&gt;</button>
+            </div>
+            <div class="cw-hints" data-hints>
+              <button class="cw-hint cw-hint--menu" type="button" data-do="hints" aria-expanded="false" aria-controls="cw-hintlist">Hints</button>
+              <div class="cw-hints__list" id="cw-hintlist" role="group" aria-label="Hints">
+                <button class="cw-hint" type="button" data-do="check">Check word</button>
+                <button class="cw-hint" type="button" data-do="reveal-letter">Reveal letter</button>
+                <button class="cw-hint" type="button" data-do="reveal-word">Reveal word</button>
+                <button class="cw-hint cw-hint--plain" type="button" data-do="clear">Clear word</button>
+              </div>
+              <button class="cw-hint cw-hint--plain cw-hint--clues" type="button" data-do="clues" aria-expanded="false" aria-controls="cw-clues">All clues</button>
+            </div>
+            <div class="cw-clues" id="cw-clues" data-clues>
+              <div class="cw-clues__head"><span>Clues</span><button class="cw-chip" type="button" data-do="clues-close">Close</button></div>
+              <div class="cw-clues__cols">
+                <section aria-labelledby="cw-h-across"><h3 id="cw-h-across">Across</h3><ol data-out="across"></ol></section>
+                <section aria-labelledby="cw-h-down"><h3 id="cw-h-down">Down</h3><ol data-out="down"></ol></section>
+              </div>
+            </div>
+            <div class="cw-term" aria-hidden="true"><ol data-out="term"></ol></div>
+          </div>
+          <div class="cw-kbd" data-kbd aria-label="On-screen keyboard" role="group">
+            {kbd.map((row, r) => (
+              <div class="cw-kbd__row">
+                {r === 2 && <button class="cw-key cw-key--wide" type="button" data-key="dir" aria-label="Switch Across or Down">A/D</button>}
+                {row.split('').map((k) => <button class="cw-key" type="button" data-key={k}>{k}</button>)}
+                {r === 2 && <button class="cw-key cw-key--wide" type="button" data-key="back" aria-label="Backspace">⌫</button>}
+              </div>
+            ))}
+          </div>
+        </div>
+        <p class="visually-hidden" aria-live="polite" data-out="say"></p>
+      </section>
+
+      <!-- Records and settings -->
+      <section class="cw-view" data-view-el="settings" aria-labelledby="cw-h-settings" hidden>
+        <div class="cw-viewhead"><a class="cw-back" href="#/">&lt; Menu</a><h2 id="cw-h-settings" tabindex="-1">Records and settings</h2></div>
+        <div class="cw-panelgrid">
+          <div class="cw-panel">
+            <h3>Settings</h3>
+            <label class="cw-switch"><input type="checkbox" data-setting="feedback" /> <span>Light up correct answers as you solve<small>Off: the circuit lights only when the whole grid is right.</small></span></label>
+            <label class="cw-switch"><input type="checkbox" data-setting="timer" /> <span>Show the clock<small>Times are still recorded when it’s hidden.</small></span></label>
+            <label class="cw-switch"><input type="checkbox" data-setting="sound" /> <span>Sound effects</span></label>
+            <label class="cw-switch"><input type="checkbox" data-setting="music" /> <span>Ambient music</span></label>
+          </div>
+          <div class="cw-panel">
+            <h3>Your records</h3>
+            <dl class="cw-stats" data-out="stats"></dl>
+            <p class="cw-small">Saved in this browser only. Nothing is sent anywhere, and progress doesn’t move between devices.</p>
+            <p class="cw-small cw-warn" data-out="storage-warn" hidden>This browser isn’t saving data (private mode or blocked storage), so progress will be lost when you leave.</p>
+            <button class="cw-btn cw-btn--danger" type="button" data-do="reset">Reset all progress</button>
+            <div class="cw-confirm" data-out="reset-confirm" hidden>
+              <p>Erase every solve, record and campaign sector on this device? This can’t be undone.</p>
+              <div class="cw-row"><button class="cw-btn cw-btn--danger" type="button" data-do="reset-yes">Erase progress</button><button class="cw-btn" type="button" data-do="reset-no">Keep it</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How to play -->
+      <section class="cw-view" data-view-el="help" aria-labelledby="cw-h-help" hidden>
+        <div class="cw-viewhead"><a class="cw-back" href="#/">&lt; Menu</a><h2 id="cw-h-help" tabindex="-1">How to play</h2></div>
+        <div class="cw-panelgrid">
+          <div class="cw-panel">
+            <h3>Solving</h3>
+            <p>Fill every white square so each Across and Down answer matches its clue. Answers cross, so a letter you’re sure of helps the other direction.</p>
+            <p>With “Light up correct answers” on (the default), an answer that is right lights its circuit. Nothing tells you which single letter is wrong unless you ask.</p>
+            <p>When the grid is full but something is off, the game says so without saying where.</p>
+            <h3>Hints</h3>
+            <p><b>Check word</b> marks wrong letters in the selected answer. <b>Reveal letter</b> and <b>Reveal word</b> fill in the solution. <b>Clear word</b> erases your letters (not a hint). Each hint used is counted, and a solve with hints is recorded as assisted.</p>
+          </div>
+          <div class="cw-panel">
+            <h3>Keyboard</h3>
+            <dl class="cw-keys">{keys.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+            <p>On a touch screen, use the keyboard under the grid. Tap the clue bar to switch Across and Down.</p>
+            <h3>Score</h3>
+            <p>100 points per answer, plus 2 points for every second under par (8 seconds per square). Each hint takes 20% off, down to a minimum of 20%. The clock only runs while the puzzle is on screen.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Puzzle complete -->
+      <div class="cw-done" data-done hidden>
+        <div class="cw-done__panel" role="dialog" aria-modal="true" aria-labelledby="cw-h-done">
+          <p class="cw-done__tag" data-out="done-tag">Circuit restored</p>
+          <h2 id="cw-h-done" tabindex="-1">System restored</h2>
+          <dl class="cw-done__stats">
+            <div><dt>Time</dt><dd data-out="d-time"></dd></div>
+            <div><dt>Hints</dt><dd data-out="d-hints"></dd></div>
+            <div><dt>Answers</dt><dd data-out="d-words"></dd></div>
+            <div><dt>Score</dt><dd data-out="d-score"></dd></div>
+          </dl>
+          <p class="cw-small" data-out="d-working"></p>
+          <p class="cw-done__new" data-out="d-new"></p>
+          <div class="cw-row">
+            <button class="cw-btn cw-btn--go" type="button" data-do="next-puzzle" data-out="d-next">Next puzzle</button>
+            <button class="cw-btn" type="button" data-do="share">Share result</button>
+            <button class="cw-btn" type="button" data-do="replay">Replay</button>
+            <button class="cw-btn" type="button" data-do="done-close">View grid</button>
+          </div>
+          <p class="cw-small" data-out="share-status" role="status"></p>
+        </div>
+      </div>
+    </div>
+
+    <main class="cw-info wrap" id="main">
+      <section aria-labelledby="cw-about">
+        <h2 id="cw-about">About CROSS//WIRE</h2>
+        <p>A crossword game set inside a failing computer network. Every answer you get right powers a trace on the circuit board, and a finished grid brings the system back online.</p>
+        <p>There are {total} hand-checked puzzles: 5×5 minis, 7×7 grids, a three-sector campaign and a Daily Circuit. The Daily is the same for everyone on a given day and changes at midnight UTC. It rotates through a collection of {DAILY_ORDER.length} puzzles, so after a while puzzles come around again.</p>
+      </section>
+      <section aria-labelledby="cw-privacy">
+        <h2 id="cw-privacy">Your progress</h2>
+        <p>Solves, times and settings are saved in this browser only. There are no accounts, ads or tracking inside the game, and nothing you type is sent anywhere.</p>
+      </section>
+      <p class="cw-credit">Made by <a href="/">{site.name}</a>. More games in the <a href="/arcade/">Arcade</a>.</p>
+    </main>
+    <script>
+      import { boot } from '../../arcade/cross-wire/main';
+      boot();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+# Local test mode (rbr.sh local): adds a localhost-only port so the site can be
+# checked in a browser before DNS exists. rbr.sh also sets
+# RBR_HOME=http://127.0.0.1:18490 so WordPress builds its links for that address.
+# `rbr.sh up` drops this file again (no host port).
+services:
+  wordpress:
+    ports:
+      - "127.0.0.1:18490:80"

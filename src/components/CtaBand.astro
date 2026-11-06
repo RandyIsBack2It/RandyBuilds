@@ -1,0 +1,16 @@
+---
+import { site } from '../site';
+interface Props { topic?: string }
+const { topic } = Astro.props;
+// With a topic (a service page), the home form opens with that service noted.
+const href = topic ? `/?topic=${topic}#contact` : '/#contact';
+---
+<section class="cta" aria-labelledby="cta-title">
+  <div class="wrap cta__inner">
+    <div>
+      <h2 id="cta-title">Let’s talk about your project.</h2>
+      <p>{site.review}, with no obligation and no meeting required. {site.replyTime}.</p>
+    </div>
+    <a class="btn" href={href}>Start a project</a>
+  </div>
+</section>

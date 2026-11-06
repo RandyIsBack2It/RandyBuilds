@@ -1,0 +1,283 @@
+---
+import Concept from '../../layouts/Concept.astro';
+import '../../concepts/ember-rye/style.css';
+import { categories, menu, tagLabel, tagShort, allergenLabel, hours, dayNames, ORDER_CUTOFF, HOLD_MINUTES, MAX_PARTY, TABLE_HOLD, BOOKING_DAYS, prepMinutes } from '../../concepts/ember-rye/data';
+const fmt = (m: number) => `${((Math.floor(m / 60) + 11) % 12) + 1}${m % 60 ? ':' + String(m % 60).padStart(2, '0') : ''} ${m < 720 ? 'am' : 'pm'}`;
+const week = [2, 3, 4, 5, 6, 0, 1].map((d) => ({ d, name: dayNames[d], h: hours[d] }));
+---
+<Concept title="Ember & Rye" description="Concept restaurant website with pickup ordering and table reservations, for a fictional wood-fired kitchen. Designed and built by RandyBuilds.tech." slug="ember-rye">
+  <div class="er">
+    <a class="er-skip" href="#menu">Skip to the menu</a>
+    <header class="er-top">
+      <div class="er-wrap er-top__in">
+        <a class="er-logo" href="#er-home" aria-label="Ember & Rye, home">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c3 5 8 8 8 15a8 8 0 0 1-16 0c0-4 2-6 4-8 0 3 1 5 3 5-1-5 0-9 1-12z" /></svg>
+          <span>Ember <i>&amp;</i> Rye</span>
+        </a>
+        <nav class="er-nav" aria-label="Restaurant">
+          <a href="#menu">Menu</a><a href="#pickup">Pickup</a><a href="#reserve">Reservations</a><a href="#events">Private dining</a><a href="#visit">Hours &amp; location</a>
+        </nav>
+        <a class="er-status" href="#visit"><span data-status-text>Sample hours</span></a>
+        <button class="er-cartbtn" type="button" data-open-cart aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8zM9 8V6a3 3 0 0 1 6 0v2" /></svg>
+          <span>Order</span><span class="er-count" data-count aria-label="0 items in your order">0</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="er-hero" id="er-home" aria-labelledby="er-h1">
+      <div class="er-embers" aria-hidden="true">{Array.from({ length: 18 }, () => <i></i>)}</div>
+      <div class="er-wrap er-hero__grid">
+        <div class="er-hero__copy">
+          <p class="er-kicker">Wood-fired kitchen · Port Alder Wharf</p>
+          <p class="er-fiction">A fictional restaurant: a portfolio demo by RandyBuilds.tech. The menu, prices, hours and address are sample details.</p>
+          <h1 id="er-h1">Cooked over oak. <em>Served without fuss.</em></h1>
+          <p class="er-lede">Rye sourdough pies, whole fish in the coals and a hearth that never goes out. Order ahead for pickup, or book a seat by the fire.</p>
+          <div class="er-hero__cta">
+            <a class="er-btn er-btn--ember" href="#menu">Order for pickup</a>
+            <a class="er-btn er-btn--ghost" href="#reserve">Book a table</a>
+          </div>
+          <ul class="er-facts-strip" aria-label="Restaurant details (sample)">
+            <li><a href="#visit">14 Wharf Lane, Port Alder</a></li>
+            <li><a href="tel:+12075550147">Call (207) 555-0147</a></li>
+            <li>Tue–Sun from 4 pm · Sat from noon</li>
+          </ul>
+        </div>
+        <figure class="er-oven" aria-hidden="true">
+          <svg viewBox="0 0 420 380">
+            <defs>
+              <radialGradient id="er-glow" cx="50%" cy="78%" r="60%"><stop offset="0" stop-color="#ffcf7a" /><stop offset=".35" stop-color="#ff7a2f" /><stop offset=".7" stop-color="#9c2a12" /><stop offset="1" stop-color="#2a0f08" /></radialGradient>
+              <linearGradient id="er-brick" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b4a3a" /><stop offset="1" stop-color="#3b2620" /></linearGradient>
+              <pattern id="er-bricks" width="34" height="18" patternUnits="userSpaceOnUse"><rect width="34" height="18" fill="url(#er-brick)" /><path d="M0 17.5h34M17 0v9M0 9h34M34 9v9" stroke="#24150f" stroke-width="1.6" /></pattern>
+            </defs>
+            <ellipse cx="210" cy="356" rx="190" ry="18" fill="#000" opacity=".35" />
+            <path d="M30 350V200a180 160 0 0 1 360 0v150z" fill="url(#er-bricks)" />
+            <path d="M30 200a180 160 0 0 1 360 0" fill="none" stroke="#8a6250" stroke-width="5" opacity=".6" />
+            <path class="er-mouth" d="M110 330V250a100 92 0 0 1 200 0v80z" fill="url(#er-glow)" />
+            <g class="er-flames">
+              <path d="M150 330c-6-28 10-40 8-62 14 16 22 30 14 62z" fill="#ffb347" />
+              <path d="M180 330c-10-34 14-52 10-82 20 22 30 44 18 82z" fill="#ff7a2f" />
+              <path d="M222 330c-8-26 8-36 6-56 14 14 20 28 12 56z" fill="#ffd27a" />
+              <path d="M250 330c-6-24 8-32 6-50 12 14 18 26 10 50z" fill="#ff9a3c" />
+            </g>
+            <rect x="96" y="326" width="228" height="14" rx="3" fill="#2a1a14" />
+            <g fill="#2b1b13"><rect x="128" y="318" width="60" height="9" rx="4" /><rect x="196" y="320" width="70" height="8" rx="4" /></g>
+            <rect x="180" y="22" width="60" height="40" fill="#3b2620" /><rect x="172" y="14" width="76" height="12" rx="3" fill="#24150f" />
+            <g class="er-smoke" fill="#f4ece1"><circle cx="212" cy="0" r="10" /><circle cx="226" cy="-14" r="13" /><circle cx="204" cy="-30" r="15" /></g>
+          </svg>
+          <figcaption class="er-oven__tag">850° · <span>oak &amp; apple wood</span></figcaption>
+        </figure>
+      </div>
+      <ul class="er-strip" aria-label="Service options">
+        <li><b>Pickup</b>Order online, collect inside the front door</li>
+        <li><b>Reservations</b>Parties of 1–{MAX_PARTY}, up to two weeks ahead</li>
+        <li><b>Walk-ins</b>Welcome when a table or counter seat is free</li>
+        <li><b>No delivery</b>We don’t deliver or offer curbside pickup</li>
+      </ul>
+    </section>
+
+    <section class="er-menu" id="menu" aria-labelledby="er-menu-h">
+      <div class="er-wrap">
+        <div class="er-sechead">
+          <p class="er-kicker">Order online</p>
+          <h2 id="er-menu-h">The menu</h2>
+          <p>Sample menu and prices. Choose a dish to see its options and sample allergen info, then pick a pickup time at checkout.</p>
+        </div>
+        <div class="er-menubar">
+          <nav class="er-cats" aria-label="Menu sections">
+            {categories.map((c) => <a href={`#cat-${c.id}`} data-cat-link={c.id}>{c.label}</a>)}
+          </nav>
+          <div class="er-tools">
+            <label class="er-search"><span class="er-vh">Search the menu</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4.5 4.5" /></svg>
+              <input type="search" placeholder="Search dishes" data-search autocomplete="off" />
+            </label>
+            <fieldset class="er-filters"><legend class="er-vh">Dietary filters</legend>
+              {(['v', 'vg', 'gf', 'spicy'] as const).map((t) => <label class="er-chip"><input type="checkbox" value={t} data-filter /><span>{tagLabel[t]}</span></label>)}
+            </fieldset>
+          </div>
+        </div>
+          <p class="er-filterline"><span class="er-vh" aria-live="polite" data-menu-live></span><button type="button" class="er-linkbtn" data-clear data-clear-inline hidden>Clear search and filters</button></p>
+        <p class="er-empty" data-empty hidden>No dishes match your search and filters. <button type="button" class="er-linkbtn" data-clear>Clear search and filters</button></p>
+        <p class="er-dietnote">Dietary labels and allergen lists are sample information for this demo. A real kitchen would confirm them, so always tell staff about allergies. Gluten-free dishes are cooked in a kitchen that uses wheat.</p>
+        {categories.map((c) => (
+          <section class="er-cat" id={`cat-${c.id}`} data-cat={c.id} aria-labelledby={`cat-${c.id}-h`}>
+            <h3 id={`cat-${c.id}-h`}>{c.label}</h3>
+            <ul class="er-items" role="list">
+              {menu.filter((i) => i.cat === c.id).map((i) => (
+                <li class={`er-item${i.dineIn ? ' is-dinein' : ''}`} data-item={i.id} data-tags={i.tags.join(' ')} data-text={`${i.name} ${i.desc}`.toLowerCase()}>
+                  <button class="er-item__open" type="button" data-open={i.id} aria-haspopup="dialog">
+                    <span class="er-item__name">{i.name}</span>
+                    <span class="er-item__price">${i.price}</span>
+                    <span class="er-item__desc">{i.desc}</span>
+                    <span class="er-item__tags">{i.tags.map((t) => <span class={`er-tag er-tag--${t}`}><span aria-hidden="true">{tagShort[t]}</span><span class="er-vh">{tagLabel[t]}</span></span>)}{i.dineIn && <span class="er-tag er-tag--dinein">Dine-in only</span>}</span>
+                    <span class="er-item__contains">{i.contains.length ? `Contains ${i.contains.map((a) => allergenLabel[a]).join(', ')}` : 'None of the listed allergens'}</span>
+                  </button>
+                  {!i.dineIn && <button class="er-quick" type="button" data-quick={i.id} aria-label={i.options?.length ? `Choose options for ${i.name}` : `Add ${i.name} to your order`}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                  </button>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+      <button class="er-floatcart" type="button" data-open-cart aria-haspopup="dialog" hidden><span data-float-count>0 items</span><b data-float-total>$0.00</b><span>View order</span></button>
+    </section>
+
+    <section class="er-pickup" id="pickup" aria-labelledby="er-pick-h">
+      <div class="er-wrap">
+        <div class="er-sechead">
+          <p class="er-kicker">Pickup</p>
+          <h2 id="er-pick-h">How pickup works</h2>
+          <p>Sample policies for this fictional restaurant, written the way a real one would set expectations.</p>
+        </div>
+        <dl class="er-faq">
+          <div><dt>When can I order?</dt><dd>Online orders open with the restaurant and close {ORDER_CUTOFF} minutes before closing. You can also schedule a pickup for later today, or for the next day we’re open.</dd></div>
+          <div><dt>How long does it take?</dt><dd>About {prepMinutes(1)} minutes for up to four items, {prepMinutes(5)} for five to ten, and {prepMinutes(11)} for larger orders. Checkout shows the earliest pickup time.</dd></div>
+          <div><dt>Where do I collect it?</dt><dd>From the pickup shelf just inside the front door. Orders are labelled with your name and order number.</dd></div>
+          <div><dt>What if I’m late?</dt><dd>We hold orders for {HOLD_MINUTES} minutes after the pickup time.</dd></div>
+          <div><dt>How do I pay?</dt><dd>At the counter when you pick up, by card or cash.</dd></div>
+          <div><dt>Do you deliver?</dt><dd>No. We don’t offer delivery or curbside pickup, and we aren’t on delivery apps. The roasted oysters are dine-in only.</dd></div>
+          <div><dt>Can I change an order?</dt><dd>Call the restaurant. Large orders, over 20 of one item, are taken by phone too. On very busy nights we may pause online orders, and you can still call.</dd></div>
+          <div><dt>What about allergies?</dt><dd>Add a note to the dish, and tell staff when you collect. Allergen lists on this site are sample information.</dd></div>
+        </dl>
+        <aside class="er-howreal" aria-labelledby="er-real-h">
+          <h3 id="er-real-h">About this demo</h3>
+          <p>Here, ordering runs only in your browser. Nothing is sent and no payment is taken. For a real restaurant, online ordering would also need its menu, ordering hours and pickup instructions kept in step with the restaurant’s order system, payment set up, and test orders checked in the kitchen before launch.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="er-reserve" id="reserve" aria-labelledby="er-res-h">
+      <div class="er-wrap">
+        <div class="er-sechead er-sechead--light">
+          <p class="er-kicker">Reservations</p>
+          <h2 id="er-res-h">Book a table by the fire</h2>
+          <p>Choose your party size, a date and a time. We seat you at the best table we have for your group.</p>
+          <ul class="er-policies"><li>Dinner reservations up to {BOOKING_DAYS} days ahead, for parties of 1 to {MAX_PARTY}.</li><li>We hold tables for {TABLE_HOLD} minutes after the booking time.</li><li>Same-day bookings close an hour before the seating.</li><li>To change or cancel, call us. Please give 24 hours’ notice.</li><li>We note seating requests, but can’t promise a particular table.</li><li>The bar is walk-in only, and walk-ins are welcome when a table is free.</li></ul>
+          <p class="er-fiction">Demo booking: the availability is sample data, and reservations stay in this browser tab. Nothing is sent to a restaurant, and no text or email goes out.</p>
+        </div>
+        <form class="er-booker" data-resform novalidate aria-describedby="er-res-demo">
+          <div class="er-booker__when">
+            <div class="er-field">
+              <span class="er-label" id="er-party-l">Guests</span>
+              <div class="er-stepper" role="group" aria-labelledby="er-party-l">
+                <button type="button" data-party="-1" aria-label="Fewer guests">−</button>
+                <output data-party-out aria-live="polite">2 guests</output>
+                <button type="button" data-party="1" aria-label="More guests">+</button>
+              </div>
+              <p class="er-partynote" data-party-note hidden>{MAX_PARTY} is the most we book online. For more guests, see <a href="#events">Private dining</a>.</p>
+            </div>
+            <div class="er-field">
+              <span class="er-label" id="er-date-l">Date</span>
+              <div class="er-cal" role="group" aria-labelledby="er-date-l">
+                <div class="er-cal__head">
+                  <button type="button" class="er-cal__nav" data-month="-1" aria-label="Previous month">‹</button>
+                  <p class="er-cal__title" data-cal-title aria-live="polite"></p>
+                  <button type="button" class="er-cal__nav" data-month="1" aria-label="Next month">›</button>
+                </div>
+                <div class="er-cal__grid" data-cal-grid></div>
+              </div>
+            </div>
+            <div class="er-field">
+              <span class="er-label" id="er-time-l">Time</span>
+              <div class="er-times" role="radiogroup" aria-labelledby="er-time-l" data-times></div>
+            </div>
+          </div>
+          <div class="er-resform" data-resdetails>
+            <h3>Your details</h3>
+            <label>Name<input name="name" autocomplete="name" required /></label>
+            <label>Mobile<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(207) 555-0100" /></label>
+            <label><span>Email <small>(optional)</small></span><input name="email" type="email" autocomplete="email" /></label>
+            <label><span>Special requests <small>(optional)</small></span><textarea name="notes" rows="3" maxlength="300" placeholder="Birthday, high chair, step-free seat, booth or patio if possible"></textarea></label>
+            <div class="er-review"><span class="er-label">Your reservation</span><p data-ressum aria-live="polite">Choose a date and a time.</p></div>
+            <p class="er-err" data-res-err role="alert"></p>
+            <button class="er-btn er-btn--ember er-btn--block" type="submit">Reserve</button>
+            <p class="demo-note" id="er-res-demo">After you reserve, a summary appears here. Demo only: nothing is sent and no table is held.</p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="er-events" id="events" aria-labelledby="er-ev-h">
+      <div class="er-wrap">
+        <div class="er-events__intro">
+          <div>
+            <p class="er-kicker">Private dining</p>
+            <h2 id="er-ev-h">The Loft seats twenty-four</h2>
+          </div>
+          <p class="er-lede">A private room above the kitchen with its own bar and a window onto the hearth. Family-style menus, built with you. The Loft isn’t booked online: send a request and we plan it together.</p>
+        </div>
+        <ul class="er-feats">
+          <li><b>12–24 guests</b>seated, up to 40 standing</li>
+          <li><b>3 menus</b>from shared plates to a full tasting</li>
+          <li><b>AV ready</b>screen and sound for toasts</li>
+        </ul>
+        <ol class="er-evsteps" aria-label="How a private event works (sample)">
+          <li><b>Send a request</b>Your date, group size and email.</li>
+          <li><b>Hear back in two business days</b>With menus, pricing and any questions.</li>
+          <li><b>Hold the date</b>A deposit confirms the room.</li>
+        </ol>
+        <form class="er-evform" data-demo aria-labelledby="er-evform-h">
+          <p class="er-evform__title" id="er-evform-h">Request The Loft</p>
+          <label>Event date<input type="date" name="date" required /></label>
+          <label>Guests<input type="number" name="guests" min="12" max="40" value="16" required /></label>
+          <label>Name<input name="name" autocomplete="name" required /></label>
+          <label>Email<input name="email" type="email" autocomplete="email" required /></label>
+          <button class="er-btn er-btn--ember" type="submit">Send request</button>
+          <p class="demo-note">Demo form: nothing is sent.</p>
+          <p class="er-result" data-demo-result tabindex="-1" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="er-visit" id="visit" aria-labelledby="er-visit-h">
+      <div class="er-wrap er-visit__grid">
+        <div>
+          <p class="er-kicker">Hours &amp; location</p>
+          <h2 id="er-visit-h">On the wharf, by the boats</h2>
+          <p class="er-fiction er-fiction--dark">Sample details. Port Alder is a fictional town, and the phone number is a 555 number that isn’t in service.</p>
+          <address>14 Wharf Lane, Port Alder<br /><a href="tel:+12075550147">(207) 555-0147</a></address>
+          <table class="er-hours">
+            <caption>Sample opening hours</caption>
+            <tbody>
+              {week.map((w) => <tr data-day={w.d}><th scope="row">{w.name}</th><td>{w.h ? `${fmt(w.h[0])} – ${fmt(w.h[1])}` : 'Closed'}</td></tr>)}
+            </tbody>
+          </table>
+          <p class="er-hoursnote">Dinner reservations from 5 pm. Saturday lunch, from noon, is walk-in and pickup only. Online pickup orders close {ORDER_CUTOFF} minutes before closing. Closed Mondays. Open year round.</p>
+          <h3 class="er-goodh">Good to know</h3>
+          <ul class="er-good">
+            <li>Free parking after 5 pm in the Harbor lot.</li>
+            <li>Step-free entrance on the patio side, and an accessible restroom.</li>
+            <li>Leashed dogs are welcome on the patio. Service animals are welcome everywhere.</li>
+            <li>High chairs and a short kids’ menu on request.</li>
+          </ul>
+        </div>
+        <figure class="er-map" aria-label="Illustrative map: Ember & Rye at the end of Wharf Lane, beside the harbor">
+          <svg viewBox="0 0 400 300" aria-hidden="true">
+            <rect width="400" height="300" fill="#e9dfcf" />
+            <path d="M0 210c60-20 120 10 180-10s120-50 220-30v130H0z" fill="#a9c4c6" />
+            <path d="M0 230c60-14 120 12 180-6s120-44 220-26" fill="none" stroke="#8fb1b4" stroke-width="2" />
+            <g stroke="#fff" stroke-width="14" fill="none" stroke-linecap="round"><path d="M-10 70h420" /><path d="M120 -10v190" /><path d="M120 150l140 20" /><path d="M300 -10v140" /></g>
+            <g stroke="#d7cbb7" stroke-width="2" fill="#f4ece1"><rect x="20" y="90" width="80" height="50" rx="4" /><rect x="140" y="88" width="70" height="40" rx="4" /><rect x="320" y="90" width="70" height="60" rx="4" /><rect x="140" y="10" width="140" height="44" rx="4" /></g>
+            <path d="M250 168l30 4-2 46-30-2z" fill="#c7b59b" />
+            <g class="er-pin"><circle cx="262" cy="166" r="22" fill="#e8562a" opacity=".2" /><path d="M262 178c-12-14-16-20-16-28a16 16 0 0 1 32 0c0 8-4 14-16 28z" fill="#e8562a" /><circle cx="262" cy="150" r="6" fill="#fff" /></g>
+            <text x="135" y="190" font-size="11" fill="#5c534a" font-family="sans-serif">Wharf Lane</text>
+            <text x="300" y="262" font-size="11" fill="#40676a" font-family="sans-serif">Port Alder Harbor</text>
+          </svg>
+          <figcaption>Illustrative map of a fictional harbor: Ember &amp; Rye is at the end of Wharf Lane.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <footer class="er-foot"><div class="er-wrap">Ember &amp; Rye is a fictional restaurant · Portfolio demo by RandyBuilds.tech · Sample menu, prices, hours and availability · Orders and reservations are never sent</div></footer>
+
+    <dialog class="er-dlg er-dlg--item" data-item-dlg aria-labelledby="er-item-title"></dialog>
+    <dialog class="er-dlg er-dlg--cart" data-cart-dlg aria-labelledby="er-cart-title"></dialog>
+  </div>
+</Concept>
+<script>
+  import { start } from '../../concepts/ember-rye/app';
+  start();
+</script>

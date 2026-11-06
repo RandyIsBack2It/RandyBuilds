@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, mailto } from '../site';
+---
+<Base title="Message not sent" description="Your message didn’t send." noindex>
+  <div class="wrap">
+    <header class="page-head page-head--tall">
+      <h1>Your message didn’t send.</h1>
+      <p class="section__lede">Check that your name, email and message are filled in, then try again. Or email me at <a href={mailto('Project inquiry')}>{site.contact.email}</a>.</p>
+      <p><a class="btn" href="/#contact">Back to the form</a></p>
+    </header>
+  </div>
+</Base>

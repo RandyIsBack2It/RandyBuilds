@@ -1,0 +1,160 @@
+---
+import Concept from '../../layouts/Concept.astro';
+import '../../concepts/cove/style.css';
+import { cats, services, pros, plans, giftThemes } from '../../concepts/cove/data';
+---
+<Concept title="Cove Wellness" description="Concept wellness studio site with online booking, a body-map intake form, a client portal, memberships and gift cards, for a fictional studio. Designed and built by RandyBuilds.tech." slug="cove">
+  <div class="cv">
+    <header class="cv-top">
+      <div class="cv-wrap cv-top__in">
+        <a class="cv-logo" href="#cv-home"><svg viewBox="0 0 40 24" aria-hidden="true"><path d="M2 16c6 0 6-8 12-8s6 8 12 8 6-8 12-8" /><path d="M2 22c6 0 6-6 12-6s6 6 12 6 6-6 12-6" /></svg>cove</a>
+        <nav class="cv-nav" aria-label="Studio"><a href="#services">Services</a><a href="#team">Team</a><a href="#membership">Membership</a><a href="#gift">Gift cards</a></nav>
+        <button type="button" class="cv-visits" data-open-visits aria-haspopup="dialog"><span class="cv-visits__dot" data-visits-dot hidden></span>My visits</button>
+        <button type="button" class="cv-btn cv-btn--dark" data-book>Book</button>
+      </div>
+    </header>
+
+    <section class="cv-hero" id="cv-home" aria-labelledby="cv-h1">
+      <div class="cv-blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="cv-wrap cv-hero__grid">
+        <div>
+          <p class="cv-eyebrow">Massage · Physical therapy · Acupuncture</p>
+          <h1 id="cv-h1">Feel at home <em>in your body</em> again.</h1>
+          <p class="cv-lede">A calm studio by the water with licensed therapists, honest advice and online booking that takes about a minute.</p>
+          <div class="cv-hero__cta"><button type="button" class="cv-btn cv-btn--accent cv-btn--lg" data-book>Book a visit</button><a class="cv-btn cv-btn--ghost cv-btn--lg" href="#services">See services</a></div>
+          <div class="cv-next" data-next aria-live="polite"></div>
+        </div>
+        <div class="cv-hero__art" aria-hidden="true">
+          <div class="cv-arch"><svg viewBox="0 0 300 380"><defs><linearGradient id="cv-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3d9c6" /><stop offset=".55" stop-color="#e8b79a" /><stop offset="1" stop-color="#c98a6c" /></linearGradient></defs>
+            <path d="M0 380V150a150 150 0 0 1 300 0v230z" fill="url(#cv-sky)" />
+            <circle cx="150" cy="190" r="46" fill="#fbeee2" class="cv-sun" />
+            <path d="M0 250c40-14 70 8 110 0s70-24 110-12 50 18 80 10v132H0z" fill="#8fb0a4" />
+            <path d="M0 280c40-10 80 10 120 2s70-20 110-8 50 14 70 8v98H0z" fill="#5f8a7d" />
+            <path d="M0 312c50-8 90 8 140 2s80-16 160-4v70H0z" fill="#335f57" />
+          </svg></div>
+          <div class="cv-chip cv-chip--1"><b data-chip-next>This week</b><span>next opening</span></div>
+          <div class="cv-chip cv-chip--2"><span class="cv-pulse"></span><b>Online booking</b><span>open 24/7</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cv-section" id="services" aria-labelledby="cv-srv-h">
+      <div class="cv-wrap">
+        <div class="cv-head"><p class="cv-eyebrow">Services</p><h2 id="cv-srv-h">Care that fits the way you feel today</h2><p>Sample prices for this concept. Every session starts with a short conversation about what you need.</p></div>
+        <div class="cv-tabs" role="tablist" aria-label="Service types">
+          {cats.map((c, i) => <button type="button" role="tab" id={`cv-tab-${c.id}`} aria-controls={`cv-panel-${c.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-tab={c.id}>{c.label}</button>)}
+        </div>
+        {cats.map((c, i) => (
+          <div class="cv-srvgrid" role="tabpanel" id={`cv-panel-${c.id}`} aria-labelledby={`cv-tab-${c.id}`} hidden={i !== 0}>
+            {services.filter((s) => s.cat === c.id).map((s) => (
+              <article class="cv-srv">
+                <h3>{s.name}</h3>
+                <p>{s.blurb}</p>
+                <ul class="cv-srv__opts">{s.options.map((o) => <li><b>{o.min} min</b>${o.price}</li>)}</ul>
+                <button type="button" class="cv-btn cv-btn--soft" data-book-service={s.id}>Book this</button>
+              </article>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="cv-section cv-team" id="team" aria-labelledby="cv-team-h">
+      <div class="cv-wrap">
+        <div class="cv-head"><p class="cv-eyebrow">Team</p><h2 id="cv-team-h">The people you’ll see</h2></div>
+        <ul class="cv-pros">
+          {pros.map((p) => (
+            <li class="cv-pro">
+              <span class={`cv-av cv-av--${p.id}`} aria-hidden="true">{p.initials}</span>
+              <h3>{p.name}</h3><p class="cv-pro__t">{p.title}</p><p>{p.focus}</p>
+              <p class="cv-pro__next" data-pro-next={p.id}></p>
+              <button type="button" class="cv-link" data-book-pro={p.id}>Book with {p.name.split(' ')[0]}</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="cv-section cv-member" id="membership" aria-labelledby="cv-mem-h">
+      <div class="cv-wrap">
+        <div class="cv-head cv-head--row">
+          <div><p class="cv-eyebrow">Membership</p><h2 id="cv-mem-h">Make it a habit, not a treat</h2></div>
+          <div class="cv-billing" role="group" aria-label="Billing"><button type="button" aria-pressed="true" data-bill="m">Monthly</button><button type="button" aria-pressed="false" data-bill="y">Yearly <small>2 months free</small></button></div>
+        </div>
+        <div class="cv-plans">
+          {plans.map((p) => (
+            <article class:list={['cv-plan', { 'cv-plan--hot': p.featured }]}>
+              {p.featured && <p class="cv-plan__tag">Most flexible</p>}
+              <h3>{p.name}</h3><p>{p.desc}</p>
+              <p class="cv-plan__price"><b data-plan-price={p.price}>${p.price}</b><span data-plan-unit>/month</span></p>
+              <p class="cv-plan__save" data-plan-save={p.price}></p>
+              <ul>{p.perks.map((x) => <li>{x}</li>)}</ul>
+              <button type="button" class:list={['cv-btn', p.featured ? 'cv-btn--accent' : 'cv-btn--soft']} data-join={p.id}>Join {p.name}</button>
+            </article>
+          ))}
+        </div>
+        <p class="cv-fine">Sample prices. Cancel or pause any time after three months.</p>
+      </div>
+    </section>
+
+    <section class="cv-section cv-gift" id="gift" aria-labelledby="cv-gift-h">
+      <div class="cv-wrap cv-gift__grid">
+        <div class="cv-giftprev">
+          <div class="cv-card3d" data-card3d>
+            <div class="cv-gcard cv-gcard--front" data-gfront>
+              <svg viewBox="0 0 40 24" aria-hidden="true"><path d="M2 16c6 0 6-8 12-8s6 8 12 8 6-8 12-8" /><path d="M2 22c6 0 6-6 12-6s6 6 12 6 6-6 12-6" /></svg>
+              <p class="cv-gcard__for" data-g-for>For someone lovely</p>
+              <p class="cv-gcard__amt" data-g-amt>$150</p>
+              <p class="cv-gcard__brand">cove · gift card</p>
+            </div>
+            <div class="cv-gcard cv-gcard--back" data-gback>
+              <p class="cv-gcard__msg" data-g-msg>Take an afternoon just for you.</p>
+              <p class="cv-gcard__from" data-g-from>— A friend</p>
+              <p class="cv-gcard__code">Code shown after purchase</p>
+            </div>
+          </div>
+          <button type="button" class="cv-link" data-flip>Flip card</button>
+        </div>
+        <form class="cv-giftform" data-giftform novalidate>
+          <p class="cv-eyebrow">Gift cards</p>
+          <h2 id="cv-gift-h">Give an hour of calm</h2>
+          <fieldset class="cv-amts"><legend>Amount</legend>
+            {[75, 125, 150, 250].map((a) => <label class="cv-pill"><input type="radio" name="amt" value={a} checked={a === 150} /><span>${a}</span></label>)}
+            <label class="cv-pill cv-pill--custom"><input type="radio" name="amt" value="custom" /><span>Other</span></label>
+            <label class="cv-custom" data-custom hidden><span class="cv-vh">Custom amount</span><input type="number" name="custom" min="25" max="1000" step="5" placeholder="$ amount" /></label>
+          </fieldset>
+          <fieldset class="cv-themes"><legend>Design</legend>
+            {giftThemes.map((t, i) => <label class="cv-theme"><input type="radio" name="theme" value={t.id} checked={i === 0} /><span class={`cv-sw cv-sw--${t.id}`} aria-hidden="true"></span>{t.name}</label>)}
+          </fieldset>
+          <div class="cv-two"><label>To<input name="to" placeholder="Their name" maxlength="28" /></label><label>From<input name="from" placeholder="Your name" maxlength="28" /></label></div>
+          <label>Message<textarea name="msg" rows="2" maxlength="120" placeholder="Take an afternoon just for you."></textarea><small class="cv-count" data-count>0/120</small></label>
+          <div class="cv-two"><label>Recipient email<input name="email" type="email" autocomplete="off" required /></label><label>Send on<input name="date" type="date" data-gdate /></label></div>
+          <p class="cv-err" data-g-err role="alert"></p>
+          <button class="cv-btn cv-btn--accent cv-btn--block" type="submit" data-g-buy>Buy gift card · $150</button>
+          <p class="demo-note">Demo checkout: nothing is sent or charged.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="cv-section cv-visit" aria-labelledby="cv-visit-h">
+      <div class="cv-wrap cv-visit__grid">
+        <div><p class="cv-eyebrow">Visit</p><h2 id="cv-visit-h">2 Ferry Landing, Gull Harbor</h2><p>Open every day, 9 am to 7 pm. Free parking behind the building and a step-free entrance.</p><p><a href="tel:+12075550162">(207) 555-0162</a></p></div>
+        <ul class="cv-policies">
+          <li><b>Arrive 10 minutes early</b> for your first visit.</li>
+          <li><b>Free changes</b> up to 24 hours before. Later cancellations are charged half the visit.</li>
+          <li><b>HSA and FSA cards</b> accepted for physical therapy and acupuncture.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="cv-foot"><div class="cv-wrap">Cove is a fictional studio · Concept by RandyBuilds.tech · Sample services, people and prices</div></footer>
+
+    <dialog class="cv-dlg" data-booking aria-labelledby="cv-bk-title"></dialog>
+    <dialog class="cv-dlg cv-dlg--side" data-visits aria-labelledby="cv-vs-title"></dialog>
+    <dialog class="cv-dlg cv-dlg--sm" data-joindlg aria-labelledby="cv-join-title"></dialog>
+  </div>
+</Concept>
+<script>
+  import { start } from '../../concepts/cove/app';
+  start();
+</script>

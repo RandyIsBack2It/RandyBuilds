@@ -1,0 +1,48 @@
+---
+// One entry on /work/, a service page's related work, or the home page.
+// `full` adds what you can try, what is simulated and the "Discuss a similar
+// project" inquiry link (full and default cards have the "Good for" line); `compact` is the small home-page version (thumbnail beside text).
+// `hidden` keeps a home card in the page for the random pick (scripts/showcase.ts); the slot adds the admin Share control.
+import type { Demo } from '../content/demos';
+import { typeLabel, similarHref } from '../content/demos';
+import { versioned } from '../lib/versioned';
+import { cardSrcset } from '../lib/card-image';
+interface Props { demo: Demo; full?: boolean; compact?: boolean; headingLevel?: 'h2' | 'h3'; hidden?: boolean }
+const { demo: d, full = false, compact = false, headingLevel = 'h3', hidden = false } = Astro.props;
+const H = headingLevel;
+const webp = cardSrcset(d.image.src);
+const host = d.liveUrl ? new URL(d.liveUrl).hostname.replace(/^www\./, '') : '';
+---
+<li class:list={['demo', { 'demo--compact': compact }]} data-demo={d.slug} hidden={hidden}>
+  <a class="shot__img" href={d.url} tabindex="-1" aria-hidden="true">
+    <picture>
+      {webp && <source type="image/webp" srcset={webp} sizes={compact ? '11rem' : '(min-width: 62rem) 26rem, 100vw'} />}
+      <img src={versioned(d.image.src)} alt="" width={d.image.width} height={d.image.height} loading="lazy" decoding="async" />
+    </picture>
+  </a>
+  <div class="demo__body">
+    <p class="shot__label" data-kind={d.type === 'concept' ? 'concept' : 'independent'}>{typeLabel[d.type]}{!compact && ` · ${d.status}`}{d.badge && <span class="demo__badge">{d.badge}</span>}</p>
+    <H>{d.title}</H>
+    <p class="demo__desc">{d.description}</p>
+    {d.solves && !compact && <p class="demo__solves">{d.solves}</p>}
+    {full && (
+      <>
+        <ul class="demo__features" aria-label={`${d.featuresLabel ?? 'What you can try'} in ${d.title}`}>
+          {d.features.map((f) => <li>{f}</li>)}
+        </ul>
+        {d.simulated && <p class="demo__sim">{d.simulated}</p>}
+      </>
+    )}
+    <div class="demo__links">
+      {compact ? (
+        <a class="textlink" href={d.url}>{d.type === 'concept' ? 'Try the demo' : (d.cta ?? 'Explore demo')}<span class="visually-hidden">: {d.title}</span></a>
+      ) : (
+        <a class="btn btn--small" href={d.url}>{d.cta ?? 'Explore demo'}<span class="visually-hidden">: {d.title}</span></a>
+      )}
+      {!compact && d.liveUrl && <a class="textlink" href={d.liveUrl}>Visit {host}</a>}
+      {!compact && d.detailsUrl && <a class="textlink" href={d.detailsUrl}>About this {d.type === 'concept' ? 'concept' : 'project'}<span class="visually-hidden">: {d.title}</span></a>}
+      {!compact && d.type !== 'tool' && <a class="textlink textlink--accent" href={similarHref(d.slug)} data-similar={full ? d.slug : undefined}>Discuss a similar project<span class="visually-hidden">: {d.title}</span></a>}
+    </div>
+    <slot />
+  </div>
+</li>

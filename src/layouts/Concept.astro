@@ -1,0 +1,32 @@
+---
+// Bare layout for live concept demos (/concepts/<slug>/). Each concept has
+// its own visual identity, so none of the RandyBuilds.tech chrome or styles
+// load here — only a reset, the concept fonts and the concept banner.
+// Concepts are fictional businesses: always noindex.
+import '../styles/concept-base.css';
+import { site } from '../site';
+import ConceptBanner from '../components/ConceptBanner.astro';
+import DemoPromo from '../components/DemoPromo.astro';
+
+interface Props { title: string; description: string; slug: string }
+const { title, description, slug } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{`${title} — Concept demonstration | ${site.name}`}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, site.url).href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <ConceptBanner slug={slug} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <DemoPromo slug={slug} title={title} />
+  </body>
+</html>

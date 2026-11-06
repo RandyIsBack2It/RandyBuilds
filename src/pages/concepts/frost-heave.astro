@@ -1,0 +1,202 @@
+---
+import Concept from '../../layouts/Concept.astro';
+import '../../concepts/frost-heave/style.css';
+import { shop, flavors, flavorCats, tagLabel, sizes, cones, treats, takeHome, seasons, closures } from '../../concepts/frost-heave/data';
+import { weekLines, monthsLabel } from '../../concepts/frost-heave/logic';
+import { scoopSvg, coneSvg, markSvg, signG, ink } from '../../concepts/frost-heave/art';
+import { money } from '../../concepts/shared';
+
+const price = (n: number) => (n ? money(n) : 'Free');
+const fmtSeason = (s: (typeof seasons)[number]) => {
+  const d = (md: string) => new Date(2026, Number(md.slice(0, 2)) - 1, Number(md.slice(3))).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  return `${d(s.from)} – ${d(s.to)}`;
+};
+---
+<Concept title="Frost Heave Creamery" description="Concept website for a fictional independent ice cream shop in Maine: the flavors, the menu, the story and when to visit. Designed and built by RandyBuilds.tech." slug="frost-heave">
+  <div class="fh">
+    <a class="fh-skip" href="#flavors">Skip to the flavors</a>
+    <p class="fh-notice" data-notice hidden><span data-notice-text></span></p>
+
+    <header class="fh-top">
+      <div class="fh-wrap fh-top__in">
+        <a class="fh-logo" href="#fh-home">
+          <span class="fh-logo__mark"><Fragment set:html={markSvg()} /></span>
+          <span class="fh-logo__name">Frost Heave <small>Creamery</small></span>
+        </a>
+        <nav class="fh-nav" aria-label="Shop">
+          <a href="#flavors">Flavors</a><a href="#menu">Menu</a><a href="#story">Our story</a><a href="#visit">Visit</a>
+        </nav>
+        <a class="fh-status" href="#visit" data-status><span class="fh-dot" aria-hidden="true"></span><span data-status-text>Sample hours</span></a>
+      </div>
+    </header>
+
+    <section class="fh-hero" id="fh-home" aria-labelledby="fh-h1">
+      <div class="fh-wrap fh-hero__grid">
+        <div class="fh-hero__copy">
+          <p class="fh-kicker">Small-batch ice cream · {shop.town}, Maine</p>
+          <p class="fh-fiction">A fictional ice cream shop: a portfolio demo by RandyBuilds.tech. The flavors, prices, hours, people and address are sample details.</p>
+          <h1 id="fh-h1">Worth <em>slowing</em> down&nbsp;for.</h1>
+          <p class="fh-lede">Ice cream made in the back, a few tubs at a time. Waffle cones pressed every morning. Classics every day, and a few flavors that follow the season.</p>
+          <div class="fh-hero__cta">
+            <a class="fh-btn fh-btn--yellow" href="#flavors">See the flavors</a>
+            <a class="fh-btn fh-btn--ghost" href="#visit">Hours &amp; directions</a>
+          </div>
+        </div>
+        <div class="fh-hero__art" aria-hidden="true">
+          <svg class="fh-hero__sign" viewBox="-104 -104 208 264" focusable="false"><rect x="-5" y="40" width="10" height="120" fill={ink} /><Fragment set:html={signG(0, 0, 1)} /></svg>
+          <span class="fh-hero__cone"><Fragment set:html={coneSvg(['salt-truck', 'black-raspberry', 'mint'], 'waffle', '')} /></span>
+        </div>
+      </div>
+      <svg class="fh-road" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0 40C180 40 240 12 360 12S560 40 720 40 900 14 1040 14 1300 40 1440 40V90H0Z" fill="#3d3a3f" />
+        <path d="M0 54C180 54 240 28 360 28S560 54 720 54 900 30 1040 30 1300 54 1440 54" fill="none" stroke="#f7c325" stroke-width="4" stroke-dasharray="26 22" />
+      </svg>
+    </section>
+
+    <section class="fh-flavors" id="flavors" aria-labelledby="fh-fl-h">
+      <div class="fh-wrap">
+        <div class="fh-sechead">
+          <p class="fh-kicker">The case</p>
+          <h2 id="fh-fl-h">Flavors</h2>
+          <p>Made here in 20-quart batches. If one sells out, it’s usually back the next day. <span class="fh-sample">Sample flavors.</span></p>
+        </div>
+        {flavorCats.map((c) => (
+          <section class="fh-group" aria-labelledby={`fh-g-${c.id}`}>
+            <h3 id={`fh-g-${c.id}`}>{c.label}</h3>
+            <p class="fh-small">{c.note}</p>
+            <ul class="fh-cards" role="list">
+              {flavors.filter((f) => f.cat === c.id).map((f) => (
+                <li class="fh-card" data-flavor={f.id}>
+                  <span class="fh-card__well" data-tint={f.id}><Fragment set:html={scoopSvg(f.id)} /></span>
+                  <h4 class="fh-card__name">{f.name}</h4>
+                  <p class="fh-card__desc">{f.desc}</p>
+                  <p class="fh-card__tags">
+                    {f.months && <span class="fh-tag fh-tag--months">{monthsLabel(f)}</span>}
+                    {f.tags.map((t) => <span class={`fh-tag fh-tag--${t}`}>{tagLabel[t]}</span>)}
+                    <span class="fh-tag fh-tag--out" data-out hidden>Sold out today</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+            {c.id === 'season' && <p class="fh-small" data-later hidden></p>}
+          </section>
+        ))}
+        <p class="fh-small">Allergies? Ask at the window. We keep the ingredients for every flavor by the case.</p>
+      </div>
+    </section>
+
+    <section class="fh-menu" id="menu" aria-labelledby="fh-me-h">
+      <div class="fh-wrap">
+        <div class="fh-sechead">
+          <p class="fh-kicker">At the window</p>
+          <h2 id="fh-me-h">Menu</h2>
+          <p><span class="fh-sample">Sample prices.</span> Cards, phones and cash all work.</p>
+        </div>
+        <div class="fh-menu__grid">
+          <section class="fh-board" aria-labelledby="fh-m-cones">
+            <h3 id="fh-m-cones">Cones &amp; cups</h3>
+            <dl class="fh-prices">
+              {sizes.map((s) => <div><dt>{s.label} <small>{s.note}</small></dt><dd>{money(s.price)}</dd></div>)}
+            </dl>
+            <dl class="fh-prices fh-prices--sub">
+              {cones.map((c) => <div><dt>{c.label}</dt><dd>{c.price ? `+${money(c.price)}` : 'No charge'}</dd></div>)}
+            </dl>
+          </section>
+          <section class="fh-board" aria-labelledby="fh-m-treats">
+            <h3 id="fh-m-treats">Shakes, sundaes &amp; more</h3>
+            <dl class="fh-prices">
+              {treats.map((t) => <div><dt>{t.name} <small>{t.desc}</small></dt><dd>{price(t.price)}</dd></div>)}
+            </dl>
+          </section>
+          <section class="fh-board" aria-labelledby="fh-m-home">
+            <h3 id="fh-m-home">To take home</h3>
+            <dl class="fh-prices">
+              {takeHome.map((t) => <div><dt>{t.name} <small>{t.desc}</small></dt><dd>{money(t.price)}</dd></div>)}
+            </dl>
+            <p class="fh-small">Pints and cakes are picked up at the window. To order a cake, call <a href={`tel:${shop.tel}`}>{shop.phone}</a>.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="fh-story" id="story" aria-labelledby="fh-st-h">
+      <div class="fh-wrap">
+        <div class="fh-story__intro">
+          <p class="fh-kicker fh-kicker--light">Our story</p>
+          <h2 id="fh-st-h">The sign came first.</h2>
+          <div class="fh-story__text">
+            <p>Every spring, River Road heaves so badly that the town puts a yellow sign right outside an old filling station. Most people slow down. Since 2015, a lot of them stop.</p>
+            <p>Hattie Bouchard bought the station with a used batch freezer and a recipe for sweet cream. The pumps are gone. The canopy shades the picnic tables now, and the garage bay is the kitchen.</p>
+            <p>Everything is still made right here, by people who live down the road.</p>
+          </div>
+        </div>
+        <ul class="fh-pillars" role="list">
+          <li><b>4 miles</b><span>from the cows at Tibbetts Hill Farm to our back door.</span></li>
+          <li><b>20 quarts</b><span>at a time, so every tub is fresh.</span></li>
+          <li><b>7 am</b><span>is when the waffle iron goes on.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="fh-visit" id="visit" aria-labelledby="fh-vi-h">
+      <div class="fh-wrap fh-visit__grid">
+        <div>
+          <p class="fh-kicker">Visit</p>
+          <h2 id="fh-vi-h">Look for the yellow sign</h2>
+          <p class="fh-visit__status" data-visit-status aria-live="polite" hidden></p>
+          <address>{shop.street}<br />{shop.town}, {shop.state}<br /><a href={`tel:${shop.tel}`}>{shop.phone}</a><br /><span>{shop.email}</span></address>
+          <p class="fh-fiction">Sample details. Wessick Falls is a fictional town, and the phone number is a 555 number that isn’t in service.</p>
+          <h3 class="fh-h3">Hours</h3>
+          <ul class="fh-seasons" role="list">
+            {seasons.map((s) => (
+              <li class="fh-season" data-season={s.id}>
+                <h4>{s.label} <small>{fmtSeason(s)}</small><span class="fh-season__now" hidden>Now</span></h4>
+                <dl>{weekLines(s.week).map((l) => <div><dt>{l.days}</dt><dd>{l.hours}</dd></div>)}</dl>
+                <p class="fh-small">{s.note}</p>
+              </li>
+            ))}
+          </ul>
+          <p class="fh-small">Closed {closures.map((c) => c.label).join(', ')}. Bad weather can close the window early. We post it at the top of this page.</p>
+        </div>
+        <div>
+          <figure class="fh-map">
+            <svg viewBox="0 0 420 300" role="img" aria-label="Illustrative map: Frost Heave is on River Road, 1.2 miles north of the village green, across from the river">
+              <rect width="420" height="300" fill="#e7efd9" />
+              <path d="M300 0c-20 60 30 90 10 150s-50 90-30 150h70c-20-60 10-90 30-150S360 60 380 0z" fill="#a9cbd8" />
+              <path d="M60 300C80 230 150 220 170 160S200 60 250 0" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round" />
+              <path d="M60 300C80 230 150 220 170 160S200 60 250 0" fill="none" stroke="#f7c325" stroke-width="2.5" stroke-dasharray="10 9" />
+              <circle cx="70" cy="262" r="26" fill="#b8d39f" /><text x="70" y="266" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="10" font-weight="700" fill="#2b1630">Green</text>
+              <g transform="translate(176 118)"><rect x="-26" y="-18" width="52" height="34" rx="4" fill="#fff6e6" stroke="#2b1630" stroke-width="3" /><path d="M-32-18h64l-6-10h-52z" fill="#f6b3c0" stroke="#2b1630" stroke-width="3" /></g>
+              <g transform="translate(152 168) scale(.13)"><Fragment set:html={signG(0, 0, 1, false)} /></g>
+              <g fill="#7fa36b"><circle cx="40" cy="60" r="14" /><circle cx="64" cy="44" r="18" /><circle cx="96" cy="72" r="12" /><circle cx="230" cy="250" r="16" /><circle cx="250" cy="226" r="11" /></g>
+              <text x="142" y="104" text-anchor="end" font-family="Bricolage Grotesque, sans-serif" font-size="12" font-weight="800" fill="#2b1630">Frost Heave</text>
+              <text x="92" y="196" font-family="Bricolage Grotesque, sans-serif" font-size="11" fill="#2b1630" transform="rotate(-52 92 196)">River Road</text>
+              <text x="336" y="200" font-family="Fraunces Variable, serif" font-style="italic" font-size="13" fill="#2f5c6e" transform="rotate(80 336 200)">Wessick River</text>
+            </svg>
+            <figcaption>Illustrative map of a fictional town.</figcaption>
+          </figure>
+          <h3 class="fh-h3">Finding us</h3>
+          <p>From the village green, take River Road north for 1.2 miles. We’re the old filling station on the left, with picnic tables under the canopy.</p>
+          <ul class="fh-good" role="list">
+            <li>The window and the picnic area are step-free.</li>
+            <li>Dogs are welcome at the tables.</li>
+            <li>We hire scoopers each spring. Ask at the window or email us.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="fh-foot">
+      <div class="fh-wrap fh-foot__in">
+        <p><b>Frost Heave Creamery is a fictional shop.</b> A portfolio demo by RandyBuilds.tech. Sample flavors, prices, hours and people.</p>
+        <button class="fh-btn fh-btn--ghost fh-btn--small" type="button" data-open-owner aria-haspopup="dialog">Owner panel (demo)</button>
+      </div>
+    </footer>
+
+    <dialog class="fh-dlg" data-owner-dlg aria-labelledby="fh-owner-title"></dialog>
+  </div>
+</Concept>
+<script>
+  import { start } from '../../concepts/frost-heave/app';
+  start();
+</script>

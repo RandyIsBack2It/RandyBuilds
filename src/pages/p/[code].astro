@@ -1,0 +1,13 @@
+---
+// Share link for one project: the home page with that project featured in
+// "What I’ve built" (content/showcase.ts). The address is an opaque code, so
+// it doesn't name the project. Public but unlisted and noindex; copied from
+// the link manager (/admin/links/). Unknown codes fall back to the home page
+// (nginx.conf).
+import HomePage from '../../components/HomePage.astro';
+import { shareCodes } from '../../content/showcase';
+
+export const getStaticPaths = () => [...shareCodes].map(([code, slug]) => ({ params: { code }, props: { slug } }));
+const { slug } = Astro.props;
+---
+<HomePage feature={slug} />

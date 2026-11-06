@@ -1,0 +1,86 @@
+---
+// The one inquiry form (home #contact, /work/#similar, /explore/). Name, email
+// and a short description are required; everything else is optional.
+import { projectTypes, budgets, inquiryDemos, typeByService, demoChoices } from '../content/inquiry';
+interface Props {
+  /** An editable summary field, filled in by the Explore tool. */
+  summary?: boolean;
+  /** Accept ?topic=<service> and preselect its project type. */
+  topics?: boolean;
+  summaryLabel?: string;
+  /** Also offer independent projects (unmaskd.) as examples. Only on /work/:
+      on the home page unmaskd. appears in #work alone (CLAUDE.md). */
+  allExamples?: boolean;
+}
+const { summary = false, topics = false, summaryLabel = 'About your inquiry', allExamples = false } = Astro.props;
+const examples = inquiryDemos.filter((d) => allExamples || d.type !== 'independent');
+const choices = Object.fromEntries(Object.entries(demoChoices).filter(([slug]) => examples.some((d) => d.slug === slug)));
+---
+<form class="cform" method="post" action="/api/contact" data-contact data-topics={topics ? JSON.stringify(typeByService) : undefined} data-demos={JSON.stringify(choices)}>
+  <div class="cform__row">
+    <div class="field">
+      <label for="cf-name">Name</label>
+      <input id="cf-name" name="name" autocomplete="name" required maxlength="100" />
+    </div>
+    <div class="field">
+      <label for="cf-email">Email</label>
+      <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="254" />
+    </div>
+  </div>
+  <div class="cform__row">
+    <div class="field">
+      <label for="cf-type">Project type <span class="field__opt">(optional)</span></label>
+      <select id="cf-type" name="type">
+        <option value="">Choose one</option>
+        {projectTypes.map((t) => <option>{t.label}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="cf-budget">Budget <span class="field__opt">(optional)</span></label>
+      <select id="cf-budget" name="budget">
+        <option value="">Prefer not to say</option>
+        {budgets.map((b) => <option>{b}</option>)}
+      </select>
+    </div>
+  </div>
+  <div class="cform__row">
+    <div class="field">
+      <label for="cf-demo">An example you liked <span class="field__opt">(optional)</span></label>
+      <select id="cf-demo" name="demo">
+        <option value="">None in particular</option>
+        {examples.map((d) => <option>{d.title}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="cf-site">Current website <span class="field__opt">(optional)</span></label>
+      <input id="cf-site" name="site" type="url" inputmode="url" autocomplete="url" placeholder="https://" maxlength="200" />
+    </div>
+  </div>
+  {summary && (
+    <div class="field" data-summary-field hidden>
+      <label for="cf-summary">{summaryLabel} <span class="field__opt">(edit or remove anything)</span></label>
+      <textarea id="cf-summary" name="summary" rows="9" maxlength="3000" disabled></textarea>
+    </div>
+  )}
+  <div class="field">
+    <label for="cf-message">What do you need?</label>
+    <p class="field__hint" id="cf-message-hint">A few sentences is plenty. Mention any deadline.</p>
+    <textarea id="cf-message" name="message" rows="5" required minlength="10" maxlength="5000" aria-describedby="cf-message-hint"></textarea>
+  </div>
+  <!-- Spam trap: hidden from people, filled in by bots. Its name and label must not look like
+       contact details (company, name, phone, address …): browser AutoFill fills those, hidden or not. -->
+  <div class="cform__trap" aria-hidden="true">
+    <label for="cf-hpot">Leave this field empty</label>
+    <input id="cf-hpot" name="hpot" tabindex="-1" autocomplete="off" />
+  </div>
+  <input type="hidden" name="t" value="" />
+  <div class="cform__actions">
+    <button class="btn btn--orange" type="submit">Send message</button>
+  </div>
+  <p class="cform__status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  import { startContactForm } from '../scripts/contact';
+  startContactForm();
+</script>

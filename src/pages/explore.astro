@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { steps, recs } from '../content/explore';
+import { serviceBySlug } from '../content/services';
+import { demoBySlug } from '../content/demos';
+import { site } from '../site';
+
+// Explore what's possible: a few questions, then two or three possibilities
+// (rules in content/explore.ts, behaviour in scripts/explore.ts). The steps
+// are real form controls rendered here; the script shows one at a time.
+// Nothing is sent unless the visitor submits the contact form under the results.
+const firstCount = steps.filter((s) => !s.when).length;
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Explore what’s possible',
+  url: new URL('/explore/', site.url).href,
+  description: 'Answer a few short questions and see a few ways a website, web app, online tool or hosting could help with what you’re working on.',
+}];
+---
+<Base
+  title="Explore what’s possible"
+  description="Not sure what you need? Answer a few short questions and see how a website, web app or online tool could help. No sign-up. Nothing is sent unless you choose."
+  schema={schema}
+>
+  <section class="section explore" aria-labelledby="explore-title">
+    <div class="wrap explore__grid">
+      <div class="explore__intro">
+        <p class="kicker"><b>~/</b>explore</p>
+        <h1 id="explore-title">Explore what’s possible</h1>
+        <p class="lede">Starting something new, improving what you have, or exploring an idea? Answer a few short questions and see a few ways technology could help.</p>
+        <ul class="explore__facts">
+          <li><span class="band-chip" data-color="cobalt" aria-hidden="true"></span>{firstCount} short questions</li>
+          <li><span class="band-chip" data-color="orange" aria-hidden="true"></span>No sign-up or email needed</li>
+          <li><span class="band-chip" data-color="sea" aria-hidden="true"></span>Your answers stay in this browser unless you send them</li>
+        </ul>
+        <p class="explore__links"><a class="textlink" href="/services/">All services</a><a class="textlink" href="/#contact">Contact</a></p>
+      </div>
+
+      <div class="formcard explore__card" data-explore>
+        <div class="xp__progress" hidden>
+          <p class="xp__count" aria-live="polite">Question 1 of {firstCount}</p>
+          <div class="xp__bar" aria-hidden="true"><span></span></div>
+        </div>
+
+        <p class="xp__nojs">The questions need JavaScript to work. You can still <a class="textlink" href="/#contact">tell me about your project</a>, or read the possibilities below.</p>
+
+        <form class="xp" novalidate hidden aria-label="Explore what’s possible">
+          {steps.map((s, i) => (
+            <fieldset class="xp__step" data-step={s.id} hidden={i > 0} aria-describedby={`xp-err-${s.id}`}>
+              <legend><h2 class="xp__q" tabindex="-1">{s.question}</h2></legend>
+              {s.hint && <p class="xp__hint">{s.hint}</p>}
+              <div class="xp__opts">
+                {s.options.map((o) => (
+                  <label class="xp__opt">
+                    <input type={s.max ? 'checkbox' : 'radio'} name={s.id} value={o.value} />
+                    <span>{o.label}</span>
+                  </label>
+                ))}
+              </div>
+              {s.max && <p class="xp__limit" aria-live="polite"></p>}
+              <p class="field__error xp__error" id={`xp-err-${s.id}`} role="alert" hidden>{s.max ? 'Choose at least one to continue.' : 'Choose an option to continue.'}</p>
+            </fieldset>
+          ))}
+          <div class="xp__nav">
+            <button class="btn btn--ghost" type="button" data-back hidden>Back</button>
+            <button class="btn btn--orange" type="submit" data-next>Continue</button>
+          </div>
+        </form>
+
+        <div class="xp__results" hidden>
+          <h2 tabindex="-1">Here’s what might be worth exploring.</h2>
+          <p class="xp__intro">Based on your answers, here are a few possibilities. These are starting points, not a one-size-fits-all recommendation.</p>
+          <p class="note xp__unsure" hidden>You don’t need to know what you want yet. Describe your situation, and I’ll suggest where to start.</p>
+          <ol class="xp__recs"></ol>
+          <div class="xp__actions">
+            <button class="btn btn--orange" type="button" data-talk>Let’s talk about this</button>
+            <button class="btn btn--ghost" type="button" data-restart>Start over</button>
+          </div>
+          <details class="xp__review">
+            <summary>Your answers</summary>
+            <ul class="xp__answers"></ul>
+          </details>
+          <p class="xp__share">
+            <button class="xp__share-btn" type="button" data-share>Share this tool</button>
+            <span class="xp__share-status" role="status"></span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap xp__inquiry" hidden>
+      <div class="formcard">
+        <div class="head">
+          <div>
+            <h2 tabindex="-1">Tell me about it</h2>
+            <p class="lede">Your answers are filled in below. Edit them, add your own words, and send when you’re ready. Nothing is sent until you do.</p>
+          </div>
+        </div>
+        <ContactForm summary summaryLabel="Your answers" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--fog" aria-labelledby="possible-title">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="kicker"><b>~/</b>explore / possibilities</p>
+          <h2 id="possible-title">What the questions can point to</h2>
+          <p class="lede">Each result is one of these, matched to your answers.</p>
+        </div>
+      </div>
+      <ul class="xp__all">
+        {Object.values(recs).map((r) => (
+          <li class="svc-block" data-color={serviceBySlug[r.service].color}>
+            <h3>{r.title}</h3>
+            <p>{r.what}</p>
+            <a class="textlink" href={`/services/${r.service}/`}>More about {serviceBySlug[r.service].short.toLowerCase()}</a>
+            {r.demo && demoBySlug[r.demo] && <a class="textlink" href={demoBySlug[r.demo].url}>Example: {demoBySlug[r.demo].title}</a>}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { startExplore } from '../scripts/explore';
+  startExplore();
+</script>

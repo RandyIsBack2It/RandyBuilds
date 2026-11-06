@@ -1,0 +1,75 @@
+---
+import Wordmark from './Wordmark.astro';
+import { site, mailto } from '../site';
+import { services } from '../content/services';
+const year = new Date().getFullYear();
+const years = year > site.since ? `${site.since}–${year}` : `${year}`;
+---
+<footer class="site-footer">
+  <div class="bands" aria-hidden="true"></div>
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__brand">
+      <Wordmark class="f" />
+      <p>Business websites, custom applications and website improvements, built by one independent developer.</p>
+      <p>{site.owned} {site.area}</p>
+    </div>
+    <nav aria-labelledby="footer-services">
+      <h2 id="footer-services">Services</h2>
+      <ul>
+        {services.map((s) => <li><a href={`/services/${s.slug}/`}>{s.short}</a></li>)}
+      </ul>
+    </nav>
+    <nav aria-labelledby="footer-site">
+      <h2 id="footer-site">Site</h2>
+      <ul>
+        <li><a href="/work/">Work</a></li>
+        <li><a href="/resources/">Resources</a></li>
+        <li><a href="/explore/">Explore ideas</a></li>
+        <li><a href="/arcade/">Arcade</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+        <li><a href="/#contact">Contact</a></li>
+        <li><a href="/services/">All services</a></li>
+      </ul>
+    </nav>
+    <div class="site-footer__contact">
+      <h2>Get in touch</h2>
+      <a class="email" href={mailto('Project inquiry')}>{site.contact.email}</a>
+      <p><a href="/#contact">Start a project</a></p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="site-footer__legal">
+      <div class="site-footer__copy">
+        <p>© {years} {site.name}</p>
+        <!-- Admin sign-in (scripts/admin-key.ts), after the copyright on wide screens (phones and tablets use the menu drawer’s, Header.astro): the >_ mark opens a prompt in place, like the hero’s (“who are you?”), and the key is
+             typed where the cursor was. The gate checks it server-side (POST /api/admin/login). Without JavaScript the
+             mark links to the /admin/ sign-in page. -->
+        <div class="admin-key">
+          <a class="admin-key__mark admin-key__link" href="/admin/" rel="nofollow" aria-label="Admin sign-in">
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /><path class="admin-key__under" d="M9 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          </a>
+          <form class="admin-key__form" method="post" action="/api/admin/login" hidden>
+            <button class="admin-key__mark" type="button" aria-label="Admin sign-in" aria-expanded="false" aria-controls="admin-key">
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /><path class="admin-key__under" d="M9 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+            </button>
+            <span class="admin-key__cmd" aria-hidden="true">who are you?&nbsp;</span>
+            <label class="visually-hidden" for="admin-key">Who are you? (admin key)</label>
+            <input class="admin-key__field" id="admin-key" name="code" type="password" maxlength="64"
+              autocomplete="current-password" spellcheck="false" tabindex="-1" />
+            <p class="visually-hidden" role="status" data-admin-status></p>
+          </form>
+        </div>
+      </div>
+      <ul>
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- Back to top (scripts/to-top.ts): fixed bottom right; inside the footer so it sits in a landmark. -->
+  <a class="totop" href="#main" aria-label="Back to top">
+    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.5 10l4.5-4.5 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+    <span class="totop__label" aria-hidden="true">top</span>
+  </a>
+</footer>

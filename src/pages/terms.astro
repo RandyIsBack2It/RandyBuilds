@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, mailto } from '../site';
+---
+<Base title="Terms" description="Terms for using the randybuilds.tech website: what the concept sites are, who owns the content and how to get in touch.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Terms</h1>
+      <p class="lede">These terms cover this website. Each project has its own written agreement. Last updated October 12, 2026.</p>
+    </header>
+    <div class="prose">
+      <h2>Concept sites</h2>
+      <p>The concept sites on this website are demonstrations for fictional businesses. Their names, prices and details are made up. Their forms don’t send anything.</p>
+      <h2>Content</h2>
+      <p>The text, designs and images on this site belong to {site.name} unless stated otherwise. The fonts are used under the SIL Open Font License.</p>
+      <h2>Information on this site</h2>
+      <p>Descriptions of services here are general. The scope, price and timeline of a project are agreed in writing before work starts.</p>
+      <h2>Contact</h2>
+      <p>Questions about these terms: <a href={mailto('Terms question')}>{site.contact.email}</a>.</p>
+    </div>
+  </div>
+</Base>

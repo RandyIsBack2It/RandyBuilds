@@ -1,0 +1,85 @@
+---
+import Base from '../../layouts/Base.astro';
+import DemoCard from '../../components/DemoCard.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import { workDemos, groups, groupAliases, demosIn } from '../../content/demos';
+import { site } from '../../site';
+
+// Work: every project, demo and tool (content/demos.ts) in two customer-facing
+// sections: business websites, then custom applications and interactive tools.
+// Games live on /arcade/. "Discuss a similar project" names the example in the
+// form at the bottom (scripts/demos.ts); nothing is sent until the visitor
+// presses Send. /demos/ redirects here (nginx.conf).
+const aliases = (g: string) => Object.entries(groupAliases).filter(([, to]) => to === g).map(([id]) => id);
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Work',
+  url: new URL('/work/', site.url).href,
+  hasPart: workDemos.map((d) => ({ '@type': 'CreativeWork', name: d.title, description: d.description, url: new URL(d.url, site.url).href })),
+}];
+---
+<Base
+  title="Work: business websites and custom applications"
+  description="Working examples of business websites and custom web apps: restaurant ordering, booking, a 3D configurator and dispatch software. Open them and try them out."
+  schema={schema}
+>
+  <div class="page-head--color" data-color="orange">
+    <div class="wrap page-head">
+      <p class="kicker"><b>~/</b>work</p>
+      <h1>Work</h1>
+      <p class="lede">Working examples of what I can build for you, from a straightforward business website to a complete online application. Open any of them and try it.</p>
+      <p class="demo-head__note">Most of these are concept demonstrations: built for fictional businesses to show what’s possible. They are not client work. Their forms, orders and bookings are simulated and send nothing.</p>
+      <nav class="work-toc" aria-label="Sections">
+        {groups.map((g) => <a href={`#${g.id}`}>{g.title}</a>)}
+        <a href="#similar">Discuss a similar project</a>
+      </nav>
+    </div>
+  </div>
+
+  {groups.map((g, i) => (
+    <section id={g.id} class:list={['section', 'work-section', { 'section--fog': i % 2 === 1 }]} aria-labelledby={`${g.id}-title`}>
+      {aliases(g.id).map((id) => <span id={id} class="anchor-alias"></span>)}
+      <div class="wrap">
+        <div class="head">
+          <div>
+            <p class="kicker"><b>0{i + 1}</b> {g.kicker}</p>
+            <h2 id={`${g.id}-title`}>{g.title}</h2>
+            <p class="lede">{g.lede}</p>
+          </div>
+        </div>
+        <ul class:list={['work-grid', 'demo-grid', { 'demo-grid--one': demosIn(g.id).length === 1 }]}>
+          {demosIn(g.id).map((d) => <DemoCard demo={d} full />)}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <section id="similar" class="section" aria-labelledby="similar-title">
+    <div class="wrap contact-grid">
+      <div class="contact-info">
+        <div class="head">
+          <div>
+            <p class="kicker"><b>~/</b>work / similar project</p>
+            <h2 id="similar-title" tabindex="-1">Want something similar for your business?</h2>
+            <p class="lede">Choose “Discuss a similar project” on any example, or just describe your idea. Say what you’d change. Nothing is sent until you press Send.</p>
+            <p class="demo__picked" role="status"></p>
+          </div>
+        </div>
+        <ul class="promises" aria-label="What to expect">
+          <li><span class="band-chip" data-color="cobalt" aria-hidden="true"></span>{site.review}, no meeting required</li>
+          <li><span class="band-chip" data-color="sea" aria-hidden="true"></span>A written scope and fixed price before work starts</li>
+          <li><span class="band-chip" data-color="orange" aria-hidden="true"></span>{site.replyTime}</li>
+        </ul>
+      </div>
+      <div class="formcard">
+        <ContactForm allExamples />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { startDemos } from '../../scripts/demos';
+  startDemos();
+</script>

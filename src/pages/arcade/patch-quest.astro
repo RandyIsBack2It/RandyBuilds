@@ -1,0 +1,209 @@
+---
+// PATCH QUEST: a standalone game page. Its own minimal shell (no site header
+// or contact band), so nothing interrupts play; the game code loads only here.
+import '../../styles/global.css';
+import '../../styles/patch-quest.css';
+import { site } from '../../site';
+import { versioned } from '../../lib/versioned';
+import font from '../../fonts/jetbrains-mono-latin-wght-normal.woff2?url';
+
+const title = 'PATCH QUEST — a retro platformer';
+const description = 'Help Patch, a small repair robot, fix a glitching digital world. Three levels and a boss, playable in the browser on desktop and phones. Free, no sign-up.';
+const url = new URL('/arcade/patch-quest/', site.url).href;
+const og = new URL('/arcade/patch-quest/og.png', site.url).href;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'PATCH QUEST',
+  url,
+  description,
+  genre: ['Platformer', 'Action'],
+  gamePlatform: 'Web browser',
+  playMode: 'SinglePlayer',
+  applicationCategory: 'Game',
+  operatingSystem: 'Any',
+  image: og,
+  author: { '@type': 'Person', name: site.owner, url: site.url },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{`${title} | ${site.name}`}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#050920" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" href={versioned('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={versioned('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={versioned('/apple-touch-icon.png')} />
+    <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content="PATCH QUEST" />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="PATCH QUEST title screen: a small repair robot running through a pixel-art circuit world" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body class="pq-page">
+    <a class="skip" href="#pq-game">Skip to the game</a>
+    <div class="pq" data-pq id="pq-game" data-mode="title" role="region" aria-label="PATCH QUEST game">
+      <div class="pq-bar">
+        <a class="pq-bar__home" href="/"><span aria-hidden="true">&lt;</span> RandyBuilds.tech</a>
+        <h1 class="pq-bar__title">PATCH QUEST</h1>
+        <div class="pq-bar__ctl">
+          <button class="pq-chip" type="button" data-toggle="music" aria-pressed="true">Music <span data-state>on</span></button>
+          <button class="pq-chip" type="button" data-toggle="sfx" aria-pressed="true">Sound <span data-state>on</span></button>
+          <button class="pq-chip" type="button" data-fullscreen aria-pressed="false" hidden>Full screen</button>
+          <button class="pq-chip pq-chip--pause" type="button" data-do="pause"><span aria-hidden="true">II</span><span class="visually-hidden">Pause</span></button>
+        </div>
+      </div>
+
+      <div class="pq-stage" data-stage>
+        <div class="pq-screen">
+          <canvas width="320" height="180" role="img" aria-label="PATCH QUEST game screen. The menus and controls are buttons outside the picture."></canvas>
+          <noscript><p class="pq-noscript">PATCH QUEST needs JavaScript to run.</p></noscript>
+        </div>
+
+        <div class="pq-menus">
+          <div class="pq-menu pq-menu--title" data-screen="title">
+            <div class="pq-row">
+              <button class="pq-btn pq-btn--go" type="button" data-do="play" data-focus>Play</button>
+              <button class="pq-btn" type="button" data-do="howto">How to play</button>
+              <button class="pq-btn" type="button" data-do="settings">Settings</button>
+            </div>
+            <p class="pq-small" data-out="best">No personal best yet</p>
+          </div>
+
+          <div class="pq-menu pq-panel" data-screen="howto" hidden role="dialog" aria-labelledby="pq-howto-title">
+            <h2 id="pq-howto-title">How to play</h2>
+            <p>Patch fixes broken machines. In each level, repair every terminal with a blinking marker to open the exit.</p>
+            <ul class="pq-list">
+              <li>Collect energy cells for points.</li>
+              <li>Jump on bugs and drones, or blast them with a repair pulse.</li>
+              <li>A pulse also fixes turrets and clears shots.</li>
+              <li>Wait for electric arcs to switch off before crossing.</li>
+              <li>Touch a beacon to save a checkpoint.</li>
+            </ul>
+            <h3>Keyboard</h3>
+            <dl class="pq-keys">
+              <div><dt>Move</dt><dd>Arrow keys or A / D</dd></div>
+              <div><dt>Jump</dt><dd>Space, W or Up (hold for higher)</dd></div>
+              <div><dt>Repair or pulse</dt><dd>E or X</dd></div>
+              <div><dt>Drop through a platform</dt><dd>Down + Jump</dd></div>
+              <div><dt>Pause</dt><dd>Escape or P</dd></div>
+            </dl>
+            <h3>Touch</h3>
+            <p>Left thumb: move. Right thumb: <b>JUMP</b> and <b>ACT</b> (repair or pulse). You can hold a direction and jump at the same time. Gamepads work too.</p>
+            <button class="pq-btn" type="button" data-do="back" data-focus>Back</button>
+          </div>
+
+          <div class="pq-menu pq-panel" data-screen="settings" hidden role="dialog" aria-labelledby="pq-settings-title">
+            <h2 id="pq-settings-title">Settings</h2>
+            <div class="pq-col">
+              <button class="pq-btn pq-btn--toggle" type="button" data-toggle="music" aria-pressed="true" data-focus>Music: <span data-state>on</span></button>
+              <button class="pq-btn pq-btn--toggle" type="button" data-toggle="sfx" aria-pressed="true">Sound effects: <span data-state>on</span></button>
+              <button class="pq-btn pq-btn--toggle" type="button" data-toggle="shake" aria-pressed="true">Screen shake: <span data-state>on</span></button>
+            </div>
+            <p class="pq-small">Settings and your best score are saved in this browser only.</p>
+            <p class="pq-small">Created by RandyBuilds.tech</p>
+            <button class="pq-btn" type="button" data-do="back">Back</button>
+          </div>
+
+          <div class="pq-menu pq-panel" data-screen="paused" hidden role="dialog" aria-labelledby="pq-paused-title">
+            <h2 id="pq-paused-title">Paused</h2>
+            <div class="pq-col">
+              <button class="pq-btn pq-btn--go" type="button" data-do="resume" data-focus>Resume</button>
+              <button class="pq-btn" type="button" data-do="restart">Restart level</button>
+              <button class="pq-btn" type="button" data-do="settings">Settings</button>
+              <button class="pq-btn" type="button" data-do="title">Title screen</button>
+            </div>
+          </div>
+
+          <div class="pq-menu pq-panel" data-screen="clear" hidden role="dialog" aria-labelledby="pq-clear-title">
+            <h2 id="pq-clear-title" data-out="clear-title">Level repaired</h2>
+            <ul class="pq-tally" data-out="tally"></ul>
+            <p class="pq-total">Score <b data-out="clear-score">0</b></p>
+            <button class="pq-btn pq-btn--go" type="button" data-do="next" data-focus>Next level</button>
+          </div>
+
+          <div class="pq-menu pq-panel" data-screen="gameover" hidden role="dialog" aria-labelledby="pq-go-title">
+            <h2 id="pq-go-title">System crash</h2>
+            <p>Out of lives in <span data-out="go-level">BOOT SECTOR</span>. Score <b data-out="go-score">0</b>.</p>
+            <div class="pq-col">
+              <button class="pq-btn pq-btn--go" type="button" data-do="retry" data-focus>Retry level</button>
+              <button class="pq-btn" type="button" data-do="title">Title screen</button>
+            </div>
+          </div>
+
+          <div class="pq-menu pq-panel pq-panel--win" data-screen="victory" hidden role="dialog" aria-labelledby="pq-v-title">
+            <h2 id="pq-v-title">World repaired</h2>
+            <p class="pq-new" data-out="v-new"></p>
+            <dl class="pq-score">
+              <div><dt>Final score</dt><dd data-out="v-score">0</dd></div>
+              <div><dt>Time</dt><dd data-out="v-time">00:00.0</dd></div>
+              <div><dt>Personal best</dt><dd data-out="v-best">–</dd></div>
+            </dl>
+            <div class="pq-row">
+              <button class="pq-btn pq-btn--go" type="button" data-do="again" data-focus>Play again</button>
+              <button class="pq-btn" type="button" data-do="share">Share score</button>
+              <button class="pq-btn" type="button" data-do="title">Title</button>
+            </div>
+            <p class="pq-small" data-out="share-status" role="status"></p>
+            <p class="pq-small">Scores are recorded on this device only. Created by RandyBuilds.tech</p>
+          </div>
+        </div>
+
+        <div class="pq-touch" data-touch-root>
+          <button class="pq-chip pq-tpause" type="button" data-do="pause"><span aria-hidden="true">II</span><span class="visually-hidden">Pause</span></button>
+          <div class="pq-touch__left">
+            <div class="pq-pad" data-touch="pad" role="presentation">
+              <span class="pq-pad__l" aria-hidden="true"></span>
+              <span class="pq-pad__r" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="pq-touch__right">
+            <div class="pq-tbtn pq-tbtn--act" data-touch="action" role="presentation"><span>ACT</span></div>
+            <div class="pq-tbtn pq-tbtn--jump" data-touch="jump" role="presentation"><span>JUMP</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="pq-rotate">Tip: turn your phone sideways for a bigger view.</p>
+    </div>
+
+    <main class="pq-info wrap" id="main">
+      <section aria-labelledby="pq-about">
+        <h2 id="pq-about">About PATCH QUEST</h2>
+        <p>A short retro platformer in three levels: Boot Sector, Circuit City and The Core, where a corrupted kernel waits. Repair terminals, collect energy cells, and avoid or fix the glitches in the way.</p>
+        <p>Everything is original and made for this game: the pixel art and the chiptune music are both generated in code. It runs in the browser with no plug-ins, accounts or tracking. Your best score stays on your device.</p>
+      </section>
+      <section aria-labelledby="pq-controls">
+        <h2 id="pq-controls">Controls</h2>
+        <dl class="pq-keys">
+          <div><dt>Move</dt><dd>Arrow keys or A / D · touch pad on the left</dd></div>
+          <div><dt>Jump</dt><dd>Space, W or Up · JUMP button</dd></div>
+          <div><dt>Repair or pulse</dt><dd>E or X · ACT button</dd></div>
+          <div><dt>Pause</dt><dd>Escape or P · the II button</dd></div>
+        </dl>
+      </section>
+      <p class="pq-credit">Created by <a href="/">RandyBuilds.tech</a> · <a href="/work/">More work</a> · <a href="/arcade/">Arcade</a></p>
+    </main>
+
+    <script>
+      import { startPatchQuest } from '../../game/main';
+      const root = document.querySelector<HTMLElement>('[data-pq]');
+      if (root) startPatchQuest(root);
+    </script>
+  </body>
+</html>

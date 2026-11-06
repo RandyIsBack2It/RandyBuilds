@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.8/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": false,
+    "color": {
+      "custom": false,
+      "customGradient": false,
+      "defaultPalette": false,
+      "defaultGradients": false,
+      "defaultDuotone": false,
+      "palette": [
+        { "slug": "bg", "name": "Background", "color": "#07111c" },
+        { "slug": "bg-2", "name": "Background 2", "color": "#0a1726" },
+        { "slug": "surface", "name": "Surface", "color": "#0e1d2e" },
+        { "slug": "line", "name": "Line", "color": "#24405c" },
+        { "slug": "text", "name": "Text", "color": "#e6edf5" },
+        { "slug": "text-soft", "name": "Soft text", "color": "#9db0c4" },
+        { "slug": "cobalt", "name": "Cobalt (fill)", "color": "#1d55c4" },
+        { "slug": "cobalt-hi", "name": "Cobalt (text)", "color": "#6ea0ff" },
+        { "slug": "orange", "name": "Signal orange (fill)", "color": "#f25c1f" },
+        { "slug": "orange-hi", "name": "Signal orange (text)", "color": "#ff8a57" },
+        { "slug": "sea", "name": "Sea", "color": "#19b38a" },
+        { "slug": "yellow", "name": "Yellow", "color": "#f5c531" }
+      ]
+    },
+    "layout": { "contentSize": "40rem", "wideSize": "78rem" },
+    "spacing": { "units": ["rem", "%", "px"] },
+    "typography": {
+      "customFontSize": false,
+      "dropCap": false,
+      "fontFamilies": [
+        {
+          "slug": "body", "name": "Schibsted Grotesk",
+          "fontFamily": "'Schibsted Grotesk', 'Helvetica Neue', Arial, system-ui, sans-serif",
+          "fontFace": [
+            { "fontFamily": "Schibsted Grotesk", "fontStyle": "normal", "fontWeight": "400 900", "fontDisplay": "swap", "src": ["file:./assets/fonts/schibsted-grotesk-latin-wght-normal.woff2"] },
+            { "fontFamily": "Schibsted Grotesk", "fontStyle": "italic", "fontWeight": "400 900", "fontDisplay": "swap", "src": ["file:./assets/fonts/schibsted-grotesk-latin-wght-italic.woff2"] }
+          ]
+        },
+        {
+          "slug": "mono", "name": "JetBrains Mono",
+          "fontFamily": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace",
+          "fontFace": [
+            { "fontFamily": "JetBrains Mono", "fontStyle": "normal", "fontWeight": "100 800", "fontDisplay": "swap", "src": ["file:./assets/fonts/jetbrains-mono-latin-wght-normal.woff2"] }
+          ]
+        }
+      ],
+      "fontSizes": [
+        { "slug": "small", "name": "Small", "size": "0.9rem" },
+        { "slug": "medium", "name": "Normal", "size": "1.125rem" },
+        { "slug": "large", "name": "Large", "size": "1.3rem" },
+        { "slug": "x-large", "name": "Extra large", "size": "clamp(1.55rem, 1.3rem + 1vw, 2rem)" }
+      ]
+    }
+  },
+  "styles": {
+    "color": { "background": "var(--wp--preset--color--bg)", "text": "var(--wp--preset--color--text)" },
+    "typography": { "fontFamily": "var(--wp--preset--font-family--body)", "fontSize": "var(--wp--preset--font-size--medium)", "lineHeight": "1.6" },
+    "elements": {
+      "link": { "color": { "text": "var(--wp--preset--color--cobalt-hi)" } },
+      "heading": { "typography": { "fontWeight": "800", "lineHeight": "1.15" }, "color": { "text": "var(--wp--preset--color--text)" } },
+      "button": {
+        "color": { "background": "var(--wp--preset--color--text)", "text": "var(--wp--preset--color--bg)" },
+        "typography": { "fontFamily": "var(--wp--preset--font-family--mono)", "fontSize": "0.9rem", "fontWeight": "600" },
+        "border": { "radius": "6px" }
+      }
+    },
+    "blocks": {
+      "core/code": { "typography": { "fontFamily": "var(--wp--preset--font-family--mono)" } },
+      "core/quote": { "border": { "left": { "color": "var(--wp--preset--color--sea)", "width": "3px", "style": "solid" } } }
+    }
+  }
+}

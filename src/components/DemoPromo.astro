@@ -1,0 +1,39 @@
+---
+// "Like what you see?" — closes every demo page (layouts/Concept.astro), after
+// the demo itself, so it never covers the interface. Same look on every demo;
+// its link names the demo in the inquiry form (/work/?similar=<slug>#similar).
+import { similarHref } from '../content/demos';
+import { site } from '../site';
+interface Props { slug: string; title: string }
+const { slug, title } = Astro.props;
+---
+<aside class="demo-promo" aria-labelledby="demo-promo-title">
+  <div class="demo-promo__inner">
+    <div class="demo-promo__text">
+      <p class="demo-promo__k">{title} · a concept demonstration by {site.name}</p>
+      <h2 id="demo-promo-title">Like what you see?</h2>
+      <p>Want something similar for your business? Let’s talk about what you need. It starts with a free project review by email, and you get a fixed price before any work begins.</p>
+    </div>
+    <div class="demo-promo__actions">
+      <a class="demo-promo__btn" href={similarHref(slug)}>Discuss a similar project</a>
+      <a class="demo-promo__link" href="/work/">See more work</a>
+    </div>
+  </div>
+</aside>
+<style>
+  /* Neutral RandyBuilds.tech colours, the same on every demo; nothing fixed or floating. */
+  .demo-promo { position: relative; z-index: 1; background: #0f2438; color: #f3f6f8; border-top: 4px solid #f5c531; font: 400 1rem/1.55 'Schibsted Grotesk', system-ui, sans-serif; }
+  .demo-promo__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem 2.5rem; max-width: 72rem; margin: 0 auto; padding: 2.25rem 1.25rem; }
+  .demo-promo__text { flex: 1 1 26rem; max-width: 42rem; }
+  .demo-promo__k { margin: 0 0 0.4rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em; color: #b9c8d6; }
+  .demo-promo h2 { margin: 0 0 0.5rem; font: 800 clamp(1.5rem, 1.2rem + 1.2vw, 2rem)/1.15 'Schibsted Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; color: #fff; }
+  .demo-promo__text > p:last-child { margin: 0; color: #dbe4ec; }
+  .demo-promo__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
+  .demo-promo__btn { display: inline-flex; align-items: center; min-height: 3rem; padding: 0.7rem 1.3rem; border-radius: 8px; background: #f5c531; color: #07111c; font-weight: 800; text-decoration: none; }
+  .demo-promo__btn:hover { background: #ffd95c; }
+  .demo-promo__link { display: inline-block; padding-block: 0.6rem; color: #f5c531; font-weight: 700; }
+  .demo-promo a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  /* Some demos keep a bar fixed to the bottom of small screens; leave room for it. */
+  @media (max-width: 61.25rem) { .demo-promo__inner { padding-bottom: 6.5rem; } }
+  @media (max-width: 30rem) { .demo-promo__actions, .demo-promo__btn { width: 100%; justify-content: center; } }
+</style>

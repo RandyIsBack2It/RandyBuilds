@@ -1,0 +1,45 @@
+---
+import Base from '../../layouts/Base.astro';
+import { projects, kindLabel } from '../../content/projects';
+import { similarHref } from '../../content/demos';
+import { versioned } from '../../lib/versioned';
+import Clip from '../../components/Clip.astro';
+
+export function getStaticPaths() {
+  return projects.filter((p) => p.notes?.length).map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+const { project: p } = Astro.props;
+// The first (desktop) screenshot is this page's social preview image.
+const cover = p.shots?.find((s) => s.device === 'desktop');
+---
+<Base title={p.kind === 'concept' ? `${p.title} (concept demonstration)` : p.title} description={p.summary} image={cover && { src: cover.src, width: cover.width, height: cover.height, alt: cover.alt }}>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="crumb"><a href="/work/">Work</a></p>
+      <span class="kind" data-kind={p.kind}>{kindLabel[p.kind]}</span>
+      <h1>{p.title}</h1>
+      <p class="lede">{p.summary}</p>
+      {p.demo?.solves && <p class="demo__solves">{p.demo.solves}</p>}
+      {p.demoUrl && <p class="demo__links"><a class="btn" href={p.demoUrl}>Open the demo</a><a class="textlink textlink--accent" href={similarHref(p.slug)}>Discuss a similar project</a></p>}
+      {p.liveUrl && <p class="demo__links"><a class="btn" href={p.liveUrl}>Visit {new URL(p.liveUrl).hostname.replace(/^www\./, '')}</a><a class="textlink textlink--accent" href={similarHref(p.slug)}>Discuss a similar project</a></p>}
+    </header>
+    <div class="detail">
+      <div class="prose">
+        <h2>What I built</h2>
+        <ul>{p.built.map((b) => <li>{b}</li>)}</ul>
+        {p.notes!.map((n) => (<><h2>{n.heading}</h2><p>{n.body}</p></>))}
+        {p.kind === 'concept' && <p class="note">A concept I designed and built for a fictional business. It is not client work. {p.samplePrices ? 'Prices are samples and forms don’t send anything.' : 'Forms don’t send anything.'}</p>}
+      </div>
+      <div class="detail__media">
+        {p.shots?.length ? (
+          <div class:list={['shots', { 'shots--stack': !p.shots.some((sh) => sh.device === 'mobile') }]}>
+            {p.shots.map((sh) => sh.video
+              ? <Clip video={sh.video} still={sh.src} width={sh.width} height={sh.height} label={sh.alt} />
+              : <img src={versioned(sh.src)} alt={sh.alt} width={sh.width} height={sh.height} loading="lazy" decoding="async" />)}
+          </div>
+        ) : null}
+        {p.shotNote && <p class="note">{p.shotNote}</p>}
+      </div>
+    </div>
+  </div>
+</Base>

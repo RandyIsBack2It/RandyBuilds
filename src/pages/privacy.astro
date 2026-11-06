@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, mailto } from '../site';
+---
+<Base title="Privacy" description="What happens to the information you send through randybuilds.tech: what I collect, how I use it, who handles it and how to have it deleted.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Privacy</h1>
+      <p class="lede">What happens to the information you send through this site. Last updated October 26, 2026.</p>
+    </header>
+    <div class="prose">
+      <h2>What I collect</h2>
+      <p>If you use the contact form, I receive your name, your email address, a link to your site or app if you give one, and your message. If you email me directly, I receive your email.</p>
+      <p>If you <a href="/resources/suggest/">suggest a resource</a> or report a problem with a listing, I receive your name, your email address and what you wrote.</p>
+      <p>Your answers in <a href="/explore/">Explore what’s possible</a> stay in your browser tab and are cleared when you close it. I receive them only if you include them in a contact form message.</p>
+      <h2>How I use it</h2>
+      <p>Only to reply to you, talk about your project and review resource suggestions. I don’t sell it, and I don’t add you to a mailing list.</p>
+      <h2>How it’s handled</h2>
+      <ul>
+        <li>Form messages are delivered to my inbox by Resend, an email delivery service.</li>
+        <li>A copy of each form message is kept on my own server.</li>
+        <li>Email to {site.contact.email} is delivered to a Zoho Mail mailbox.</li>
+        <li>Your IP address is checked briefly to stop spam. It isn’t stored with your message.</li>
+        <li>The forms use Cloudflare Turnstile to stop spam. It runs a short check in your browser, and Cloudflare sees technical details about your browser and connection for that check.</li>
+      </ul>
+      <h2>Visiting the site</h2>
+      <p>The site is delivered through Cloudflare. Cloudflare Web Analytics counts visits without cookies and without tracking you across other sites. Server logs are kept for a short time for security and troubleshooting.</p>
+      <p>This site doesn’t set any cookies.</p>
+      <h2>How long I keep it</h2>
+      <p>As long as I need it to reply and keep a record of our conversation. Ask, and I’ll delete it.</p>
+      <h2>Questions or requests</h2>
+      <p>Email <a href={mailto('Privacy request')}>{site.contact.email}</a> to see, correct or delete what I have.</p>
+    </div>
+  </div>
+</Base>

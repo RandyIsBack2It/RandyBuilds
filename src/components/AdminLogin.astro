@@ -1,0 +1,44 @@
+---
+// Sign-in for the share-link manager (/admin/links/), reached from the small
+// >_ mark in the footer. The master key is checked by the gate container
+// (gate/server.mjs, POST /api/admin/login), never in the browser; the manager
+// itself is served only after nginx's auth_request accepts the session.
+import Base from '../layouts/Base.astro';
+
+interface Props { state?: 'locked' | 'denied' | 'sealed' }
+const { state = 'locked' } = Astro.props;
+const error = state === 'denied' ? 'That key didn’t work. Check it and try again.'
+  : state === 'sealed' ? 'Too many attempts. Wait 15 minutes, then try again.' : '';
+---
+<Base title="Admin sign-in" description="Sign in to manage share links." noindex cta={false}>
+  <div class="wrap admin-login">
+    <section class="admin-term" aria-labelledby="admin-title">
+      <p class="admin-term__bar" aria-hidden="true"><span>admin@randybuilds:~$ ./share-links</span></p>
+      <div class="admin-term__body">
+        <p class="kicker"><b>~/</b>admin</p>
+        <h1 id="admin-title">Share links</h1>
+        <p class="lede">Sign in with the master key to copy a project’s share link.</p>
+        <form class="admin-term__form" method="post" action="/api/admin/login">
+          {error && <p class="field__error" id="key-error" role="alert">{error}</p>}
+          <div class="field">
+            <label for="key">Master key</label>
+            <input id="key" name="code" type="password" required minlength="4" maxlength="64" autocomplete="current-password" spellcheck="false"
+              aria-describedby={error ? 'key-error' : undefined} aria-invalid={error ? 'true' : undefined} autofocus={!!error} />
+          </div>
+          <button class="btn btn--orange" type="submit">Sign in</button>
+        </form>
+        <p class="admin-term__note">Already signed in? <a class="textlink" href="/admin/links/">Open the share links</a></p>
+      </div>
+    </section>
+  </div>
+</Base>
+<style>
+  .admin-login { display: grid; place-items: center; padding-block: clamp(6rem, 4rem + 8vw, 10rem) clamp(3rem, 2rem + 5vw, 6rem); }
+  .admin-term { width: min(100%, 30rem); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: linear-gradient(180deg, var(--surface-2), var(--bg-2)); box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.95); }
+  .admin-term__bar { margin: 0; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line); font: 500 0.75rem/1.2 var(--mono); color: var(--text-soft); background: rgba(7, 17, 28, 0.6); overflow-wrap: anywhere; }
+  .admin-term__body { display: grid; gap: 1rem; padding: clamp(1.25rem, 1rem + 2vw, 2rem); }
+  .admin-term__body h1 { font-size: var(--step-3); letter-spacing: -0.03em; line-height: 1; }
+  .admin-term__form { display: grid; gap: 1rem; margin-top: 0.5rem; }
+  .admin-term__note { color: var(--text-soft); font-size: 0.95rem; }
+  .admin-term__note .textlink { display: inline-block; padding-block: 0.3rem; }
+</style>

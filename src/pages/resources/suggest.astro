@@ -1,0 +1,108 @@
+---
+import Base from '../../layouts/Base.astro';
+import { resources, categories } from '../../content/resources';
+import { site } from '../../site';
+import '../../styles/resources.css';
+
+// Suggest a resource, or report a problem with a listing. The form posts to
+// the same mailer as the contact form (/api/contact, kind=resource|report):
+// one email to Randy, same honeypot, timing check and rate limit. Nothing is
+// published automatically; Randy checks the page and edits
+// content/resources.ts by hand. ?report=<id> (the "Report a problem" link on
+// each card) preselects a report about that listing.
+const listings = [...resources].sort((a, b) => a.name.localeCompare(b.name));
+---
+<Base
+  title="Suggest a resource"
+  description="Suggest a free resource for the RandyBuilds.tech resource directory, or report a broken link or a detail that has changed."
+  cta={false}
+>
+  <div class="page-head--color" data-color="sea">
+    <div class="wrap page-head">
+      <p class="crumb"><a href="/resources/">Resources</a></p>
+      <p class="kicker"><b>~/</b>resources / suggest</p>
+      <h1>Suggest a resource</h1>
+      <p class="lede">Know a free resource that helped you? Spotted a broken link or a detail that has changed? Tell me here.</p>
+    </div>
+  </div>
+
+  <section class="section" aria-labelledby="suggest-title">
+    <div class="wrap contact-grid suggest-grid">
+      <div class="contact-info">
+        <h2 id="suggest-title" class="suggest__h">What gets listed</h2>
+        <ul class="ticks suggest__rules">
+          <li>It’s free to use, or has a genuinely useful free plan. Say which.</li>
+          <li>It helps small business owners or people planning a website.</li>
+          <li>It comes from its original publisher, not a page of links to other pages.</li>
+          <li>It’s current and works without paying to unlock the useful part.</li>
+        </ul>
+        <h2 class="suggest__h">How it works</h2>
+        <ul class="promises">
+          <li><span class="band-chip" data-color="sea" aria-hidden="true"></span>Every suggestion is read and checked by hand</li>
+          <li><span class="band-chip" data-color="cobalt" aria-hidden="true"></span>Nothing is published automatically or under your name</li>
+          <li><span class="band-chip" data-color="orange" aria-hidden="true"></span>Not every suggestion is listed, and no one pays to be included</li>
+        </ul>
+        <p class="note">Please don’t suggest your own product as a customer would. If you made it, say so. Advertising, affiliate links and anything that needs a payment to be useful won’t be listed. Your name and email are used only to reply about your message.</p>
+      </div>
+
+      <div class="formcard suggest-card">
+        <form class="cform" method="post" action="/api/contact" data-contact data-sent-title="Resource submitted!" data-sent="Thanks for helping grow the resource hub. Your suggestion has been received and will be reviewed for inclusion." data-resource-form>
+          <fieldset class="field suggest__kind">
+            <legend>What is this about?</legend>
+            <label class="suggest__opt"><input type="radio" name="kind" value="resource" checked /> <span>Suggest a new resource</span></label>
+            <label class="suggest__opt"><input type="radio" name="kind" value="report" /> <span>Report a problem with a listing</span></label>
+          </fieldset>
+          <div class="field" data-for="resource">
+            <label for="cf-resource">Web address of the resource <span class="field__opt suggest__for">(for a suggestion)</span></label>
+            <input id="cf-resource" name="resource" type="url" inputmode="url" placeholder="https://" maxlength="300" />
+          </div>
+          <div class="field" data-for="report">
+            <label for="cf-listing">Which listing? <span class="field__opt suggest__for">(for a report)</span></label>
+            <select id="cf-listing" name="listing">
+              <option value="">Choose a listing</option>
+              {listings.map((r) => <option value={r.id}>{r.name} ({r.publisher})</option>)}
+            </select>
+          </div>
+          <div class="field" data-for="resource">
+            <label for="cf-category">Topic <span class="field__opt">(optional)</span></label>
+            <select id="cf-category" name="type">
+              <option value="">Not sure</option>
+              {categories.map((c) => <option>{c.title}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="cf-message">How did it help? For a report, what’s wrong?</label>
+            <p class="field__hint" id="cf-message-hint">A sentence or two is plenty.</p>
+            <textarea id="cf-message" name="message" rows="5" required minlength="10" maxlength="5000" aria-describedby="cf-message-hint"></textarea>
+          </div>
+          <div class="cform__row">
+            <div class="field">
+              <label for="cf-name">Your name</label>
+              <input id="cf-name" name="name" autocomplete="name" required maxlength="100" />
+            </div>
+            <div class="field">
+              <label for="cf-email">Email</label>
+              <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="254" />
+            </div>
+          </div>
+          <div class="cform__trap" aria-hidden="true">
+            <label for="cf-hpot">Leave this field empty</label>
+            <input id="cf-hpot" name="hpot" tabindex="-1" autocomplete="off" />
+          </div>
+          <input type="hidden" name="t" value="" />
+          <div class="cform__actions">
+            <button class="btn btn--orange" type="submit">Send</button>
+          </div>
+          <p class="cform__status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { startContactForm } from '../../scripts/contact';
+  import { startSuggestForm } from '../../scripts/suggest';
+  startSuggestForm();
+  startContactForm();
+</script>

@@ -1,0 +1,158 @@
+---
+import Concept from '../../layouts/Concept.astro';
+import '../../concepts/tidewater/style.css';
+const nav = [
+  { id: 'dispatch', label: 'Dispatch', icon: 'M4 5h16v14H4zM4 10h16M9 5v14' },
+  { id: 'request', label: 'Requests', icon: 'M4 13h4l2 3h4l2-3h4M4 13l2-8h12l2 8v6H4z' },
+  { id: 'estimates', label: 'Estimates', icon: 'M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6' },
+  { id: 'customers', label: 'Customers', icon: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21a7 7 0 0 1 14 0M17 11a3 3 0 1 0 0-6M22 20a5 5 0 0 0-4-5' },
+  { id: 'reports', label: 'Reports', icon: 'M4 20V10M10 20V4M16 20v-7M22 20H2' },
+];
+---
+<Concept title="Tidewater Mechanical Ops" description="Concept field-service software for a fictional heating, cooling and plumbing company: dispatch board, estimates, customers and reports. Designed and built by RandyBuilds.tech." slug="tidewater">
+  <div class="tw" data-tw>
+    <aside class="tw-side">
+      <div class="tw-brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 20c4 0 4-3 8-3s4 3 8 3 4-3 8-3" /><path d="M3 26c4 0 4-3 8-3s4 3 8 3 4-3 8-3" /><path d="M16 4l6 9H10z" /></svg>
+        <div><b>Tidewater</b><small>Mechanical · Ops</small></div>
+      </div>
+      <nav class="tw-nav" aria-label="App sections">
+        {nav.map((n) => <a href={`#${n.id}`} data-nav={n.id}><svg viewBox="0 0 24 24" aria-hidden="true"><path d={n.icon} /></svg><span>{n.label}</span></a>)}
+      </nav>
+      <div class="tw-me">
+        <span class="tw-av tw-av--me" aria-hidden="true">DO</span>
+        <div><b>Demo Office</b><small>Dispatcher</small></div>
+      </div>
+    </aside>
+
+    <div class="tw-main">
+      <header class="tw-bar">
+        <div>
+          <p class="tw-crumb" data-crumb>Dispatch</p>
+          <h1 class="tw-title" data-title>Today’s board</h1>
+          <p class="tw-fiction">Tidewater Mechanical is a fictional company. Everything here is sample data.</p>
+        </div>
+        <div class="tw-bar__right">
+          <p class="tw-clock"><span data-clock>Sample day</span></p>
+          <a class="tw-btn tw-btn--primary" href="#request" data-newjob>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>New request
+          </a>
+        </div>
+      </header>
+
+      <section class="tw-view" id="dispatch" data-view="dispatch" aria-label="Dispatch">
+        <div class="tw-kpis" data-kpis></div>
+        <div class="tw-dispatch">
+          <div class="tw-boardwrap">
+            <div class="tw-tray" data-tray aria-label="Unassigned jobs"></div>
+            <div class="tw-board" data-board></div>
+            <p class="tw-hint">Drag a job onto a technician’s row to assign or reschedule it, or back to the tray to unassign it. On a phone, tap a job and use Assignment.</p>
+          </div>
+          <div class="tw-mapcard">
+            <div class="tw-mapcard__head"><h2>Map</h2><p data-mapnote>All technicians</p></div>
+            <svg class="tw-map" viewBox="0 0 400 300" data-map role="group" aria-label="Map of the sample day’s jobs and technician vans"></svg>
+            <ul class="tw-techlist" data-techlist></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="tw-view" id="request" data-view="request" aria-label="Service request" hidden>
+        <div class="tw-req">
+          <div class="tw-card tw-req__info">
+            <p class="tw-eyebrow">Customer view · Tidewater’s website</p>
+            <h2>Request service</h2>
+            <p>Customers fill in this form on Tidewater’s website. The office uses the same form when someone calls.</p>
+            <dl class="tw-facts">
+              <div><dt>Service area</dt><dd>Cape Linden, North Linden, Whitcomb and Gull Harbor</dd></div>
+              <div><dt>Office hours</dt><dd>Monday to Friday, 7 am to 5 pm</dd></div>
+              <div><dt>Phone</dt><dd><a href="tel:+12075550100">(207) 555-0100</a></dd></div>
+            </dl>
+            <h3>What we work on</h3>
+            <ul class="tw-list">
+              <li>Heating: furnaces, boilers and heat pumps</li>
+              <li>Cooling: central air and mini-splits</li>
+              <li>Water heaters, tank and tankless</li>
+              <li>Plumbing repairs, leaks and drains</li>
+              <li>Quotes for new or replacement systems</li>
+            </ul>
+            <h3>What happens next</h3>
+            <ol class="tw-list">
+              <li>The office calls or emails you to arrange a time window.</li>
+              <li>A diagnostic visit is priced before we start.</li>
+              <li>Repairs and new systems get a written estimate, valid for 30 days.</li>
+              <li>If we find a hidden problem, we explain it and ask before doing extra work.</li>
+            </ol>
+            <p class="tw-alert">No heat, or water leaking right now? Call (207) 555-0100 instead of using this form.</p>
+            <p class="tw-muted">Sample details for a fictional company.</p>
+          </div>
+          <form class="tw-card tw-reqform" data-reqform novalidate aria-labelledby="tw-req-h">
+            <div data-req-body>
+              <h2 id="tw-req-h">Your request</h2>
+              <p class="tw-muted">Fields marked * are needed.</p>
+              <fieldset class="tw-fs"><legend>Contact</legend>
+                <div class="tw-grid2">
+                  <label>Name *<input name="name" autocomplete="name" required /></label>
+                  <label>Phone *<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(207) 555-0100" required /></label>
+                </div>
+                <label><span>Email <span class="tw-opt-l">(optional)</span></span><input name="email" type="email" autocomplete="email" /></label>
+              </fieldset>
+              <fieldset class="tw-fs"><legend>Where</legend>
+                <div class="tw-grid2">
+                  <label>Street address *<input name="street" autocomplete="street-address" required /></label>
+                  <label>Town *<select name="town" required><option value="">Choose a town</option><option>Cape Linden</option><option>North Linden</option><option>Whitcomb</option><option>Gull Harbor</option><option value="other">Somewhere else</option></select></label>
+                </div>
+                <p class="tw-note" data-town-note hidden>That’s outside our usual service area. You can still send the request, and the office will tell you whether we can help.</p>
+              </fieldset>
+              <fieldset class="tw-fs"><legend>What do you need? *</legend>
+                <div class="tw-pills" data-service>
+                  <label><input type="radio" name="service" value="noheat" /><span>No heat</span></label>
+                  <label><input type="radio" name="service" value="heating" /><span>Heating problem</span></label>
+                  <label><input type="radio" name="service" value="cooling" /><span>Cooling or heat pump</span></label>
+                  <label><input type="radio" name="service" value="water" /><span>Water heater</span></label>
+                  <label><input type="radio" name="service" value="leak" /><span>Leak or drain</span></label>
+                  <label><input type="radio" name="service" value="maint" /><span>Maintenance visit</span></label>
+                  <label><input type="radio" name="service" value="quote" /><span>Quote for a new system</span></label>
+                </div>
+                <p class="tw-note tw-note--bad" data-urgent-note hidden>If you have no heat or an active leak, please call (207) 555-0100. The office answers calls first.</p>
+              </fieldset>
+              <fieldset class="tw-fs"><legend>Your system <span class="tw-opt-l">(if you know)</span></legend>
+                <div class="tw-grid2">
+                  <label>Type<select name="system"><option value="">Not sure</option><option>Furnace</option><option>Boiler</option><option>Heat pump or mini-split</option><option>Central air</option><option>Tank water heater</option><option>Tankless water heater</option><option>Plumbing, not a system</option></select></label>
+                  <label>Make or model<input name="make" placeholder="On the label, if you can see it" /></label>
+                </div>
+              </fieldset>
+              <fieldset class="tw-fs"><legend>Timing</legend>
+                <div class="tw-grid2">
+                  <label>How soon? *<select name="timing" required><option value="">Choose</option><option>As soon as possible</option><option>This week</option><option>In the next two weeks</option><option>I’m flexible</option></select></label>
+                  <label>Visits work best<select name="window"><option>Any time</option><option>Mornings</option><option>Afternoons</option></select></label>
+                </div>
+              </fieldset>
+              <label>What’s happening? *<textarea name="desc" rows="4" maxlength="600" required placeholder="What you’ve noticed, when it started, any error codes or noises"></textarea></label>
+              <p class="tw-conflict" data-req-err role="alert"></p>
+              <button class="tw-btn tw-btn--primary tw-btn--block" type="submit">Send request</button>
+              <p class="tw-muted tw-small">Demo form: nothing is sent to a real company, and your details aren’t stored. In this demo, the request appears on the dispatch board.</p>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="tw-view" id="estimates" data-view="estimates" aria-label="Estimates" hidden>
+        <div class="tw-est" data-est></div>
+      </section>
+
+      <section class="tw-view" id="customers" data-view="customers" aria-label="Customers" hidden>
+        <div class="tw-cust" data-cust></div>
+      </section>
+
+      <section class="tw-view" id="reports" data-view="reports" aria-label="Reports" hidden>
+        <div class="tw-rep" data-rep></div>
+      </section>
+    </div>
+
+    <dialog class="tw-drawer" data-drawer aria-labelledby="tw-drawer-title"></dialog>
+  </div>
+</Concept>
+<script>
+  import { start } from '../../concepts/tidewater/app';
+  start();
+</script>

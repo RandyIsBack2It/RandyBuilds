@@ -1,0 +1,31 @@
+# ── resources.randybuilds.tech — the RandyBuilds.tech resource center (WordPress;
+# own Compose project randybuilds-resources, container randybuilds-resources on
+# the randybuilds-resources-edge network). Added 2026-10-27. Source and undo notes:
+# /mnt/nvme/randybuilds-tech/wordpress/. To undo: delete this block, reload.
+# Traffic path: visitor → Cloudflare (TLS) → cloudflared tunnel → Caddy :80
+# (this http:// block) → randybuilds-resources:80. Only tunnel/Cloudflare peers
+# reach it, so X-Forwarded-Proto is set to https for WordPress.
+http://resources.randybuilds.tech {
+    import trusted-peer-only
+    # Not used by this site: XML-RPC, the install screens and stray readme files.
+    @blocked path /xmlrpc.php /wp-admin/install.php /wp-admin/setup-config.php /readme.html /license.txt /wp-config.php /wp-config-docker.php
+    respond @blocked 404
+    request_body {
+        max_size 24MB
+    }
+    reverse_proxy randybuilds-resources:80 {
+        header_up -CF-Connecting-IP
+        header_up -X-Real-IP
+        header_up X-Forwarded-Proto https
+    }
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        -Server
+        -X-Powered-By
+    }
+    encode zstd gzip
+}

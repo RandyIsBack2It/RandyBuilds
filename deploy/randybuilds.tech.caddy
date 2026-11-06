@@ -1,0 +1,32 @@
+# ── randybuilds.tech — PROPOSED, NOT APPLIED ────────────────────────────────
+# Paste above the catch-all `http:// { … }` block at the end of
+# /mnt/nvme/unmaskd.app/infrastructure/compose/Caddyfile, only after Randy
+# approves launch. Independent site: own container (randybuilds-tech), own
+# network (randybuilds-edge), nothing shared with the unmaskd. blocks except
+# the existing `trusted-peer-only` snippet (Cloudflare/tunnel peers only).
+#
+# Traffic path: visitor → Cloudflare (TLS) → cloudflared tunnel → Caddy :80
+# (these http:// blocks) → randybuilds-tech:8080. No origin certificate is
+# needed for this path. nginx in the container already sets CSP and the
+# other security headers; HSTS is set here because only the edge knows the
+# visitor arrived over HTTPS.
+#
+# To undo: delete these two blocks and `caddy reload`.
+
+http://randybuilds.tech {
+    import trusted-peer-only
+    reverse_proxy randybuilds-tech:8080 {
+        header_up -CF-Connecting-IP
+        header_up -X-Real-IP
+    }
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        -Server
+    }
+    encode zstd gzip
+}
+
+http://www.randybuilds.tech {
+    import trusted-peer-only
+    redir https://randybuilds.tech{uri} permanent
+}

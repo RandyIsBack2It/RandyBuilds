@@ -1,0 +1,38 @@
+---
+// A short muted looping clip with a pause button (WCAG 2.2.2), and a still
+// image in its place under reduced motion. Optionally links to a page.
+import { versioned } from '../lib/versioned';
+import { cardSrcset } from '../lib/card-image';
+interface Props { video: string; still: string; width: number; height: number; label: string; href?: string; class?: string }
+const { video, still, width, height, label, href, class: cls } = Astro.props;
+const Tag = href ? 'a' : 'div';
+const webp = cardSrcset(still);
+---
+<div class:list={['clip', cls]} data-clip>
+  <Tag class="clip__frame" href={href} tabindex={href ? -1 : undefined} aria-hidden={href ? 'true' : undefined}>
+    <video src={versioned(video)} poster={versioned(still)} width={width} height={height} muted loop playsinline autoplay preload="metadata" aria-label={href ? undefined : label}></video>
+    <picture>
+      {webp && <source type="image/webp" srcset={webp} sizes="(min-width: 62rem) 36rem, 100vw" />}
+      <img class="clip__still" src={versioned(still)} alt={href ? '' : label} width={width} height={height} loading="lazy" decoding="async" />
+    </picture>
+  </Tag>
+  <button class="clip__toggle" type="button" aria-label={`Pause ${label}`} data-label={label}>pause</button>
+</div>
+<script>
+  // Pause/play per clip; never play under reduced motion.
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (const clip of document.querySelectorAll<HTMLElement>('[data-clip]')) {
+    const video = clip.querySelector('video');
+    const btn = clip.querySelector<HTMLButtonElement>('.clip__toggle');
+    if (!video || !btn) continue;
+    if (still) { video.pause(); video.removeAttribute('autoplay'); continue; }
+    const sync = () => {
+      const label = btn.dataset.label;
+      btn.textContent = video.paused ? 'play' : 'pause';
+      btn.setAttribute('aria-label', `${video.paused ? 'Play' : 'Pause'} ${label}`);
+    };
+    btn.addEventListener('click', () => { if (video.paused) video.play(); else video.pause(); });
+    video.addEventListener('play', sync);
+    video.addEventListener('pause', sync);
+  }
+</script>

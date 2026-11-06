@@ -1,0 +1,13 @@
+/* The suggest-a-resource form (/resources/suggest/). The listings themselves
+   are the WordPress site at /resources/ (wordpress/). */
+
+.suggest-grid { align-items: start; }
+@media (min-width: 60rem) { .suggest-grid { align-items: start; } }
+.suggest__h { font-size: var(--step-2); }
+.suggest__rules { margin-bottom: 0.5rem; }
+.suggest-card::before { content: 'suggest_resource.txt'; }
+.suggest__kind { margin: 0; padding: 0; border: 0; min-width: 0; display: grid; gap: 0.5rem; }
+.suggest__kind legend { padding: 0; margin-bottom: 0.4rem; font-weight: 700; }
+.suggest__opt { display: flex; align-items: center; gap: 0.7rem; min-height: 2.75rem; padding: 0.5rem 0.9rem; border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+.suggest__opt:has(input:checked) { border-color: var(--sea); background: rgba(25, 179, 138, 0.08); }
+.suggest__opt input { width: 1.15rem; height: 1.15rem; accent-color: var(--sea); }

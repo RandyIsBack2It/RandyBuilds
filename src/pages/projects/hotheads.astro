@@ -1,0 +1,33 @@
+---
+// Hotheads (Randy, 2026-11-04): an Android messaging app in development. Unlisted on purpose:
+// not in the header nav, sitemap, /work/ or the share-link rotation; reachable by its direct URL.
+// No download, store link or release date: it isn't available yet.
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Hotheads" description="Hotheads is an Android messaging app in development that adds a short pause before each text is sent." noindex cta={false}>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="hh-status">In development</p>
+      <h1>Hotheads</h1>
+      <p class="lede">An Android texting app that adds a short pause before each message is sent.</p>
+    </header>
+    <div class="prose">
+      <h2>The idea</h2>
+      <p>You write a text. Hotheads holds it for 20 seconds. You can edit it or delete it while you wait. When the pause ends, you still choose whether to send it.</p>
+      <p>A small flame character, the Hothead, shows how the pause is going. It starts out hot and cools down. While the message sends, it stands in as your avatar. Once the message is sent, it turns into your photo.</p>
+      <h2>What it’s built to do</h2>
+      <ul>
+        <li>Work as the phone’s default texting app, for SMS and MMS.</li>
+        <li>Handle conversations, groups, photos, drafts, search and notifications.</li>
+        <li>Never send a message without a tap from you.</li>
+        <li>Use your own keyboard, so your languages, emoji and voice typing still work.</li>
+        <li>Offer a reduced-motion option and follow the phone’s motion setting.</li>
+      </ul>
+      <h2>Status</h2>
+      <p>Hotheads is in development. It is not available to download yet.</p>
+    </div>
+  </div>
+</Base>
+<style>
+  .hh-status { display: inline-block; font-size: var(--step--1); font-weight: 600; letter-spacing: .02em; padding: .2rem .7rem; border-radius: 999px; border: 1px solid currentColor; color: var(--text-soft); margin: 0 0 .75rem; }
+</style>

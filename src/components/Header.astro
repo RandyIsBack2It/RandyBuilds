@@ -1,0 +1,108 @@
+---
+import Wordmark from './Wordmark.astro';
+import { nav } from '../site';
+const here = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <Wordmark />
+    <nav class="site-nav" aria-label="Main">
+      <button class="site-nav__toggle" type="button" aria-expanded="false" aria-controls="site-nav-list">
+        <span class="site-nav__bars" aria-hidden="true"></span>
+        Menu
+      </button>
+      <ul id="site-nav-list" class="site-nav__list">
+        {nav.map((item, i) => (
+          <li><a href={item.href} data-section={item.section} aria-current={here.startsWith(`/${item.section}/`) ? 'page' : undefined}><span class="n" aria-hidden="true">0{i + 1}</span>{item.label}</a></li>
+        ))}
+        <li class="site-nav__cta"><a class="btn btn--small btn--orange" href="/#contact">Start a project</a></li>
+        <li class="site-nav__admin">
+          <!-- Admin sign-in (scripts/admin-key.ts), at the bottom of the phone menu drawer (Randy, 2026-10-27; wide screens use the footer’s, Footer.astro): the >_ mark opens a prompt in place, like the hero’s (“who are you?”), and the key is
+               typed where the cursor was. The gate checks it server-side (POST /api/admin/login). Without JavaScript there is no drawer,
+               so it stays hidden; /admin/ still signs in. -->
+          <div class="admin-key">
+            <a class="admin-key__mark admin-key__link" href="/admin/" rel="nofollow" aria-label="Admin sign-in">
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /><path class="admin-key__under" d="M9 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+            </a>
+            <form class="admin-key__form" method="post" action="/api/admin/login" hidden>
+              <button class="admin-key__mark" type="button" aria-label="Admin sign-in" aria-expanded="false" aria-controls="admin-key-menu">
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /><path class="admin-key__under" d="M9 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+              </button>
+              <span class="admin-key__cmd" aria-hidden="true">who are you?&nbsp;</span>
+              <label class="visually-hidden" for="admin-key-menu">Who are you? (admin key)</label>
+              <input class="admin-key__field" id="admin-key-menu" name="code" type="password" maxlength="64"
+                autocomplete="current-password" spellcheck="false" tabindex="-1" />
+              <p class="visually-hidden" role="status" data-admin-status></p>
+            </form>
+          </div>
+        </li>
+      </ul>
+      <span class="site-nav__ind" aria-hidden="true"></span>
+    </nav>
+  </div>
+</header>
+
+<script>
+  import { startAdminKey } from '../scripts/admin-key';
+  startAdminKey();
+
+  // Small-screen disclosure menu. Without JS the list simply shows.
+  const nav = document.querySelector<HTMLElement>('.site-nav');
+  const toggle = nav?.querySelector<HTMLButtonElement>('.site-nav__toggle');
+  if (nav && toggle) {
+    document.documentElement.classList.add('js');
+    // Full-screen on phones: while open, the page behind is inert (no focus, no scroll).
+    const behind = () => [...document.querySelectorAll<HTMLElement>('body > :not(.site-header):not(script):not(.skip)')];
+    const set = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('is-open', open);
+      document.documentElement.classList.toggle('nav-open', open);
+      for (const el of behind()) el.inert = open;
+    };
+    // Back to normal if the screen grows past the phone layout while open.
+    matchMedia('(min-width: 62.01rem)').addEventListener('change', (e) => { if (e.matches) set(false); });
+    toggle.addEventListener('click', () => set(toggle.getAttribute('aria-expanded') !== 'true'));
+    nav.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) set(false); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) { set(false); toggle.focus(); }
+    });
+    document.addEventListener('click', (e) => {
+      if (nav.classList.contains('is-open') && !nav.contains(e.target as Node)) set(false);
+    });
+  }
+
+  // Home page: mark the section in view and slide the indicator under its link.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.site-nav__list a[data-section]')];
+  const ind = document.querySelector<HTMLElement>('.site-nav__ind');
+  // A section belongs to the nav item named by its id, or by data-nav (Work spans two panels).
+  const sections = [...document.querySelectorAll<HTMLElement>('main section[id], main section[data-nav]')];
+  const navOf = (s: HTMLElement) => s.dataset.nav ?? s.id;
+  if (nav && ind && links.length && sections.some((s) => links.some((a) => a.dataset.section === navOf(s)))) {
+    let active: HTMLAnchorElement | undefined;
+    const place = () => {
+      if (!active) { ind.classList.remove('is-on'); return; }
+      const box = nav.getBoundingClientRect(), r = active.getBoundingClientRect();
+      if (!ind.classList.contains('is-on')) ind.classList.add('is-jump');
+      ind.style.width = `${r.width}px`;
+      ind.style.transform = `translateX(${r.left - box.left}px)`;
+      ind.classList.add('is-on');
+      requestAnimationFrame(() => ind.classList.remove('is-jump'));
+    };
+    const spy = () => {
+      // The section crossing a line 35% down the screen.
+      const line = innerHeight * 0.35;
+      const hit = sections.find((s) => { const r = s.getBoundingClientRect(); return r.top <= line && r.bottom > line; });
+      const next = hit ? links.find((a) => a.dataset.section === navOf(hit)) : undefined;
+      if (next === active) return;
+      active?.removeAttribute('aria-current');
+      next?.setAttribute('aria-current', 'location');
+      active = next;
+      place();
+    };
+    let queued = false;
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; spy(); }); } }, { passive: true });
+    addEventListener('resize', place);
+    document.fonts.ready.then(place);
+    spy();
+  }
+</script>

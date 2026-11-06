@@ -1,0 +1,127 @@
+/* PATCH QUEST page. The game fills the screen; menus and touch controls sit
+   over (or, on a phone held upright, under) the pixel canvas. */
+.pq-page { background: #050920; overscroll-behavior: none; }
+.pq {
+  --pq-ink: #eef3fb; --pq-cyan: #47f3ff; --pq-orange: #ff8c2e; --pq-panel: #0a1236; --pq-line: #2a4f8f;
+  position: relative; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
+  height: 100vh; height: 100svh; min-height: 18rem;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  background: radial-gradient(60% 50% at 50% 45%, #0f1c4a 0%, #050920 70%);
+  color: var(--pq-ink); font-family: var(--mono);
+}
+.pq:fullscreen { background: #050920; }
+.pq-bar { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.35rem 0.75rem; min-height: 3rem; }
+.pq-bar__home { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.75rem; color: var(--pq-cyan); font: 600 0.85rem/1 var(--mono); text-decoration: none; white-space: nowrap; }
+.pq-bar__home:hover { text-decoration: underline; }
+.pq-bar__title { font: 800 0.95rem/1 var(--mono); letter-spacing: 0.12em; color: var(--pq-orange); margin: 0; }
+.pq-bar__ctl { display: flex; gap: 0.35rem; flex-wrap: nowrap; }
+.pq-chip { min-height: 2.75rem; min-width: 2.75rem; padding: 0.3rem 0.65rem; border: 2px solid var(--pq-line); border-radius: 4px; background: #0a1236; color: var(--pq-ink); font: 600 0.78rem/1 var(--mono); cursor: pointer; white-space: nowrap; }
+.pq-chip[data-toggle][aria-pressed='false'] { color: #8796b4; border-style: dashed; }
+.pq-chip:hover { border-color: var(--pq-cyan); }
+.pq-chip--pause { font-weight: 800; letter-spacing: 0.05em; }
+@media (max-width: 40rem) { .pq-bar__title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } .pq-bar__home { font-size: 0.78rem; } }
+/* Narrow screens: the on/off word goes (the dashed border still shows "off"), and the bar may wrap. */
+@media (max-width: 34rem) {
+  .pq-bar { flex-wrap: wrap; justify-content: center; padding-inline: 0.5rem; row-gap: 0.15rem; }
+  .pq-bar__ctl { flex-wrap: wrap; justify-content: center; }
+  .pq-chip [data-state] { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .pq-chip { padding-inline: 0.55rem; }
+}
+
+.pq-stage { position: relative; display: grid; place-items: center; min-height: 0; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.pq-screen { position: relative; width: 320px; height: 180px; box-shadow: 0 0 0 2px #1b2f66, 0 0 40px -6px rgba(71, 243, 255, 0.35); background: #050920; }
+.pq-screen canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+.pq-noscript { position: absolute; inset: 0; display: grid; place-items: center; padding: 1rem; text-align: center; }
+
+/* Menus */
+.pq-menus { position: absolute; inset: 0; z-index: 3; display: grid; place-items: center; pointer-events: none; padding: 0.5rem; }
+.pq-menu { pointer-events: auto; }
+.pq-menu--title { position: absolute; left: 50%; top: calc(50% - var(--pq-scale, 1) * 2px); transform: translate(-50%, 0); display: grid; gap: 0.4rem; justify-items: center; width: max-content; max-width: calc(100% - 1rem); }
+@media (max-width: 30rem) { .pq-menu--title .pq-btn { min-width: 0; padding-inline: 0.7rem; font-size: 0.8rem; } }
+.pq-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.pq-col { display: grid; gap: 0.5rem; }
+.pq-panel {
+  width: min(32rem, 100%); max-height: 100%; overflow: auto; overscroll-behavior: contain; padding: 1.1rem 1.25rem; display: grid; gap: 0.8rem;
+  background: rgba(8, 14, 44, 0.96); border: 2px solid var(--pq-cyan);
+  box-shadow: 0 0 0 2px #050920, 0 0 0 4px #1b2f66, 0 0 40px -10px rgba(71, 243, 255, 0.6);
+  font-size: 0.95rem; line-height: 1.5; touch-action: pan-y;
+}
+.pq-panel h2 { font: 800 1.15rem/1.2 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pq-orange); margin: 0; }
+.pq-panel h3 { font: 700 0.9rem/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--pq-cyan); margin: 0.3rem 0 0; }
+.pq-panel p { margin: 0; }
+.pq-panel--win { border-color: var(--pq-orange); }
+.pq-list { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.2rem; }
+.pq-keys { margin: 0; display: grid; gap: 0.25rem; }
+.pq-keys div { display: grid; grid-template-columns: minmax(7rem, 0.8fr) 1.2fr; gap: 0.75rem; }
+.pq-keys dt { color: #9db0c4; }
+.pq-keys dd { margin: 0; font-weight: 600; }
+.pq-btn { min-height: 2.9rem; min-width: 6rem; padding: 0.55rem 1.1rem; border: 2px solid var(--pq-cyan); border-radius: 3px; background: #0d1a46; color: var(--pq-ink);
+  font: 700 0.9rem/1.1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; box-shadow: 0 3px 0 #050920; }
+.pq-btn:hover { background: #142a66; }
+.pq-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #050920; }
+.pq-btn--go { background: var(--pq-orange); border-color: #ffd2a8; color: #0d1020; }
+.pq-btn--go:hover { background: #ffa152; }
+.pq-btn--toggle[aria-pressed='false'] { border-style: dashed; color: #9db0c4; }
+.pq :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+.pq-small { font-size: 0.8rem; color: #b8c6dd; text-align: center; text-shadow: 0 1px 0 #050920; }
+.pq-menu--title .pq-small { background: rgba(5, 9, 32, 0.75); padding: 0.15rem 0.5rem; }
+.pq-tally { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; }
+.pq-tally li { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dashed var(--pq-line); padding-block: 0.2rem; }
+.pq-tally li span:last-child { color: #39ff88; font-weight: 700; }
+.pq-total { font-size: 1.05rem; }
+.pq-total b, .pq-score dd { color: var(--yellow); }
+.pq-score { margin: 0; display: grid; gap: 0.3rem; }
+.pq-score div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dashed var(--pq-line); padding-block: 0.15rem; }
+.pq-score dd { margin: 0; font-weight: 800; }
+.pq-new:empty { display: none; }
+.pq-new { color: #39ff88; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Touch controls: only on touch screens, only while playing. */
+.pq-touch { display: none; }
+.pq.is-touch:is([data-mode='play'], [data-mode='intro'], [data-mode='dying']) .pq-touch { display: flex; }
+.pq-touch { position: absolute; inset: 0; z-index: 2; justify-content: space-between; align-items: flex-end; padding: 0 0.5rem 0.6rem; pointer-events: none; }
+.pq-touch > div { pointer-events: auto; display: flex; align-items: flex-end; gap: 0.7rem; }
+.pq-pad { position: relative; width: 9.5rem; height: 5rem; border-radius: 1.25rem; display: flex; touch-action: none; background: rgba(13, 26, 70, 0.55); border: 2px solid rgba(71, 243, 255, 0.45); }
+.pq-pad span { flex: 1; display: grid; place-items: center; }
+.pq-pad span::before { content: ''; width: 0; height: 0; border-block: 0.85rem solid transparent; }
+.pq-pad__l::before { border-right: 1.2rem solid rgba(238, 243, 251, 0.85); }
+.pq-pad__r::before { border-left: 1.2rem solid rgba(238, 243, 251, 0.85); }
+.pq-pad.is-left .pq-pad__l, .pq-pad.is-right .pq-pad__r { background: rgba(71, 243, 255, 0.3); border-radius: 1rem; }
+.pq-tbtn { display: grid; place-items: center; border-radius: 50%; touch-action: none; font: 800 0.8rem/1 var(--mono); letter-spacing: 0.06em; color: var(--pq-ink);
+  background: rgba(13, 26, 70, 0.55); border: 2px solid rgba(71, 243, 255, 0.45); }
+.pq-tbtn--jump { width: 5.4rem; height: 5.4rem; border-color: rgba(255, 140, 46, 0.8); background: rgba(255, 140, 46, 0.28); }
+.pq-tbtn--act { width: 4.2rem; height: 4.2rem; margin-bottom: 2.4rem; }
+.pq-tbtn.is-down, .pq-pad.is-down { background: rgba(71, 243, 255, 0.45); }
+.pq-tbtn--jump.is-down { background: rgba(255, 140, 46, 0.6); }
+
+/* Phone held upright: game on top, controls underneath (never over the picture). */
+.pq-rotate { display: none; margin: 0; padding: 0.4rem 1rem 0.6rem; font-size: 0.8rem; color: #9db0c4; text-align: center; }
+.pq.is-portrait.is-touch .pq-rotate { display: block; }
+.pq.is-portrait.is-touch .pq-stage { place-items: start center; padding-top: 0.25rem; }
+.pq.is-portrait.is-touch .pq-touch { top: calc(var(--pq-scale, 1) * 180px + 1rem); align-items: center; padding-bottom: 0; }
+.pq.is-portrait.is-touch .pq-tbtn--act { margin-bottom: 0; }
+.pq.is-portrait.is-touch .pq-menu--title { top: calc(0.25rem + var(--pq-scale, 1) * 88px); }
+
+/* Below the game */
+.pq-info { display: grid; gap: 1.75rem; padding-block: 2.5rem 3rem; max-width: 52rem; font-size: 1rem; }
+.pq-info h2 { font: 800 1.2rem/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--orange-hi); margin-bottom: 0.6rem; }
+.pq-info p { color: var(--text-soft); max-width: 44em; }
+.pq-info p + p { margin-top: 0.6rem; }
+.pq-info a { color: var(--cobalt-hi); font-weight: 700; display: inline-block; padding-block: 0.3rem; }
+.pq-credit { font-family: var(--mono); font-size: 0.9rem; }
+
+@media (prefers-reduced-motion: reduce) { .pq-btn:active { transform: none; } }
+.pq-page main.pq-info > :first-child { padding-top: 0; }
+
+/* Hidden until the script sizes it, so the resize isn't a layout shift. */
+.pq:not(.is-fitted) .pq-screen { visibility: hidden; }
+
+/* Landscape play on a touch screen: the game fills the screen (the page bar hides; the
+   canvas fills the height) and the controls sit over the bottom corners. Pause stays
+   reachable in the top corner; pausing brings the bar back. */
+.pq.is-immersive { height: 100vh; height: 100dvh; min-height: 0; grid-template-rows: minmax(0, 1fr); background: #000; }
+.pq.is-immersive .pq-bar, .pq.is-immersive .pq-rotate { display: none; }
+.pq.is-immersive .pq-screen { box-shadow: none; }
+.pq.is-immersive .pq-pad, .pq.is-immersive .pq-tbtn { opacity: 0.85; }
+.pq-tpause { display: none; }
+.pq.is-immersive .pq-tpause { display: block; position: absolute; top: 0.4rem; right: 0.4rem; pointer-events: auto; background: rgba(10, 18, 54, 0.7); }

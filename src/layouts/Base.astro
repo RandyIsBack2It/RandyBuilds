@@ -1,0 +1,128 @@
+---
+import '../styles/global.css';
+import { site, isPreview, schemaIds } from '../site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { versioned } from '../lib/versioned';
+import font from '../fonts/schibsted-grotesk-latin-wght-normal.woff2?url';
+import mono from '../fonts/jetbrains-mono-latin-wght-normal.woff2?url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Social preview image (a /public path); defaults to /og.png. */
+  image?: { src: string; width: number; height: number; alt: string };
+  /** Extra JSON-LD objects for this page. */
+  schema?: Record<string, unknown>[];
+  noindex?: boolean;
+  /** Closing "let’s talk" band above the footer. */
+  cta?: boolean;
+  /** A service slug: the band's button opens the home form with it noted. */
+  ctaTopic?: string;
+}
+
+const { title, description = site.description, image, schema = [], noindex = false, cta = true, ctaTopic } = Astro.props;
+// Search results show about 60 characters: the brand suffix is added only when it fits.
+const suffix = ` | ${site.name}`;
+const fullTitle = !title ? 'RandyBuilds.tech | Web Design & Development' : title.length + suffix.length <= 60 ? title + suffix : title;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const og = image ? { ...image, src: versioned(image.src) } : { src: '/og.png', width: 1200, height: 630, alt: 'RandyBuilds.tech — Have an idea? Let’s build it.' };
+const ogImage = new URL(og.src, site.url).href;
+
+// One linked graph: the site, the business behind it (named RandyBuilds.tech) and Randy.
+// Only confirmed facts: Maine-based (site.owned); no street address, registration or ratings.
+const baseSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': schemaIds.website,
+        name: site.name,
+        url: `${site.url}/`,
+        publisher: { '@id': schemaIds.business },
+      },
+      {
+        '@type': 'ProfessionalService',
+        '@id': schemaIds.business,
+        name: site.name,
+        url: `${site.url}/`,
+        description: site.description,
+        logo: new URL('/icon-512.png', site.url).href,
+        image: new URL('/og.png', site.url).href,
+        address: { '@type': 'PostalAddress', addressRegion: 'ME', addressCountry: 'US' },
+        founder: { '@id': schemaIds.person },
+        ...(site.contact.emailVerified ? { email: site.contact.email } : {}),
+      },
+      {
+        '@type': 'Person',
+        '@id': schemaIds.person,
+        name: site.owner,
+        url: `${site.url}/`,
+        jobTitle: 'Independent web developer',
+        worksFor: { '@id': schemaIds.business },
+      },
+    ],
+  },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {/* A noindex page names no canonical: the two would send search engines mixed signals. */}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    {(isPreview || noindex) && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#07111c" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Hashed URLs: browsers keep tab icons in their own cache, so a new mark needs a new URL. -->
+    <link rel="icon" href={versioned('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={versioned('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={versioned('/apple-touch-icon.png')} />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+    <!-- The mono face sets buttons and labels above the fold; preloading it avoids a late swap. -->
+    <link rel="preload" href={mono} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content={String(og.width)} />
+    <meta property="og:image:height" content={String(og.height)} />
+    <meta property="og:image:alt" content={og.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {[...baseSchema, ...schema].map((s) => (
+      <script type="application/ld+json" set:html={JSON.stringify(s)} />
+    ))}
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    {isPreview && (
+      <aside class="preview-note" aria-label="Preview notice">
+        Preview build. The contact address isn’t active yet.
+      </aside>
+    )}
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    {cta && <CtaBand topic={ctaTopic} />}
+    <Footer />
+    <script>
+      import { startParallax } from '../scripts/parallax';
+      import { startToTop } from '../scripts/to-top';
+      startParallax();
+      startToTop();
+    </script>
+  </body>
+</html>

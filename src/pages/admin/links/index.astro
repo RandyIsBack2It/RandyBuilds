@@ -1,0 +1,54 @@
+---
+// Share-link manager. Built with the site, then moved out of the public root
+// (Dockerfile → /usr/share/nginx/private/admin/links/); nginx serves it only
+// after the gate accepts a master-key session. Every portfolio project in its
+// /work/ card, each with its share link (content/showcase.ts).
+import Base from '../../../layouts/Base.astro';
+import DemoCard from '../../../components/DemoCard.astro';
+import ShareLink from '../../../components/ShareLink.astro';
+import { groups } from '../../../content/demos';
+import { showcase, sharePath } from '../../../content/showcase';
+import { site } from '../../../site';
+const link = (slug: string) => new URL(sharePath(slug), site.url).href;
+---
+<Base title="Share links" description="Share links for each project." noindex cta={false}>
+  <div class="page-head--color" data-color="orange">
+    <div class="wrap page-head">
+      <p class="kicker"><b>~/</b>admin / share links</p>
+      <h1>Share links</h1>
+      <p class="lede">Each link opens the home page with that project featured in What I’ve built.</p>
+      <p class="demo-head__note">Anyone with a link can open it. The links aren’t listed or indexed, but they aren’t private. They name only the project.</p>
+      <form class="admin-out" method="post" action="/api/admin/logout">
+        <button class="btn btn--small btn--ghost" type="submit">Sign out</button>
+      </form>
+    </div>
+  </div>
+
+  {groups.map((g, i) => {
+    const list = showcase.filter((d) => d.group === g.id).sort((a, b) => a.order - b.order);
+    return list.length > 0 && (
+      <section id={g.id} class:list={['section', 'work-section', { 'section--fog': i % 2 === 1 }]} aria-labelledby={`${g.id}-title`}>
+        <div class="wrap">
+          <div class="head">
+            <div>
+              <p class="kicker"><b>0{i + 1}</b> {g.kicker}</p>
+              <h2 id={`${g.id}-title`}>{g.title}</h2>
+            </div>
+          </div>
+          <ul class="work-grid demo-grid">
+            {list.map((d) => (
+              <DemoCard demo={d}>
+                <ShareLink slug={d.slug} title={d.title} url={link(d.slug)} />
+              </DemoCard>
+            ))}
+          </ul>
+        </div>
+      </section>
+    );
+  })}
+</Base>
+
+<script>
+  import { startShare } from '../../../scripts/share';
+  startShare();
+</script>

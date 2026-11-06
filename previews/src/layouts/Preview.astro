@@ -1,0 +1,31 @@
+---
+// Bare document for a private client preview. Each preview brings its own
+// styles and fonts; this only adds the RandyBuilds.tech banner and keeps the
+// page out of search engines (nginx also sends X-Robots-Tag: noindex).
+import PreviewBanner from '../components/PreviewBanner.astro';
+
+interface Props { title: string; description: string; themeColor?: string }
+const { title, description, themeColor = '#ffffff' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content={themeColor} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="rbt-skip" href="#main">Skip to content</a>
+    <PreviewBanner />
+    <slot />
+  </body>
+</html>
+<style is:global>
+  .rbt-skip { position: absolute; left: 1rem; top: -5rem; z-index: 100; padding: 0.7rem 1rem; background: #fff; color: #111; font: 600 1rem/1.2 system-ui, sans-serif; border: 2px solid #111; }
+  .rbt-skip:focus { top: 1rem; }
+</style>

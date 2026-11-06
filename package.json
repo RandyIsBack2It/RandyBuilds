@@ -1,0 +1,27 @@
+{
+  "name": "randybuilds-tech",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Randy Builds Tech — independent portfolio and client site (static Astro, served by nginx).",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && astro build --root previews",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node tests/run.mjs",
+    "assets": "node scripts/render-assets.mjs",
+    "cards": "node scripts/card-images.mjs"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "dependencies": {
+    "astro": "^7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "axe-core": "^4.14.0",
+    "lighthouse": "^13.5.0",
+    "playwright-core": "1.64.0-alpha-2026-09-14",
+    "typescript": "^5.9.3"
+  }
+}

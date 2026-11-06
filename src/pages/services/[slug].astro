@@ -1,0 +1,84 @@
+---
+import Base from '../../layouts/Base.astro';
+import DemoCard from '../../components/DemoCard.astro';
+import { services } from '../../content/services';
+import { demoBySlug } from '../../content/demos';
+import { priceGuides } from '../../content/pricing';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+const { service: s } = Astro.props;
+// Related work as the same cards as /work/, opening the working demo.
+const related = s.work.map((slug) => demoBySlug[slug]).filter(Boolean);
+const contact = `/?topic=${s.slug}#contact`;
+const others = services.filter((o) => o.slug !== s.slug);
+const guides = priceGuides.filter((g) => g.services.includes(s.slug));
+---
+<Base title={s.title} description={s.meta ?? `${s.line} Fixed-price projects from RandyBuilds.tech.`} ctaTopic={s.slug}>
+  <div class="page-head--color" data-color={s.color}>
+    <div class="wrap page-head">
+      <p class="crumb"><a href="/services/">Services</a></p>
+      <h1>{s.title}</h1>
+      <p class="lede">{s.intro}</p>
+      <p class="demo__links"><a class="btn btn--orange" href={contact}>Start a project</a><a class="textlink" href="/explore/">Not sure this is the right service? Explore ideas</a></p>
+    </div>
+  </div>
+
+  <section class="section" aria-label={`About ${s.short.toLowerCase()}`}>
+    <div class="wrap svc-detail" data-color={s.color}>
+      <div>
+        <h2>A good fit if</h2>
+        <ul class="plain-list">{s.goodFor.map((g) => <li>{g}</li>)}</ul>
+      </div>
+      {s.included ? (
+        <div>
+          <h2>{s.includedTitle ?? 'Every site includes'}</h2>
+          <ul class="ticks">{s.included.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      ) : s.examples ? (
+        <div>
+          <h2>{s.examplesTitle ?? 'For example'}</h2>
+          <ul class="ticks">{s.examples.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      ) : null}
+      {s.notes && (
+        <div class="svc-notes">
+          {s.notes.map((n) => (<div><h2>{n.heading}</h2><p>{n.body}</p></div>))}
+          {guides.length > 0 && (
+            <div>
+              <h2>Typical budget</h2>
+              <ul class="svc-budget">{guides.map((g) => <li>{g.title}: <b>{g.price.charAt(0).toLowerCase() + g.price.slice(1)}</b></li>)}</ul>
+              <p>Starting points, not quotes. You get a written scope and a fixed price before work starts. <a class="textlink" href="/services/#pricing">About project sizes</a></p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section section--fog" aria-labelledby="related-title">
+      <div class="wrap">
+        <div class="head"><div><h2 id="related-title">Related work</h2></div><a class="textlink" href="/work/">All work</a></div>
+        <ul class="work-grid demo-grid">{related.map((d) => <DemoCard demo={d} />)}</ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section" aria-labelledby="other-title">
+    <div class="wrap">
+      <div class="head"><div><h2 id="other-title">Other services</h2></div><a class="textlink" href="/services/">All services</a></div>
+      <ul class="svc-rows">
+        {others.map((o) => (
+          <li class="svc-row" data-color={o.color}>
+            <span class="band-chip" aria-hidden="true"></span>
+            <h3><a href={`/services/${o.slug}/`}>{o.title}</a></h3>
+            <p>{o.line}</p>
+            <span class="svc-row__more" aria-hidden="true">More</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

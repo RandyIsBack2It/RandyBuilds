@@ -1,0 +1,226 @@
+---
+// AFTER HOURS: Bad Decisions — a standalone game page (own shell, no site
+// header). The game code and styles load only here.
+import '../../styles/global.css';
+import '../../styles/after-hours.css';
+import { site } from '../../site';
+import { versioned } from '../../lib/versioned';
+import font from '../../fonts/jetbrains-mono-latin-wght-normal.woff2?url';
+
+const title = 'AFTER HOURS: Bad Decisions';
+const description = 'One night. Zero self-control. Endless consequences. A neon arcade brawler with mature humor: survive until sunrise in your browser. Free, no sign-up.';
+const url = new URL('/arcade/after-hours/', site.url).href;
+const og = new URL('/arcade/after-hours/og.png', site.url).href;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'VideoGame', name: title, url, description,
+  genre: ['Action', 'Comedy', 'Beat ’em up'], gamePlatform: 'Web browser', playMode: 'SinglePlayer',
+  contentRating: 'Mature humor', applicationCategory: 'Game', operatingSystem: 'Any', image: og,
+  author: { '@type': 'Person', name: site.owner, url: site.url }, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+const keys = [
+  ['Move', 'Arrow keys or A / D'], ['Jump', 'Space, W or Up'], ['Attack / throw', 'J, Z or F'],
+  ['Dodge roll', 'K, X or Shift'], ['Talk', 'E or Q'], ['Choose', '1, 2, 3 (or click)'], ['Pause', 'Escape or P'],
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{`${title} | ${site.name}`}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#0a0414" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="icon" href={versioned('/favicon.svg')} type="image/svg+xml" />
+    <link rel="icon" href={versioned('/favicon-32.png')} type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href={versioned('/apple-touch-icon.png')} />
+    <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="AFTER HOURS: neon title over a rainy pixel-art city street at night" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body class="ah-page">
+    <a class="skip" href="#ah-game">Skip to the game</a>
+    <div class="ah" data-ah id="ah-game" data-mode="title" role="region" aria-label="AFTER HOURS game">
+      <div class="ah-bar">
+        <a class="ah-bar__home" href="/arcade/"><span aria-hidden="true">&lt;</span> Arcade</a>
+        <h1 class="ah-bar__title">AFTER HOURS <span>Bad Decisions</span></h1>
+        <div class="ah-bar__ctl">
+          <button class="ah-chip" type="button" data-toggle="music" aria-pressed="true">Music <span data-state>on</span></button>
+          <button class="ah-chip" type="button" data-toggle="sfx" aria-pressed="true">Sound <span data-state>on</span></button>
+          <button class="ah-chip" type="button" data-fullscreen aria-pressed="false" hidden>Full screen</button>
+          <button class="ah-chip" type="button" data-do="pause"><span aria-hidden="true">II</span><span class="visually-hidden">Pause</span></button>
+        </div>
+      </div>
+
+      <div class="ah-stage" data-stage>
+        <div class="ah-screen">
+          <canvas width="320" height="180" role="img" aria-label="AFTER HOURS game screen. Menus, decisions and controls are buttons outside the picture."></canvas>
+          <noscript><p class="ah-noscript">AFTER HOURS needs JavaScript to run.</p></noscript>
+        </div>
+
+        <div class="ah-menus">
+          <div class="ah-panel ah-panel--warn" data-screen="advisory" hidden role="dialog" aria-labelledby="ah-adv-title">
+            <p class="ah-tag">Mature humor · 18+</p>
+            <h2 id="ah-adv-title">Before you go in</h2>
+            <p>AFTER HOURS has crude language, suggestive (never explicit) themes, dark humor and cartoon violence. It’s meant for adults.</p>
+            <div class="ah-row">
+              <button class="ah-btn ah-btn--go" type="button" data-do="advisory" data-focus>I’m an adult. Let’s go.</button>
+              <a class="ah-btn" href="/arcade/">Back to the arcade</a>
+            </div>
+          </div>
+
+          <div class="ah-menu ah-menu--title" data-screen="title" hidden>
+            <div class="ah-row">
+              <button class="ah-btn ah-btn--go" type="button" data-do="play" data-focus>Start the night</button>
+              <button class="ah-btn" type="button" data-do="howto">How to play</button>
+              <button class="ah-btn" type="button" data-do="achievements">Achievements</button>
+              <button class="ah-btn" type="button" data-do="settings">Settings</button>
+            </div>
+            <p class="ah-small" data-out="best">No best score yet.</p>
+          </div>
+
+          <div class="ah-panel" data-screen="howto" hidden role="dialog" aria-labelledby="ah-howto-title">
+            <h2 id="ah-howto-title">How to survive (barely)</h2>
+            <p>It’s 11:59 PM. Get from The Velvet Trap to the penthouse and survive until sunrise. Lose all your dignity and it’s over.</p>
+            <ul class="ah-list">
+              <li><b>Bad decisions</b> pop up all night. Pick fast: every choice changes something, and some come back later.</li>
+              <li><b>CHAOS</b> multiplies your points, up to ×3. At 40 things start falling from the sky. At 90 every hit costs double.</li>
+              <li>Swing your handbag, roll through danger, and grab weapons: cocktail glasses, a boomerang high heel, a traffic cone.</li>
+              <li>Guards see you in their flashlight beam. Sneak up behind them. Bouncers wind up before they shove.</li>
+              <li>Look for three golden disco balls.</li>
+            </ul>
+            <h3>Keyboard</h3>
+            <dl class="ah-keys">{keys.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+            <h3>Touch</h3>
+            <p>Left thumb moves. Right thumb: <b>JUMP</b>, <b>HIT</b>, <b>ROLL</b>, and <b>TALK</b> when someone has something to say. Gamepads work too.</p>
+            <button class="ah-btn" type="button" data-do="back" data-focus>Back</button>
+          </div>
+
+          <div class="ah-panel" data-screen="settings" hidden role="dialog" aria-labelledby="ah-set-title">
+            <h2 id="ah-set-title">Settings</h2>
+            <div class="ah-col">
+              <button class="ah-btn ah-btn--toggle" type="button" data-toggle="music" aria-pressed="true" data-focus>Music: <span data-state>on</span></button>
+              <button class="ah-btn ah-btn--toggle" type="button" data-toggle="sfx" aria-pressed="true">Sound effects: <span data-state>on</span></button>
+              <label class="ah-range">Volume <input type="range" min="0" max="100" step="5" data-volume /></label>
+              <button class="ah-btn ah-btn--toggle" type="button" data-toggle="shake" aria-pressed="true">Screen shake: <span data-state>on</span></button>
+              <button class="ah-btn ah-btn--toggle" type="button" data-toggle="timer" aria-pressed="true">Decision timer: <span data-state>on</span></button>
+            </div>
+            <p class="ah-small">With the timer off, decisions wait for you. Saved in this browser only.</p>
+            <button class="ah-btn" type="button" data-do="back">Back</button>
+          </div>
+
+          <div class="ah-panel" data-screen="achievements" hidden role="dialog" aria-labelledby="ah-ach-title">
+            <h2 id="ah-ach-title">Achievements</h2>
+            <p class="ah-small" data-out="ach-count"></p>
+            <ul class="ah-ach" data-out="achievements"></ul>
+            <button class="ah-btn" type="button" data-do="back" data-focus>Back</button>
+          </div>
+
+          <div class="ah-panel ah-panel--choice" data-screen="choice" hidden role="dialog" aria-labelledby="ah-choice-speaker" aria-describedby="ah-choice-prompt">
+            <p class="ah-tag" id="ah-choice-speaker" data-out="speaker"></p>
+            <p class="ah-prompt" id="ah-choice-prompt" data-out="prompt"></p>
+            <div class="ah-timer" aria-hidden="true"><span data-out="timer"></span></div>
+            <div class="ah-col">
+              <button class="ah-btn ah-pick" type="button" data-pick="1" data-focus><b>1</b> <span></span></button>
+              <button class="ah-btn ah-pick" type="button" data-pick="2"><b>2</b> <span></span></button>
+              <button class="ah-btn ah-pick" type="button" data-pick="3"><b>3</b> <span></span></button>
+            </div>
+          </div>
+
+          <div class="ah-panel" data-screen="paused" hidden role="dialog" aria-labelledby="ah-pause-title">
+            <h2 id="ah-pause-title">Paused</h2>
+            <p class="ah-small">Even bad decisions need a breather.</p>
+            <div class="ah-col">
+              <button class="ah-btn ah-btn--go" type="button" data-do="resume" data-focus>Resume</button>
+              <button class="ah-btn" type="button" data-do="restart">Restart this area</button>
+              <button class="ah-btn" type="button" data-do="settings">Settings</button>
+              <button class="ah-btn" type="button" data-do="title">Quit to title</button>
+            </div>
+          </div>
+
+          <div class="ah-panel" data-screen="zoneclear" hidden role="dialog" aria-labelledby="ah-clear-title">
+            <h2 id="ah-clear-title" data-out="clear-title">Survived</h2>
+            <dl class="ah-score">
+              <div><dt>Score</dt><dd data-out="clear-score">0</dd></div>
+              <div><dt>Chaos</dt><dd data-out="clear-chaos">0</dd></div>
+              <div><dt>Cash</dt><dd data-out="clear-cash">$0</dd></div>
+            </dl>
+            <button class="ah-btn ah-btn--go" type="button" data-do="next" data-focus>Keep going</button>
+          </div>
+
+          <div class="ah-panel ah-panel--warn" data-screen="gameover" hidden role="dialog" aria-labelledby="ah-go-title">
+            <h2 id="ah-go-title">Knocked out</h2>
+            <p class="ah-prompt" data-out="go-line"></p>
+            <p>Score <b data-out="go-score">0</b> · in <span data-out="go-area"></span></p>
+            <ul class="ah-list" data-out="go-new"></ul>
+            <div class="ah-col">
+              <button class="ah-btn ah-btn--go" type="button" data-do="retry" data-focus>Try this area again</button>
+              <button class="ah-btn" type="button" data-do="again">Start a new night</button>
+              <button class="ah-btn" type="button" data-do="title">Title</button>
+            </div>
+          </div>
+
+          <div class="ah-panel ah-panel--win" data-screen="victory" hidden role="dialog" aria-labelledby="ah-v-title">
+            <p class="ah-tag">Sunrise · 6:00 AM</p>
+            <h2 id="ah-v-title" data-out="v-title">You survived</h2>
+            <p class="ah-prompt" data-out="v-text"></p>
+            <dl class="ah-score">
+              <div><dt>Final score</dt><dd data-out="v-score">0</dd></div>
+              <div><dt>Time</dt><dd data-out="v-time">00:00</dd></div>
+              <div><dt>Chaos</dt><dd data-out="v-chaos">0</dd></div>
+              <div><dt>Personal best</dt><dd data-out="v-best">–</dd></div>
+            </dl>
+            <ul class="ah-list ah-list--new" data-out="v-new"></ul>
+            <details class="ah-recap"><summary>Your bad decisions</summary><ul class="ah-list" data-out="v-choices"></ul></details>
+            <div class="ah-row">
+              <button class="ah-btn ah-btn--go" type="button" data-do="again" data-focus>Another night</button>
+              <button class="ah-btn" type="button" data-do="share">Share</button>
+              <button class="ah-btn" type="button" data-do="title">Title</button>
+            </div>
+            <p class="ah-small" data-out="share-status" role="status"></p>
+            <p class="ah-small">Scores are recorded on this device only.</p>
+          </div>
+        </div>
+
+        <div class="ah-touch" data-touch-root>
+          <button class="ah-chip ah-tpause" type="button" data-do="pause"><span aria-hidden="true">II</span><span class="visually-hidden">Pause</span></button>
+          <div class="ah-touch__left"><div class="ah-pad" data-touch="pad" role="presentation"><span class="ah-pad__l" aria-hidden="true"></span><span class="ah-pad__r" aria-hidden="true"></span></div></div>
+          <div class="ah-touch__right">
+            <div class="ah-tbtn ah-tbtn--talk" data-touch="interact" role="presentation"><span>TALK</span></div>
+            <div class="ah-tbtn ah-tbtn--roll" data-touch="dodge" role="presentation"><span>ROLL</span></div>
+            <div class="ah-tbtn ah-tbtn--hit" data-touch="attack" role="presentation"><span>HIT</span></div>
+            <div class="ah-tbtn ah-tbtn--jump" data-touch="jump" role="presentation"><span>JUMP</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="ah-rotate">Tip: turn your phone sideways for a bigger view.</p>
+    </div>
+
+    <main class="ah-info wrap" id="main">
+      <section aria-labelledby="ah-about">
+        <h2 id="ah-about">About AFTER HOURS</h2>
+        <p>A short arcade brawler set over one terrible night: The Velvet Trap, Regret Diner, The Back Alley and a penthouse with a hot tub you will regret. Fourteen bad decisions, three secret disco balls, several endings and a love guru in a velour robe.</p>
+        <p>Mature humor: crude language, suggestive themes, cartoon violence. Nothing explicit. The pixel art and synthwave soundtrack are original and generated in code. No accounts or tracking; your scores stay on your device.</p>
+      </section>
+      <p class="ah-credit">Created by <a href="/">RandyBuilds.tech</a> · <a href="/arcade/">Arcade</a> · <a href="/arcade/patch-quest/">PATCH QUEST</a></p>
+    </main>
+
+    <script>
+      import { startAfterHours } from '../../arcade/after-hours/main';
+      const root = document.querySelector<HTMLElement>('[data-ah]');
+      if (root) startAfterHours(root);
+    </script>
+  </body>
+</html>

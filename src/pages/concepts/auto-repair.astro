@@ -1,0 +1,172 @@
+---
+import Concept from '../../layouts/Concept.astro';
+const services = [
+  ['Diagnostics', 'from $89', 'Warning light on? We find the cause and explain it before anything else.'],
+  ['Brakes', 'from $149', 'Pads, rotors and fluid, checked and quoted per axle.'],
+  ['Oil & filter', 'from $49', 'Conventional or synthetic, with a free multi-point check.'],
+  ['Tires & alignment', 'from $79', 'Mounting, balancing, rotations and alignments.'],
+  ['Suspension', 'quoted', 'Clunks, pulling and uneven wear: struts, shocks, ball joints.'],
+  ['Inspection prep', 'from $39', 'A pre-check so the state inspection goes smoothly.'],
+];
+const symptoms = [
+  ['Squealing or grinding when I brake', 'Usually worn pads. Grinding often means metal on metal: book soon, before the rotors are damaged too.'],
+  ['The check-engine light is on', 'Steady light: book a diagnostic this week. Flashing light: pull over safely and call us.'],
+  ['The car pulls to one side', 'Often alignment or tire pressure, sometimes a sticking brake. A quick check tells us which.'],
+  ['It shakes at highway speed', 'Commonly tire balance. If it shakes when braking, it may be warped rotors.'],
+];
+---
+<Concept title="Northbound Auto Works" description="Concept website for a fictional independent auto repair shop, designed and built by RandyBuilds.tech." slug="auto-repair">
+  <div class="nb">
+    <header class="nb-top">
+      <div class="nb-wrap nb-top__in">
+        <a class="nb-logo" href="#nb-main"><span class="nb-logo__mark" aria-hidden="true">N</span>Northbound<b>Auto Works</b></a>
+        <p class="nb-open"><span aria-hidden="true">●</span> Open today 7:30 – 5:30</p>
+        <a class="nb-btn nb-btn--ghost nb-hide-sm" href="tel:5550148">555-0148</a>
+      </div>
+    </header>
+
+    <section class="nb-hero" id="nb-main">
+      <div class="nb-wrap nb-hero__grid">
+        <div>
+          <p class="nb-kicker">Independent repair shop</p>
+          <h1>Honest repairs.<br /><span>Straight answers.</span></h1>
+          <p class="nb-lede">We diagnose first, explain it in plain language, and never start work you haven’t approved.</p>
+          <div class="nb-actions">
+            <a class="nb-btn" href="tel:5550148">Call the shop</a>
+            <a class="nb-btn nb-btn--ghost" href="#book">Book a drop-off</a>
+          </div>
+        </div>
+        <svg class="nb-car" viewBox="0 0 520 260" role="img" aria-label="Illustration of a car with a diagnostic readout">
+          <defs><linearGradient id="nbg" x1="0" x2="1"><stop offset="0" stop-color="#ffc21a"/><stop offset="1" stop-color="#ff8a1a"/></linearGradient></defs>
+          <path d="M40 180c6-30 30-44 70-50l60-40c20-14 46-20 80-20h70c30 0 52 10 72 28l38 32c38 4 66 18 74 50v18H40z" fill="#2a2c30" stroke="#ffc21a" stroke-width="3"/>
+          <path d="M186 96c16-10 34-14 58-14h52c22 0 38 8 52 20l22 22H160z" fill="#3a3d43"/>
+          <circle cx="132" cy="200" r="34" fill="#111" stroke="#c9ccd1" stroke-width="6"/><circle cx="400" cy="200" r="34" fill="#111" stroke="#c9ccd1" stroke-width="6"/>
+          <circle cx="132" cy="200" r="10" fill="#ffc21a"/><circle cx="400" cy="200" r="10" fill="#ffc21a"/>
+          <polyline class="nb-pulse" points="20,40 90,40 110,12 130,66 150,28 170,40 260,40" fill="none" stroke="url(#nbg)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="nb-section" aria-labelledby="nb-services">
+      <div class="nb-wrap">
+        <h2 id="nb-services">What we fix</h2>
+        <p class="nb-sub">Sample starting prices for this concept. Every job gets a written estimate first.</p>
+        <ul class="nb-grid" role="list">
+          {services.map(([t, p, b]) => (<li class="nb-card"><div class="nb-card__top"><h3>{t}</h3><span>{p}</span></div><p>{b}</p></li>))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="nb-section nb-section--steel" aria-labelledby="nb-symptoms">
+      <div class="nb-wrap nb-two">
+        <div><h2 id="nb-symptoms">What is my car doing?</h2><p class="nb-sub">Plain-language answers to the questions we hear every day.</p></div>
+        <div class="nb-faq">
+          {symptoms.map(([q, a]) => (<details><summary>{q}</summary><p>{a}</p></details>))}
+        </div>
+      </div>
+    </section>
+
+    <section class="nb-section" aria-labelledby="nb-how">
+      <div class="nb-wrap">
+        <h2 id="nb-how">How every job works</h2>
+        <ol class="nb-steps" role="list">
+          <li><b>1</b><h3>Diagnose</h3><p>We find the actual cause, not a guess.</p></li>
+          <li><b>2</b><h3>Explain</h3><p>Photos, a plain-language summary and a written estimate.</p></li>
+          <li><b>3</b><h3>You approve</h3><p>No work starts until you say yes.</p></li>
+          <li><b>4</b><h3>Repair &amp; return</h3><p>Old parts returned on request.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="nb-section nb-section--yellow" id="book" aria-labelledby="nb-book">
+      <div class="nb-wrap nb-two">
+        <div><h2 id="nb-book">Book a drop-off</h2><p class="nb-sub nb-sub--dark">Tell us what’s going on and when you can drop the car off. We’ll call to confirm.</p></div>
+        <form class="nb-form" data-demo>
+          <label>Your name<input name="name" autocomplete="name" required /></label>
+          <label>Phone<input name="phone" type="tel" autocomplete="tel" required /></label>
+          <label>Vehicle (year, make, model)<input name="vehicle" required /></label>
+          <label>What’s happening?<textarea name="issue" rows="3"></textarea></label>
+          <label>Preferred drop-off<select name="day"><option>Tomorrow morning</option><option>Later this week</option><option>Next week</option></select></label>
+          <p class="demo-note">Demo form: nothing is sent.</p>
+          <button class="nb-btn nb-btn--dark" type="submit">Request appointment</button>
+          <p class="nb-result" data-demo-result tabindex="-1" role="status"></p>
+        </form>
+      </div>
+    </section>
+
+    <footer class="nb-foot">
+      <div class="nb-wrap nb-two">
+        <div><p class="nb-logo"><span class="nb-logo__mark" aria-hidden="true">N</span>Northbound<b>Auto Works</b></p><p>Mon–Fri 7:30–5:30 · Sat 8–12<br />A fictional business</p></div>
+        <p>555-0148<br />Concept site by RandyBuilds.tech</p>
+      </div>
+    </footer>
+
+    <nav class="nb-dock" aria-label="Quick actions">
+      <a href="tel:5550148">Call</a><a href="#book">Book</a>
+    </nav>
+  </div>
+</Concept>
+<script>
+  import { startDemoForms } from '../../scripts/demo-forms';
+  startDemoForms();
+</script>
+<style>
+  .nb { --c: #1c1d1f; --c2: #26282c; --y: #ffc21a; --s: #c9ccd1; --w: #f6f3ea; background: var(--c); color: var(--w); font-family: var(--sans); }
+  .nb-wrap { max-width: 1180px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 3rem); }
+  .nb h1, .nb h2, .nb h3 { font-family: var(--sans); letter-spacing: -0.02em; margin: 0; }
+  .nb-top { border-bottom: 1px solid #34363b; }
+  .nb-top__in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 68px; }
+  .nb-logo { display: inline-flex; align-items: center; gap: 0.55rem; margin: 0; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.04em; text-decoration: none; color: var(--w); }
+  .nb-logo b { color: var(--y); font-weight: 800; }
+  .nb-logo__mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; background: var(--y); color: var(--c); font-weight: 900; }
+  .nb-open { margin: 0; font-size: 0.9rem; color: var(--s); } .nb-open span { color: #4cd17b; }
+  .nb-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 1.4rem; border-radius: 10px; background: var(--y); color: var(--c); font-weight: 800; text-decoration: none; border: 2px solid var(--y); font: inherit; font-weight: 800; cursor: pointer; transition: transform .25s; }
+  .nb-btn:hover { transform: translateY(-2px); }
+  .nb-btn--ghost { background: transparent; color: var(--y); }
+  .nb-btn--dark { background: var(--c); color: var(--y); border-color: var(--c); }
+  .nb-hero { padding: clamp(3rem, 8vw, 6rem) 0; background: radial-gradient(60% 80% at 85% 20%, #2f3238, transparent); }
+  .nb-hero__grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2rem; align-items: center; }
+  .nb-kicker { color: var(--y); font-weight: 700; text-transform: uppercase; letter-spacing: .12em; font-size: .82rem; }
+  .nb h1 { font-size: clamp(2.6rem, 7vw, 5.4rem); font-weight: 900; line-height: .95; text-transform: uppercase; }
+  .nb h1 span { color: var(--y); }
+  .nb-lede { font-size: 1.2rem; color: var(--s); max-width: 30rem; margin: 1.4rem 0 2rem; }
+  .nb-actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+  .nb-car { width: 100%; }
+  .nb-pulse { stroke-dasharray: 400; animation: nb-pulse 3s ease-in-out infinite; }
+  @keyframes nb-pulse { 0% { stroke-dashoffset: 400; } 60%, 100% { stroke-dashoffset: 0; } }
+  .nb-section { padding: clamp(3.5rem, 8vw, 6rem) 0; }
+  .nb-section h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; text-transform: uppercase; }
+  .nb-sub { color: var(--s); margin: .6rem 0 2rem; }
+  .nb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: 1rem; padding: 0; margin: 0; list-style: none; }
+  .nb-card { background: var(--c2); border: 1px solid #34363b; border-radius: 14px; padding: 1.4rem; transition: border-color .25s, transform .25s; }
+  .nb-card:hover { border-color: var(--y); transform: translateY(-3px); }
+  .nb-card__top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .nb-card h3 { font-size: 1.2rem; } .nb-card__top span { color: var(--y); font-weight: 800; white-space: nowrap; }
+  .nb-card p { color: var(--s); margin: .6rem 0 0; }
+  .nb-section--steel { background: #24262a; }
+  .nb-two { display: grid; grid-template-columns: 1fr 1.3fr; gap: 2.5rem; }
+  .nb-faq details { border-bottom: 1px solid #3a3d43; }
+  .nb-faq summary { cursor: pointer; padding: 1.1rem 0; font-weight: 700; font-size: 1.1rem; list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+  .nb-faq summary::after { content: '+'; color: var(--y); font-size: 1.4rem; line-height: 1; }
+  .nb-faq details[open] summary::after { content: '−'; }
+  .nb-faq p { color: var(--s); margin: 0 0 1.2rem; }
+  .nb-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 1.2rem; padding: 0; margin: 2rem 0 0; list-style: none; }
+  .nb-steps b { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--y); color: var(--c); font-weight: 900; }
+  .nb-steps h3 { margin: .8rem 0 .3rem; font-size: 1.2rem; } .nb-steps p { color: var(--s); margin: 0; }
+  .nb-section--yellow { background: var(--y); color: var(--c); }
+  .nb-sub--dark { color: #3a3200; }
+  .nb-form { display: grid; gap: .9rem; }
+  .nb-form label { display: grid; gap: .35rem; font-weight: 700; }
+  .nb-form input, .nb-form select, .nb-form textarea { min-height: 48px; padding: .6rem .8rem; border-radius: 10px; border: 2px solid var(--c); background: #fffbe8; color: var(--c); font: inherit; }
+  .nb-result:not(:empty) { padding: .9rem 1rem; border-radius: 10px; background: var(--c); color: var(--w); font-weight: 600; }
+  .nb-foot { padding: 3rem 0 6rem; border-top: 1px solid #34363b; color: var(--s); }
+  .nb-dock { display: none; }
+  @media (max-width: 760px) {
+    .nb-hide-sm, .nb-open { display: none; }
+    .nb-hero__grid, .nb-two { grid-template-columns: 1fr; }
+    .nb-dock { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: .6rem; background: rgba(28,29,31,.95); backdrop-filter: blur(8px); border-top: 1px solid #34363b; }
+    .nb-dock a { display: grid; place-items: center; min-height: 52px; border-radius: 10px; background: var(--y); color: var(--c); font-weight: 900; text-decoration: none; text-transform: uppercase; }
+    .nb-dock a + a { background: transparent; color: var(--y); border: 2px solid var(--y); }
+  }
+  @media (prefers-reduced-motion: reduce) { .nb-pulse { animation: none; stroke-dasharray: none; } }
+</style>

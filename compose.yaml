@@ -1,0 +1,127 @@
+# Randy Builds Tech — its own Compose project, fully separate from every
+# other stack on this host. Deploy with scripts/deploy.sh only.
+name: randybuilds-tech
+
+services:
+  site:
+    image: randybuilds-tech:${RBT_TAG:-current}
+    container_name: randybuilds-tech
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    expose: ["8080"]          # no host ports here; see compose.preview.yaml
+    networks: [randybuilds-edge, randybuilds-mail, randybuilds-gate, randybuilds-clients, randybuilds-resources-edge]
+    depends_on: [mailer, gate, clients]
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 96M
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  mailer:
+    image: randybuilds-tech-mailer:${RBT_TAG:-current}
+    container_name: randybuilds-tech-mailer
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    # RESEND_API_KEY (send-only key) and optional RBT_MAIL_* — this project's own .env
+    env_file:
+      - path: .env
+        required: false
+    expose: ["8081"]
+    volumes:
+      - inquiries:/data       # the only writable path: inquiries.jsonl
+    networks: [randybuilds-mail]
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 96M
+    logging:
+      driver: json-file
+      options: { max-size: "5m", max-file: "3" }
+
+  # Private client previews: checks access codes and session cookies for
+  # nginx (auth_request). No outbound network, no volume, no state on disk.
+  gate:
+    image: randybuilds-tech-gate:${RBT_TAG:-current}
+    container_name: randybuilds-tech-gate
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    # RBT_PREVIEW_SECRET + one RBT_PREVIEW_CODE_<id> (SHA-256) per preview.
+    # Managed with `tech preview-code`. Separate from .env: no mail key here.
+    env_file:
+      - path: .env.previews
+        required: false
+    expose: ["8082"]
+    networks: [randybuilds-gate]
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 64M
+    logging:
+      driver: json-file
+      options: { max-size: "5m", max-file: "3" }
+
+  # Static client projects (clients/Dockerfile), served at /preview/<id>/ after
+  # the gate. Updated on their own with `tech clients`. Internal network only.
+  clients:
+    image: randybuilds-tech-clients:${RBT_TAG:-current}
+    container_name: randybuilds-tech-clients
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=8m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    expose: ["8080"]
+    networks: [randybuilds-clients]
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 48M
+    logging:
+      driver: json-file
+      options: { max-size: "5m", max-file: "3" }
+
+volumes:
+  inquiries:
+    name: randybuilds-tech-inquiries
+
+networks:
+  # Site ↔ mailer only. Not internal: the mailer needs outbound HTTPS to Resend.
+  randybuilds-mail:
+    name: randybuilds-tech-mail
+  # Site ↔ gate only, no outside access.
+  randybuilds-gate:
+    name: randybuilds-tech-gate
+    internal: true
+  # Site ↔ static client projects only, no outside access.
+  randybuilds-clients:
+    name: randybuilds-tech-clients
+    internal: true
+  # Dedicated bridge shared only by this container and (after launch is
+  # approved) the edge proxy. External, so this project can never delete it.
+  randybuilds-edge:
+    name: randybuilds-edge
+    external: true
+  # The WordPress site's edge bridge (wordpress/, created by its rbr.sh): nginx serves
+  # /resources/ from it. External, so this project can never delete it.
+  randybuilds-resources-edge:
+    name: randybuilds-resources-edge
+    external: true

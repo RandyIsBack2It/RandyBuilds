@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.astro/
+tests/out/
+*.log
+.env
+.last-release
+.env.previews
+dist-*/
+clients/*/tests/out/
+
+# WordPress resource center (wordpress/): secrets, backups and generated files never go to git
+wordpress/secrets/
+wordpress/backups/
+wordpress/.mode
+wordpress/migrate/data.json
+wordpress/tests/out/

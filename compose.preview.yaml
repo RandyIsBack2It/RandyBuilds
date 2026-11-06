@@ -1,0 +1,75 @@
+# Local preview — a SEPARATE Compose project from the live site, so it can
+# never replace the production containers. Loopback only. Its mailer has no
+# API key, so the preview form never sends email (it answers "unavailable").
+#   scripts/preview.sh   (or: tech preview)
+name: randybuilds-tech-preview
+
+services:
+  site:
+    image: randybuilds-tech:preview
+    container_name: randybuilds-tech-preview
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "127.0.0.1:18480:8080"
+    # resources-edge: /resources/ shows the live WordPress site (read-only browsing).
+    networks: [preview, resources-edge]
+    depends_on: [mailer, gate, clients]
+
+  mailer:
+    image: randybuilds-tech-mailer:preview
+    container_name: randybuilds-tech-preview-mailer
+    read_only: true
+    tmpfs:
+      - /data:size=1m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      RBT_ALLOWED_ORIGINS: http://127.0.0.1:18480,http://localhost:18480
+    networks:
+      preview:
+        aliases: [randybuilds-tech-mailer]   # the name nginx.conf proxies to
+
+  # Fixed QA codes only (tests/run.mjs), never the real ones:
+  # master key = QA-MASTER-KEY, qaother = QA00-0000-OT02 (a preview that
+  # has no pages; used to test that one code can't open another preview).
+  gate:
+    image: randybuilds-tech-gate:preview
+    container_name: randybuilds-tech-preview-gate
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      RBT_PREVIEW_SECRET: preview-only-not-secret
+      RBT_MASTER_CODE: 25615910d6b1629641a08e3d23287c01d438a4f74916a13954e0909f1729a3de
+      RBT_PREVIEW_CODE_qaother: 9ec83fbe3116ef4e5d1d7e6fe9146a1ec34d4ad7cebc98373692efa582407e2e
+      RBT_ALLOWED_ORIGINS: http://127.0.0.1:18480,http://localhost:18480
+    networks:
+      preview:
+        aliases: [randybuilds-tech-gate]
+
+  clients:
+    image: randybuilds-tech-clients:preview
+    container_name: randybuilds-tech-preview-clients
+    read_only: true
+    tmpfs:
+      - /tmp:size=8m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      preview:
+        aliases: [randybuilds-tech-clients]
+
+networks:
+  preview:
+    name: randybuilds-tech-preview
+  resources-edge:
+    name: randybuilds-resources-edge
+    external: true

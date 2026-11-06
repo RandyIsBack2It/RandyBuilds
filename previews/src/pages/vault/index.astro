@@ -1,0 +1,94 @@
+---
+// Master-key index: every project behind the vault, one click away. Only the
+// master key's session can load this page (gate/server.mjs → allowed()).
+import { projects } from '../../projects';
+const groups = [
+  { area: 'preview', title: 'Previews', lede: 'Concept sites for prospects.' },
+  { area: 'clients', title: 'Client projects', lede: 'Full projects for clients who said yes.' },
+] as const;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vault · all projects | RandyBuilds.tech</title>
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <main class="v">
+      <header class="v-head">
+        <p class="v-kicker"><span aria-hidden="true">●</span> master key · vault unlocked</p>
+        <h1>All projects</h1>
+        <p class="v-lede">Every preview and client project, direct. Opening one here doesn’t use or change its client’s code.</p>
+      </header>
+      {groups.map((g) => {
+        const list = projects.filter((p) => p.area === g.area);
+        return (
+          <section class="v-group" aria-labelledby={`g-${g.area}`}>
+            <div class="v-group__head"><h2 id={`g-${g.area}`}>{g.title}</h2><p>{g.lede} <code>/{g.area}/&lt;name&gt;/</code></p></div>
+            {list.length ? (
+              <ul class="v-list">
+                {list.map((p) => (
+                  <li class="v-card">
+                    <div>
+                      <p class="v-card__path">/{p.area}/{p.id}/</p>
+                      <h3><a href={`/${p.area}/${p.id}/`}>{p.name}</a></h3>
+                      <p class="v-card__meta">{p.place} · {p.what}</p>
+                    </div>
+                    <p class="v-card__links">
+                      <a class="v-btn" href={`/${p.area}/${p.id}/`}>Open →</a>
+                      {p.current && <a class="v-sub" href={p.current} rel="noopener noreferrer" target="_blank">Their current site<span class="vh"> (opens in a new tab)</span></a>}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="v-empty">None yet. When a prospect says yes, their project goes under <code>/clients/&lt;name&gt;/</code> with its own code (<code>tech preview-code &lt;name&gt; --client</code>).</p>
+            )}
+          </section>
+        );
+      })}
+      <footer class="v-foot">
+        <a href="/preview/">← Back to the vault door</a>
+        <span>Codes: <code>tech preview-code --list</code></span>
+      </footer>
+    </main>
+  </body>
+</html>
+<style is:global>
+  :root { --bg: #07111c; --bg2: #0a1726; --surface: #0e1d2e; --line: #24405c; --text: #e6edf5; --soft: #9db0c4; --cobalt: #6ea0ff; --orange: #f25c1f; --sea: #19b38a; --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; color: var(--text); font: 400 1.0625rem/1.6 system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: linear-gradient(rgba(110,160,230,.06) 1px, transparent 1px) 0 0 / 28px 28px, linear-gradient(90deg, rgba(110,160,230,.06) 1px, transparent 1px) 0 0 / 28px 28px, var(--bg); }
+  a { color: var(--cobalt); }
+  :focus-visible { outline: 3px solid var(--cobalt); outline-offset: 3px; border-radius: 4px; }
+  code { font-family: var(--mono); font-size: 0.9em; color: var(--soft); }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .v { width: 100%; max-width: 60rem; margin: 0 auto; padding: clamp(2rem, 1rem + 5vw, 5rem) clamp(1rem, 0.5rem + 2.5vw, 2.5rem); display: grid; gap: 2.5rem; }
+  .v-kicker { margin: 0 0 0.75rem; font: 500 0.82rem/1 var(--mono); letter-spacing: 0.08em; color: var(--sea); }
+  .v-kicker span { margin-right: 0.35rem; }
+  h1 { margin: 0; font-size: clamp(2.4rem, 1.6rem + 3.5vw, 4rem); letter-spacing: -0.035em; line-height: 1; }
+  .v-lede { margin: 0.9rem 0 0; color: var(--soft); max-width: 36rem; }
+  .v-group { display: grid; gap: 1rem; }
+  .v-group__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.25rem 1.5rem; border-bottom: 1px solid var(--line); padding-bottom: 0.6rem; }
+  .v-group__head h2 { margin: 0; font-size: 1.35rem; }
+  .v-group__head p { margin: 0; color: var(--soft); font-size: 0.95rem; }
+  .v-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }
+  .v-card { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem 2rem; padding: 1.15rem 1.3rem; background: linear-gradient(180deg, #13283d, var(--surface)); border: 1px solid var(--line); border-radius: 12px; }
+  .v-card:hover { border-color: var(--cobalt); }
+  .v-card__path { margin: 0 0 0.3rem; font: 500 0.8rem/1 var(--mono); color: var(--soft); }
+  .v-card h3 { margin: 0; font-size: 1.3rem; }
+  .v-card h3 a { color: var(--text); text-decoration: none; }
+  .v-card h3 a:hover { text-decoration: underline; }
+  .v-card__meta { margin: 0.25rem 0 0; color: var(--soft); font-size: 0.95rem; }
+  .v-card__links { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+  .v-btn { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1.2rem; border-radius: 8px; background: var(--orange); color: #07111c; font: 600 0.95rem/1 var(--mono); text-decoration: none; }
+  .v-btn:hover { box-shadow: 0 0 0 4px rgba(242, 92, 31, 0.25); }
+  .v-sub { font-size: 0.95rem; display: inline-block; padding-block: 0.3rem; }
+  .v-empty { margin: 0; padding: 1.1rem 1.3rem; border: 1px dashed var(--line); border-radius: 12px; color: var(--soft); }
+  .v-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.95rem; color: var(--soft); }
+  .v-foot a { display: inline-block; padding-block: 0.3rem; }
+</style>

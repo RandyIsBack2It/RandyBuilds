@@ -1,0 +1,197 @@
+---
+import Base from '../layouts/Base.astro';
+import FaqList from './FaqList.astro';
+import DemoCard from './DemoCard.astro';
+import FeaturedProject from './FeaturedProject.astro';
+import HeroFigure from './HeroFigure.astro';
+import ContactForm from './ContactForm.astro';
+import { showcase, showcaseSlugs, defaultFeature, supportingFor } from '../content/showcase';
+import { categories, serviceBySlug } from '../content/services';
+import { faq } from '../content/faq';
+import { homePriceCue } from '../content/pricing';
+import { steps as exploreSteps } from '../content/explore';
+import { site, mailto } from '../site';
+import { versioned } from '../lib/versioned';
+
+// The home page (pages/index.astro) in six sections: hero, Services, Work,
+// About (with the process), FAQ and Contact. /about/, /faq/ and /contact/
+// redirect to their sections; /services/ and /work/ are full pages that these
+// sections preview. On large screens each section is a full-screen panel; the
+// circuit trace (.trace, scripts/trace.ts) runs down the left margin to each kicker.
+//
+// Work features one project (content/showcase.ts). With `feature` (a share
+// link, pages/p/[code].astro) it is fixed and the page is noindex, and the
+// address bar then shows the plain home address (scripts/showcase.ts); without
+// it, every project is in the page and one is shown at random, kept for the
+// browser session.
+interface Props { feature?: string }
+const { feature } = Astro.props;
+const shown = feature ?? defaultFeature;
+const supporting = supportingFor(shown);
+const features = feature ? showcase.filter((d) => d.slug === feature) : showcase;
+const cards = feature ? supporting : [...supporting, ...showcase.filter((d) => !supporting.includes(d))];
+// Home shows the three primary categories; management and hosting are on /services/.
+// Explore is offered under the service cards (and in the hero), not as its own panel.
+const exploreCount = exploreSteps.filter((s) => !s.when).length;
+
+const steps = [
+  { title: 'Project discussion', body: 'Tell me what you need through the form or by email. We’ll clarify the requirements before I prepare a proposal.' },
+  { title: 'Proposal and agreed scope', body: 'I write down what I’ll build and a fixed price for it. Work starts once you agree to the scope.' },
+  { title: 'Design, development and review', body: 'I share progress as I go, so you can try it and comment before the work is finished. I test on phones, tablets and computers.' },
+  { title: 'Handover', body: 'You review the completed work against the agreed scope. If something doesn’t work as agreed, I fix it. Then I hand over the finished site, with its code and content. It’s yours.' },
+];
+
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+}];
+---
+<Base schema={feature ? [] : schema} cta={false} noindex={!!feature}>
+  <div class="trace" aria-hidden="true"></div>
+
+  <section class="section hero panel" aria-labelledby="hero-title" data-parallax="-0.2" data-parallax-prop="bg">
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <p class="prompt" aria-hidden="true"><span class="prompt__user">dev@randybuilds</span>:<span class="prompt__path">~</span>$ <span class="prompt__cmd">./build --your-idea</span></p>
+        <h1 id="hero-title"><span>Have an idea?</span> <span><span class="accent">Let’s build it.</span><span class="cursor" aria-hidden="true"></span></span></h1>
+        <p class="hero__intro">
+          I build websites that help businesses attract customers, and custom tools that make everyday work easier. From a straightforward business website to a complete online application, every project starts with a clear plan and an agreed price.
+        </p>
+        <ul class="hero__points" aria-label="Working with me">
+          <li>You work directly with the person building it</li>
+          <li>Written scope and fixed price before work starts</li>
+          <li>{site.review}, no meeting needed</li>
+        </ul>
+        <div class="hero__actions">
+          <a class="btn btn--orange" href="#contact">Start a project</a>
+          <a class="btn btn--ghost" href="/work/">See my work</a>
+        </div>
+        <p class="hero__more">Not sure what you need? <a class="textlink" href="/explore/">Explore ideas</a></p>
+      </div>
+      <HeroFigure />
+    </div>
+  </section>
+
+  <section id="services" class="section panel section--fog" aria-labelledby="services-title" data-parallax="-0.2" data-parallax-prop="bg">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="kicker"><b>01</b> services</p>
+          <h2 id="services-title">What I build</h2>
+        </div>
+        <a class="textlink" href="/services/">All services and project sizes</a>
+      </div>
+      <ul class="svc-blocks svc-blocks--three">
+        {categories.map((c) => (
+          <li class="svc-block" data-color={c.color}>
+            <h3>{c.title}</h3>
+            <p>{c.body}</p>
+            <ul class="svc-items">{c.items.map((i) => <li>{i}</li>)}</ul>
+            {c.id === 'websites' && <p class="svc-price">{homePriceCue} <a class="textlink" href="/services/#pricing">Typical project sizes</a></p>}
+            <a class="textlink" href={`/services/${c.services[0]}/`}>More about {serviceBySlug[c.services[0]].short.toLowerCase()}</a>
+          </li>
+        ))}
+      </ul>
+      <p class="svc-help" id="explore">Not sure which of these you need? <a class="textlink" href="/explore/">Answer {exploreCount} short questions</a> to see a few ideas. Website management and hosting are on the <a class="textlink" href="/services/">services page</a>.</p>
+    </div>
+  </section>
+
+  <section id="work" class="section panel" aria-labelledby="work-title" data-parallax="-0.2" data-parallax-prop="bg">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="kicker"><b>02</b> work</p>
+          <h2 id="work-title">What I’ve built</h2>
+        </div>
+        <a class="textlink" href="/work/">See all work</a>
+      </div>
+      <div class="work-home" data-showcase={feature ? undefined : showcaseSlugs.join(' ')} data-share-feature={feature}>
+        <div class="work-home__feature">
+          {features.map((d) => <FeaturedProject demo={d} hidden={d.slug !== shown} />)}
+        </div>
+        <div class="work-home__concepts">
+          <h3 id="concepts-title">More projects</h3>
+          <p class="work-home__lede">Concepts are working examples for fictional businesses.</p>
+          <ul class="demo-list">{cards.map((d) => <DemoCard demo={d} compact hidden={!supporting.includes(d)} />)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section panel section--fog" aria-labelledby="about-title" data-parallax="-0.2" data-parallax-prop="bg">
+    <div class="wrap about-grid">
+      <div>
+        <div class="head">
+          <div>
+            <p class="kicker"><b>03</b> about</p>
+            <h2 id="about-title">About Randy</h2>
+            <p class="lede">I’m an independent web developer with a background in operations management, logistics, and process improvement. I’ve led small teams and improved warehouse workflows, including raising wave-picking efficiency by more than 30% while strengthening service performance. You work directly with me; I handle the design, development, and technical setup.</p>
+          </div>
+        </div>
+        <div class="prose">
+          <h3>How I work</h3>
+          <p>I start with what the website or application needs to do and who will use it. Every design and technical decision follows from that.</p>
+          <p>You don’t need a technical background. Describe the problem in your own words, and I’ll explain the options in plain language. We can work everything out in writing, by email or through the form.</p>
+        </div>
+      </div>
+      <div id="process" class="about-process">
+        <h3>How a project works</h3>
+        <ol class="steps steps--stack">
+          {steps.map((s) => (
+            <li class="step"><h4>{s.title}</h4><p>{s.body}</p></li>
+          ))}
+        </ol>
+        <p><a class="textlink" href="#contact">Tell me about your project</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="section panel" aria-labelledby="faq-title" data-parallax="-0.2" data-parallax-prop="bg">
+    <div class="wrap faq__grid">
+      <div class="head">
+        <div>
+          <p class="kicker"><b>04</b> faq</p>
+          <h2 id="faq-title">Questions</h2>
+          <p class="lede">Something not covered here? <a class="textlink" href="#contact">Ask me</a>.</p>
+        </div>
+      </div>
+      <FaqList />
+    </div>
+  </section>
+
+  <section id="contact" class="section panel section--fog" aria-labelledby="contact-title" data-parallax="-0.2" data-parallax-prop="bg">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="head">
+            <div>
+              <p class="kicker"><b>05</b> contact</p>
+              <h2 id="contact-title">{site.review}</h2>
+              <p class="lede">Tell me a little about what you need. I’ll review your idea and help work out a practical starting point. No meeting required to get started.</p>
+            </div>
+          </div>
+          <ul class="promises" aria-label="What to expect">
+            <li><span class="band-chip" data-color="cobalt" aria-hidden="true"></span>Free, with no obligation</li>
+            <li><span class="band-chip" data-color="sea" aria-hidden="true"></span>A written scope and fixed price before work starts</li>
+            <li><span class="band-chip" data-color="orange" aria-hidden="true"></span>{site.replyTime}</li>
+          </ul>
+          <div>
+            <p>Prefer email?</p>
+            <a class="email" href={mailto('Project inquiry')}>{site.contact.email}</a>
+          </div>
+        </div>
+        <div class="formcard" id="form">
+          <ContactForm topics />
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { startTrace } from '../scripts/trace';
+  import { startShowcase } from '../scripts/showcase';
+  startTrace();
+  startShowcase();
+</script>

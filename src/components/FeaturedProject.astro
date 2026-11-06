@@ -1,0 +1,39 @@
+---
+// The large card in the home page's "What I’ve built": an independent project
+// or a concept demonstration, labelled as such. `hidden` keeps it in the page
+// for the random pick on the plain home page (scripts/showcase.ts).
+import Clip from './Clip.astro';
+import type { Demo } from '../content/demos';
+import { typeLabel } from '../content/demos';
+import { projects } from '../content/projects';
+import { versioned } from '../lib/versioned';
+interface Props { demo: Demo; hidden?: boolean }
+const { demo: d, hidden = false } = Astro.props;
+const p = projects.find((x) => x.slug === d.slug)!;
+const concept = d.type === 'concept';
+const media = concept ? d.url : `/work/${d.slug}/`;
+const still = d.image.src;
+const shot = p.shots?.[0];
+---
+<article class="platform platform--stack" aria-labelledby={`p-${d.slug}`} data-feature={d.slug} hidden={hidden}>
+  {shot?.video ? (
+    <Clip class="platform__media" video={shot.video} still={still} width={720} height={450} href={media} label={`${d.title} preview`} />
+  ) : (
+    <a class="platform__media" href={media} tabindex="-1" aria-hidden="true">
+      <img src={versioned(still)} alt="" width="720" height="450" loading="lazy" decoding="async" />
+    </a>
+  )}
+  <div class="platform__text">
+    <p class="shot__label" data-kind={concept ? 'concept' : 'independent'}>{typeLabel[d.type]}</p>
+    <h3 id={`p-${d.slug}`}>{d.title}</h3>
+    <p>{concept ? d.description : p.summary}</p>
+    {concept ? (
+      <p class="platform__links">
+        <a class="textlink" href={d.url}>Try the demo<span class="visually-hidden">: {d.title}</span></a>
+        {d.detailsUrl && <a class="textlink" href={d.detailsUrl}>About this concept<span class="visually-hidden">: {d.title}</span></a>}
+      </p>
+    ) : (
+      <a class="textlink" href={`/work/${d.slug}/`}>Read about this project</a>
+    )}
+  </div>
+</article>

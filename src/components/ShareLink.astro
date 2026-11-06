@@ -1,0 +1,18 @@
+---
+// Share control on a project card in the link manager (/admin/links/): shows
+// the project's share link with a copy button (scripts/share.ts). Without
+// clipboard access the link is selected so it can be copied by hand.
+interface Props { slug: string; title: string; url: string }
+const { slug, title, url } = Astro.props;
+---
+<div class="share" data-share>
+  <button class="btn btn--small btn--ghost share__toggle" type="button" aria-expanded="false" aria-controls={`share-${slug}`} data-share-toggle>Share<span class="visually-hidden">: {title}</span></button>
+  <div class="share__panel" id={`share-${slug}`} hidden>
+    <label class="share__label" for={`share-url-${slug}`}>Share link for {title}</label>
+    <div class="share__row">
+      <input class="share__url" id={`share-url-${slug}`} type="text" readonly value={url} spellcheck="false" autocomplete="off" />
+      <button class="btn btn--small btn--orange share__copy" type="button" data-share-copy>Copy link<span class="visually-hidden"> for {title}</span></button>
+    </div>
+    <p class="share__status" role="status" data-share-status></p>
+  </div>
+</div>

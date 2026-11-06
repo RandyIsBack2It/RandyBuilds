@@ -1,0 +1,120 @@
+---
+import Base from '../../layouts/Base.astro';
+import { services, categories, groups, serviceBySlug } from '../../content/services';
+import { priceGuides, priceNote } from '../../content/pricing';
+import { site, schemaIds } from '../../site';
+
+// Services: the three primary categories (also the home cards), typical
+// project sizes (content/pricing.ts), then ongoing support. Each detailed
+// service keeps its own page at /services/<slug>/.
+const support = services.filter((s) => s.group === 'support');
+// Short routes to the right service, for visitors who know their problem but not its name.
+const fit = [
+  { q: 'Starting from nothing, or only a social media page?', a: 'New business websites', href: '/services/websites/' },
+  { q: 'Want a different look or a clearer structure?', a: 'Website redesigns', href: '/services/redesigns/' },
+  { q: 'Need software for a specific job?', a: 'Custom web applications', href: '/services/web-apps/' },
+  { q: 'A specific feature or fix for your current site?', a: 'Website improvements', href: '/services/existing-projects/' },
+  { q: 'Small changes to a live site from time to time?', a: 'Website management', href: '/services/website-management/' },
+  { q: 'A working app that needs a server?', a: 'Server setup and deployment', href: '/services/server-setup/' },
+  { q: 'Still not sure?', a: 'Answer four short questions', href: '/explore/' },
+];
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: services.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: { '@type': 'Service', name: s.title, description: s.intro, url: new URL(`/services/${s.slug}/`, site.url).href, provider: { '@id': schemaIds.business } },
+  })),
+}];
+---
+<Base
+  title="Services: business websites, web apps and improvements"
+  description="Business websites, landing pages, redesigns, custom web apps and website improvements, plus website management and hosting. Written scope, fixed price."
+  schema={schema}
+>
+  <div class="page-head--color" data-color="cobalt">
+    <div class="wrap page-head">
+      <p class="kicker"><b>~/</b>services</p>
+      <h1>Services</h1>
+      <p class="lede">Business websites, custom applications and focused improvements to the site you already have. Every project starts with a written scope and an agreed, fixed price.</p>
+      <p class="demo__links"><a class="btn btn--orange" href="/#contact">Start a project</a><a class="textlink" href="#pricing">Typical project sizes</a></p>
+    </div>
+  </div>
+
+  <section class="section section--fog" aria-labelledby="build-title">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="kicker"><b>01</b> what I build</p>
+          <h2 id="build-title">What I build</h2>
+          <p class="lede">{groups.build.lede}</p>
+        </div>
+      </div>
+      <ul class="svc-blocks svc-blocks--three">
+        {categories.map((c) => (
+          <li class="svc-block" data-color={c.color} id={c.id}>
+            <h3>{c.title}</h3>
+            <p>{c.body}</p>
+            <ul class="svc-items">{c.items.map((i) => <li>{i}</li>)}</ul>
+            <p class="svc-block__links">
+              {c.services.map((slug) => <a class="textlink" href={`/services/${slug}/`}>More about {serviceBySlug[slug].short.toLowerCase()}</a>)}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section id="pricing" class="section" aria-labelledby="pricing-title">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="kicker"><b>02</b> project sizes</p>
+          <h2 id="pricing-title">Typical project sizes</h2>
+          <p class="lede">Where prices start, and what is quoted individually. Your price is set once we’ve agreed what the project includes.</p>
+        </div>
+      </div>
+      <ul class="price-guides">
+        {priceGuides.map((g) => (
+          <li class="price-guide">
+            <h3>{g.title}</h3>
+            <p class="price-guide__price">{g.price}</p>
+            <p>{g.body}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="note price-note">{priceNote}</p>
+    </div>
+  </section>
+
+  <section class="section section--fog" aria-labelledby="group-support">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="kicker"><b>03</b> hosting / support</p>
+          <h2 id="group-support">{groups.support.title}</h2>
+          <p class="lede">{groups.support.lede}</p>
+        </div>
+      </div>
+      <ul class="svc-blocks svc-blocks--pair">
+        {support.map((s) => (
+          <li class="svc-block" data-color={s.color}>
+            <h3>{s.title}</h3>
+            <p>{s.intro}</p>
+            <a class="textlink" href={`/services/${s.slug}/`}>More about {s.short.toLowerCase()}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section fit" aria-labelledby="fit-title">
+    <div class="wrap">
+      <h2 id="fit-title">Which service fits?</h2>
+      <ul class="fit-list">
+        {fit.map((f) => <li><span>{f.q}</span><a class="textlink" href={f.href}>{f.a}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>

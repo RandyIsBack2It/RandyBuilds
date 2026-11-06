@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import DemoCard from '../../components/DemoCard.astro';
+import { demos } from '../../content/demos';
+
+// The arcade: original browser games. Games are registered in content/demos.ts
+// with type 'game'.
+const games = demos.filter((d) => d.type === 'game');
+---
+<Base title="Arcade" description="Original browser games by RandyBuilds.tech. Free to play on desktop and phones, no sign-up.">
+  <div class="page-head--color" data-color="orange">
+    <div class="wrap page-head">
+      <p class="kicker"><b>~/</b>arcade</p>
+      <h1>Arcade</h1>
+      <p class="lede">Original browser games. Free to play on a computer or a phone, with no sign-up.</p>
+    </div>
+  </div>
+  <section class="section" aria-labelledby="games-title">
+    <div class="wrap">
+      <h2 id="games-title" class="visually-hidden">Games</h2>
+      <ul class="work-grid demo-grid">{games.map((d) => <DemoCard demo={d} full />)}</ul>
+      <p class="demo-head__note arcade__more"><a class="textlink" href="/work/">See all work</a></p>
+    </div>
+  </section>
+</Base>
